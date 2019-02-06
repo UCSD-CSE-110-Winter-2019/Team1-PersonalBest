@@ -15,7 +15,7 @@ public class DatabaseUnitTest {
     @Before
     public void setup() {
         FirebaseFirestore mockFirestore = Mockito.mock(FirebaseFirestore.class);
-        
+
     }
 
     @Test
