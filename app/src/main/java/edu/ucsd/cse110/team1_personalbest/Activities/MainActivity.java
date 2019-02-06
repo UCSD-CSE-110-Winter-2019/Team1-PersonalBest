@@ -1,7 +1,9 @@
-package edu.ucsd.cse110.team1_personalbest;
+package edu.ucsd.cse110.team1_personalbest.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import edu.ucsd.cse110.team1_personalbest.R;
 
 public class MainActivity extends AppCompatActivity {
 
