@@ -43,11 +43,8 @@ public class GoogleFitAdapter implements StepService {
                 .build();
 
         if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this.activity), fitnessOptions)) {
-            GoogleSignIn.requestPermissions(
-                    this.activity, // your activity
-                    GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-                    GoogleSignIn.getLastSignedInAccount(this.activity),
-                    fitnessOptions);
+            // if no permissions give up
+            return;
         } else {
             this.updateStepCount();
             this.startRecording();

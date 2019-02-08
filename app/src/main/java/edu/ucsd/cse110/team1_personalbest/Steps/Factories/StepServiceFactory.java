@@ -29,18 +29,18 @@ public class StepServiceFactory {
     /**
      * instantiates a new step service from the given key to the given activity.
      * @param key: the key to find the step service with
-     * @param stepCountActivity: activity to connect to
+     * @param activity: activity to connect to
      * @return the step service
      */
-    public static StepService create(final String key, final Activity stepCountActivity) {
+    public static StepService create(final String key, final Activity activity) {
         Log.i(TAG, String.format("creating FitnessService with key %s", key));
-        return blueprints.get(key).create(stepCountActivity);
+        return blueprints.get(key).create(activity);
     }
 
     /**
      * BluePrint interface for step services
      */
     public interface BluePrint {
-        StepService create(final Activity stepCountActivity);
+        StepService create(final Activity activity);
     }
 }
