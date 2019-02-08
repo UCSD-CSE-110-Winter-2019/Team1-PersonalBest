@@ -24,10 +24,20 @@ public class CountStepActivity extends AppCompatActivity {
         });
     }
 
-    /* Receive encouragement for doubling steps */
+    /* Show an encouragement when current steps is half of the goal steps */
     public void showEncouragementForDouble(int CurrentStep){
         Context context = getApplicationContext();
         CharSequence text = "You've nearly doubled your steps. Keep up the good work!";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
+    /* Show an encouragement when click the end button and current steps is not greater than goal steps */
+    public void showEncouragementAtEnd(int CurrentStep){
+        Context context = getApplicationContext();
+        CharSequence text = "Good job! Keep up the good work!";
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);
