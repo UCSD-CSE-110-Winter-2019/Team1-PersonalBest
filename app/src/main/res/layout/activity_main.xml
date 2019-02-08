@@ -4,15 +4,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".Activities.MainActivity"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
-    tools:context="activity_main">
+    android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/buttonGoToSteps"
+    <TextView
+        android:id="@+id/step_goal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/step_goal"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/step_goal_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="step goal view"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/current_step"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="go to step counter" />
+        android:text="@string/daily_step"
+        android:textSize="24sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/current_step_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="current step view"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/buttonStartWalk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/start_walk_run_now"
+        android:backgroundTint="#4aa71c"
+        android:textColor="#ffffff"
+        />
+
+    <Button
+        android:id="@+id/buttonHistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/step_history"
+        />
 
 </LinearLayout>

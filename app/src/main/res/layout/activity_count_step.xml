@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".Activities.MainActivity">
+
+    <TextView
+        android:id="@+id/exercise_step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/exercise_step"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/exercise_step_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="exercise step view"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/distance"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/distance_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="distance view"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/speed"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/speed_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="speed view"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/total_daily_step"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/daily_step"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
+        android:textSize="20sp" />
+
+
+    <TextView
+        android:id="@+id/total_daily_step_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="current step view"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/buttonEndWalk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="#ca313b"
+        android:text="@string/end_walk_run_now"
+        android:textColor="#ffffff" />
+
+    <Button
+        android:id="@+id/buttonHistory2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/step_history" />
+
+</LinearLayout>
