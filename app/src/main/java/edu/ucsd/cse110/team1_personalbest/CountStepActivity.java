@@ -22,6 +22,7 @@ public class CountStepActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 
     /* Show an encouragement when current steps is half of the goal steps */
