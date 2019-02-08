@@ -4,4 +4,9 @@
     <string name="step_history">Step History</string>
     <string name="step_goal">Step Goal:</string>
     <string name="daily_step">Daily Step:</string>
+    <string name="end_walk_run_now">End Walk/Run Now</string>
+    <string name="distance">Distance:</string>
+    <string name="speed">Speed:</string>
+    <string name="exercise_step">Exercise Step:</string>
+
 </resources>
