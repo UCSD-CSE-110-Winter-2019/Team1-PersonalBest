@@ -15,10 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static android.support.constraint.Constraints.TAG;
+import java.io.*;
+import org.json.*;
 
 public class Database {
 
-    FirebaseFirestore db;
+    /*private FirebaseFirestore db;
 
     public Database() {
         db = FirebaseFirestore.getInstance();
@@ -61,5 +63,34 @@ public class Database {
                     }
                 });
 
+    }*/
+
+    public Database() {}
+
+    public void write(String fileName, JSONObject obj) {
+        try {
+            PrintWriter pw = new PrintWriter(fileName);
+            pw.write(obj.toString());
+            pw.flush();
+            pw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject read(String fileName) {
+        try {
+            FileReader r = new FileReader(fileName);
+            int i = 0;
+            String line = "";
+            while ( (i = r.read()) != -1 ) {
+                line += (char) i;
+                System.out.print((char) i);
+            }
+            return new JSONObject(line);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
