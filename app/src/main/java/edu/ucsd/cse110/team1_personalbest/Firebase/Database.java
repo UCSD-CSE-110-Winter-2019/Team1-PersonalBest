@@ -28,12 +28,10 @@ public class Database {
         db = store;
     }
 
-    public void push() {
-        Map<String, Integer> map = new HashMap<>();
-        map.put("06", 100);
+    public void push(String range, Map map) {
 
         db.collection("calendar")
-                .document("02")
+                .document(range)
                 .set(map)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -49,9 +47,9 @@ public class Database {
                 });
     }
 
-    public void get() {
+    public void get(String range) {
         db.collection("calendar")
-                .document("02")
+                .document(range)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -62,5 +60,6 @@ public class Database {
                         }
                     }
                 });
+
     }
 }
