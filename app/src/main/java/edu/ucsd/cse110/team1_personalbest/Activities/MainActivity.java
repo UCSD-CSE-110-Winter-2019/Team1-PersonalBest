@@ -18,6 +18,7 @@ import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
 import edu.ucsd.cse110.team1_personalbest.Permissions;
 import edu.ucsd.cse110.team1_personalbest.R;
+import edu.ucsd.cse110.team1_personalbest.SetGoalOptionActivity;
 
 public class MainActivity extends AppCompatActivity {
 
