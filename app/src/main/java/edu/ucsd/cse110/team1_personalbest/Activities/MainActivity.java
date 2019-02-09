@@ -8,6 +8,7 @@ import android.widget.Button;
 
 import edu.ucsd.cse110.team1_personalbest.CountStepActivity;
 import edu.ucsd.cse110.team1_personalbest.R;
+import edu.ucsd.cse110.team1_personalbest.SetGoalOptionActivity;
 
 public class MainActivity extends AppCompatActivity {
 

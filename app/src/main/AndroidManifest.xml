@@ -16,7 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CountStepActivity"></activity>
+        <activity android:name=".CountStepActivity" />
+        <activity android:name=".SetGoalOptionActivity" />
+        <activity android:name=".SetNewGoalActivity" />
+        <activity android:name=".CustomGoalActivity" />
+        <activity android:name=".HistoryActivity"></activity>
     </application>
 
 </manifest>

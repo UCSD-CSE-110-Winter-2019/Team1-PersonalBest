@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".Activities.MainActivity"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/customGoalMessage1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
+        android:text="@string/custom_goal"
+        android:textAlignment="center"
+        android:layout_gravity="center_horizontal"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="100dp"
+        />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:id="@+id/linearLayout1"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/customGoal"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:hint="@string/enter_number"
+            android:layout_marginLeft="120sp"
+            android:layout_gravity="center_horizontal"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/customGoalMessage2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10sp"
+            android:text="@string/steps"
+            android:textAlignment="center"
+            android:layout_gravity="center_horizontal"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:id="@+id/linearLayout2"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/buttonAcceptCustomGoal"
+            android:layout_width="145sp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35sp"
+            android:layout_marginLeft="35sp"
+            android:text="@string/accept"
+            android:backgroundTint="#4aa71c"
+            android:textColor="#ffffff">
+        </Button>
+
+        <Button
+            android:id="@+id/buttonCancelCustomGoal"
+            android:layout_width="145sp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="35sp"
+            android:layout_marginLeft="25sp"
+            android:text="@string/cancel"
+            android:backgroundTint="@color/common_google_signin_btn_text_light"
+            android:textColor="#ffffff">
+        </Button>
+
+    </LinearLayout>
+
+</LinearLayout>
