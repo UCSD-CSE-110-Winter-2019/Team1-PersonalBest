@@ -69,7 +69,7 @@ public class CountStepActivity extends AppCompatActivity {
     public void showEncouragementForNearlyDouble(){
         Context context = getApplicationContext();
         CharSequence text = "You've nearly doubled your steps. Keep up the good work!";
-        int duration = Toast.LENGTH_SHORT;
+        int duration = Toast.LENGTH_LONG;
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
@@ -79,7 +79,7 @@ public class CountStepActivity extends AppCompatActivity {
     public void showEncouragementNotDouble(){
         Context context = getApplicationContext();
         CharSequence text = "Good job! You've made great prgroess!";
-        int duration = Toast.LENGTH_SHORT;
+        int duration = Toast.LENGTH_LONG;
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
@@ -89,7 +89,7 @@ public class CountStepActivity extends AppCompatActivity {
     public void showEncouragementDouble(){
         Context context = getApplicationContext();
         CharSequence text = "Excellent! You've doubled your steps!";
-        int duration = Toast.LENGTH_SHORT;
+        int duration = Toast.LENGTH_LONG;
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
