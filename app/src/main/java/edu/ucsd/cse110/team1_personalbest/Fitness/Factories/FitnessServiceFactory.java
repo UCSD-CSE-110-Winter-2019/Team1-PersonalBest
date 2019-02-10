@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.team1_personalbest.Steps.Factories;
+package edu.ucsd.cse110.team1_personalbest.Fitness.Factories;
 
 import android.app.Activity;
 
@@ -6,12 +6,12 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.ucsd.cse110.team1_personalbest.Steps.Interfaces.StepService;
+import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 
 /**
- * Factory for producing instances of {@link StepService}.
+ * Factory for producing instances of {@link FitnessService}.
  */
-public class StepServiceFactory {
+public class FitnessServiceFactory {
     private static final String TAG = "[FitnessServiceFactory]";
 
     // Map of known step service blueprints
@@ -29,18 +29,18 @@ public class StepServiceFactory {
     /**
      * instantiates a new step service from the given key to the given activity.
      * @param key: the key to find the step service with
-     * @param stepCountActivity: activity to connect to
+     * @param activity: activity to connect to
      * @return the step service
      */
-    public static StepService create(final String key, final Activity stepCountActivity) {
+    public static FitnessService create(final String key, final Activity activity) {
         Log.i(TAG, String.format("creating FitnessService with key %s", key));
-        return blueprints.get(key).create(stepCountActivity);
+        return blueprints.get(key).create(activity);
     }
 
     /**
      * BluePrint interface for step services
      */
     public interface BluePrint {
-        StepService create(final Activity stepCountActivity);
+        FitnessService create(final Activity activity);
     }
 }
