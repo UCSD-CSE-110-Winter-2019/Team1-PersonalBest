@@ -16,7 +16,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".Activities.CountStepActivity"></activity>
+        <activity android:name=".SetGoalOptionActivity" />
+        <activity android:name=".SetNewGoalActivity" />
+        <activity android:name=".CustomGoalActivity" />
+        <activity android:name=".HistoryActivity"></activity>
+
     </application>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permisssion.ACCESS_COARSE_LOCATION"></uses-permission>
