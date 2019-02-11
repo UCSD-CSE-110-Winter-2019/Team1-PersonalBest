@@ -24,7 +24,6 @@ public interface FitnessService {
     void updateStepCount(final Steps steps);
 
     /* sessions stuff */
-    void startListening();
+    void startListening(int initialNumSteps);
     void stopListening();
-    void updateSessionData(final SessionData sessionData);
 }

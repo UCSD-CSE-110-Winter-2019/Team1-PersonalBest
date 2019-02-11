@@ -24,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String GOOGLE_LOGIN = "GLOGIN";
     public static final String GOOGLE_FITNESS = "GFIT";
+    public static final String STEP_KEY = "INITIAL_STEPS";
+
+    final Steps steps = new Steps(0);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
         final FitnessService fitnessService = FitnessServiceFactory.create(GOOGLE_FITNESS, this);
         fitnessService.setup();
-        final Steps steps = new Steps(0);
         fitnessService.updateStepCount(steps);
 
 
@@ -69,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (steps.isShouldUpdate()) {
-
                     stepCount.setText(Integer.toString(steps.getSteps()));
+                    fitnessService.updateStepCount(steps);
                 }
             }
         });
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void launchStepCountActivity() {
         Intent intent = new Intent(this, CountStepActivity.class);
+        intent.putExtra(STEP_KEY,steps.getSteps());
         startActivity(intent);
     }
 

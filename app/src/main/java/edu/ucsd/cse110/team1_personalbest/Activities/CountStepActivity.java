@@ -1,9 +1,9 @@
 package edu.ucsd.cse110.team1_personalbest.Activities;
 
+
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -22,32 +22,29 @@ public class CountStepActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_count_step);
 
-        Button btnEndWalk = (Button) findViewById(R.id.buttonEndWalk);
+        Button btnEndWalk = findViewById(R.id.buttonEndWalk);
         final Button historyBtn = findViewById(R.id.buttonHistory2);
 
         final SessionData sessionData = new SessionData();
 
         final FitnessService service = FitnessServiceFactory.create(MainActivity.GOOGLE_FITNESS, this);
         service.setup();
+        //service.startListening(savedInstanceState.getInt(MainActivity.STEP_KEY));
 
-        // TODO fix an error here that causes crash and no data appearing
-        //service.startListening();
-        //service.updateSessionData(sessionData);
 
         btnEndWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //service.stopListening();
+                service.stopListening();
                 finish();
             }
         });
 
+
         historyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (sessionData.isShouldUpdate())
-                    Toast.makeText(getBaseContext(), sessionData.toString(), Toast.LENGTH_LONG).show();
-                    service.updateSessionData(sessionData);
+
             }
         });
     }
