@@ -2,6 +2,7 @@ package edu.ucsd.cse110.team1_personalbest.Firebase;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,11 +23,12 @@ import org.json.*;
 
 import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
 
-public class Database {
+public class Database extends AppCompatActivity {
 
     private FirebaseFirestore db;
 
     public Database() {
+        FirebaseApp.initializeApp(this);
         db = FirebaseFirestore.getInstance();
     }
 
