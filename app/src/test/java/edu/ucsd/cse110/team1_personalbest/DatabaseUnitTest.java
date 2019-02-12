@@ -24,7 +24,8 @@ public class DatabaseUnitTest {
 
     @Before
     public void setup() {
-        db = new Database();
+        FirebaseFirestore mock = Mockito.mock(FirebaseFirestore.class);
+        db = new Database(mock);
     }
 
     @After
@@ -36,7 +37,7 @@ public class DatabaseUnitTest {
     }
 
     @Test
-    public void testWrite() {
+    public void testWriteAndRead() {
         try {
             JSONObject obj = new JSONObject();
             obj.put("test", "123");
@@ -44,10 +45,6 @@ public class DatabaseUnitTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Test
-    public void testGet() {
         try {
             JSONObject obj = db.read(FILENAME);
             assertEquals(obj.toString(), "{\"test\":\"123\"}");

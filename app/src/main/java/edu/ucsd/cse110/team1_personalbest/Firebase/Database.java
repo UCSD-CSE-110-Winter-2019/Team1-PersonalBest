@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.team1_personalbest.Firebase;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -7,6 +8,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -18,9 +20,11 @@ import static android.support.constraint.Constraints.TAG;
 import java.io.*;
 import org.json.*;
 
+import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
+
 public class Database {
 
-    /*private FirebaseFirestore db;
+    private FirebaseFirestore db;
 
     public Database() {
         db = FirebaseFirestore.getInstance();
@@ -63,9 +67,7 @@ public class Database {
                     }
                 });
 
-    }*/
-
-    public Database() {}
+    }
 
     public void write(String fileName, JSONObject obj) {
         try {
