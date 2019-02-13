@@ -119,7 +119,7 @@ public class GoogleFitAdapter implements FitnessService,
     }
 
     @Override
-    public void startListening(int initialNumSteps) {
+    public void startListening(final int initialNumSteps) {
 
         if (this.googleAccount == null) GoogleSignIn.getLastSignedInAccount(this.activity);
         if (this.googleAccount == null) return;
@@ -132,17 +132,17 @@ public class GoogleFitAdapter implements FitnessService,
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
         mClient.connect();
 
         /* save start time */
-        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
-        final SharedPreferences.Editor editor = pref.edit();
-        final Steps steps = new Steps(0);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
+        SharedPreferences.Editor editor = pref.edit();
         editor.putLong(START_TIME, new Date().getTime());
-        editor.putLong(MainActivity.STEP_KEY, initialNumSteps);
         editor.apply();
 
-        updateStepCount(steps);
+        final TextView dailyStepView = this.activity.findViewById(R.id.total_daily_step_view);
+        updateStepCount(dailyStepView);
 
         final List<String> datasources = new ArrayList<>();
         Fitness.SensorsApi.findDataSources(mClient, new DataSourcesRequest.Builder()
@@ -173,18 +173,18 @@ public class GoogleFitAdapter implements FitnessService,
                                                 Value value = dataPoint.getValue(field);
                                                 switch (field.getName().toLowerCase()) {
                                                     case "distance":
+                                                        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
                                                         double cv = Double.parseDouble(((TextView) activity.findViewById(R.id.distance_view)).getText().toString());
                                                         ((TextView) activity.findViewById(R.id.distance_view)).setText(String.format(Locale.ENGLISH,"%.2f", value.asFloat() + cv));
                                                         long timeElapsed = new Date().getTime() - pref.getLong(START_TIME, 0);
                                                         double speed = (value.asFloat() + cv) / (timeElapsed/1000);
                                                         ((TextView) activity.findViewById(R.id.speed_view)).setText(String.format(Locale.ENGLISH,"%.2f", speed));
 
-                                                        int initial_steps = pref.getInt(MainActivity.STEP_KEY, 0);
-                                                        if (steps.isShouldUpdate()) {
-                                                            updateStepCount(steps);
-                                                            ((TextView) activity.findViewById(R.id.exercise_step_view)).setText(Integer.toString(steps.getSteps() - initial_steps));
-                                                            ((TextView) activity.findViewById(R.id.step_goal_view)).setText(Integer.toString(steps.getSteps()));
-                                                        }
+
+
+                                                            updateStepCount(dailyStepView);
+                                                            ((TextView) activity.findViewById(R.id.exercise_step_view)).setText(Integer.toString(Integer.parseInt(dailyStepView.getText().toString()) - initialNumSteps));
+
                                                         break;
                                                 }
 
@@ -214,7 +214,7 @@ public class GoogleFitAdapter implements FitnessService,
         SharedPreferences.Editor editor = pref.edit();
         editor.putLong(START_TIME, 0);
         editor.apply();
-        if (this.mClient.isConnected())
+        if (this.mClient != null && this.mClient.isConnected())
             this.mClient.disconnect();
     }
 
@@ -230,8 +230,7 @@ public class GoogleFitAdapter implements FitnessService,
      * current timezone.
      */
     @Override
-    public void updateStepCount(final Steps steps) {
-        steps.setShouldUpdate(false);
+    public void updateStepCount(final TextView tv) {
         if (this.googleAccount == null) GoogleSignIn.getLastSignedInAccount(this.activity);
         if (this.googleAccount == null) return;
         Fitness.getHistoryClient(activity, googleAccount)
@@ -242,10 +241,9 @@ public class GoogleFitAdapter implements FitnessService,
                             public void onSuccess(final DataSet dataSet) {
                                 Log.d(TAG, dataSet.toString());
                                 if(!dataSet.isEmpty()) {
-                                    steps.setSteps(dataSet.getDataPoints().get(0).getValue(
-                                            Field.FIELD_STEPS).asInt());
+                                    tv.setText(Integer.toString(dataSet.getDataPoints().get(0).getValue(
+                                            Field.FIELD_STEPS).asInt()));
                                 }
-                                steps.setShouldUpdate(true);
                             }
                         })
                 .addOnFailureListener(

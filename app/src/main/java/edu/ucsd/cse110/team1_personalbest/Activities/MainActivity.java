@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String GOOGLE_FITNESS = "GFIT";
     public static final String STEP_KEY = "INITIAL_STEPS";
 
-    final Steps steps = new Steps(0);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         final FitnessService fitnessService = FitnessServiceFactory.create(GOOGLE_FITNESS, this);
         fitnessService.setup();
-        fitnessService.updateStepCount(steps);
+        fitnessService.updateStepCount(((TextView)findViewById(R.id.current_step_view)));
 
 
         Button btnStartWalk = findViewById(R.id.buttonStartWalk);
@@ -70,10 +69,7 @@ public class MainActivity extends AppCompatActivity {
         btnViewHist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (steps.isShouldUpdate()) {
-                    stepCount.setText(Integer.toString(steps.getSteps()));
-                    fitnessService.updateStepCount(steps);
-                }
+                fitnessService.updateStepCount(((TextView)findViewById(R.id.current_step_view)));
             }
         });
 
@@ -82,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void launchStepCountActivity() {
         Intent intent = new Intent(this, CountStepActivity.class);
-        intent.putExtra(STEP_KEY,steps.getSteps());
+        intent.putExtra(STEP_KEY, Integer.parseInt(((TextView)findViewById(R.id.current_step_view)).getText().toString()));
         startActivity(intent);
     }
 

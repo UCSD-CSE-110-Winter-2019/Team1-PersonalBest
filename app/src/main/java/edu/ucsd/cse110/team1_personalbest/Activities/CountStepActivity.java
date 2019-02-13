@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
@@ -25,11 +27,12 @@ public class CountStepActivity extends AppCompatActivity {
         Button btnEndWalk = findViewById(R.id.buttonEndWalk);
         final Button historyBtn = findViewById(R.id.buttonHistory2);
 
-        final SessionData sessionData = new SessionData();
-
         final FitnessService service = FitnessServiceFactory.create(MainActivity.GOOGLE_FITNESS, this);
         service.setup();
-        //service.startListening(savedInstanceState.getInt(MainActivity.STEP_KEY));
+
+        int initialSteps = getIntent().getIntExtra(MainActivity.STEP_KEY, 0);
+        ((TextView)findViewById(R.id.total_daily_step_view)).setText(Integer.toString(initialSteps));
+        service.startListening(initialSteps);
 
 
         btnEndWalk.setOnClickListener(new View.OnClickListener() {
