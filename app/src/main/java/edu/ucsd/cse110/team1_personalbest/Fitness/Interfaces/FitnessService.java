@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces;
 
+import android.widget.TextView;
+
 import edu.ucsd.cse110.team1_personalbest.Fitness.Objects.SessionData;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Objects.Steps;
 
@@ -21,10 +23,9 @@ public interface FitnessService {
     /**
      * syncs step count with service.
      */
-    void updateStepCount(final Steps steps);
+    void updateStepCount(final TextView tv);
 
     /* sessions stuff */
-    void startListening();
+    void startListening(int initialNumSteps);
     void stopListening();
-    void updateSessionData(final SessionData sessionData);
 }
