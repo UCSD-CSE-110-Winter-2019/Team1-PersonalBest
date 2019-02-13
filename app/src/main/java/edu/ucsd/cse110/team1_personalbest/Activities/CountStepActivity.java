@@ -20,6 +20,7 @@ public class CountStepActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_count_step);
 
         Button btnEndWalk = (Button) findViewById(R.id.buttonEndWalk);
