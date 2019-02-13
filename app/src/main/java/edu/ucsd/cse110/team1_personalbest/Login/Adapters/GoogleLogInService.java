@@ -46,6 +46,11 @@ public class GoogleLogInService implements LoginService {
         }
 
         // check if an account has been signed into
-        return GoogleSignIn.getLastSignedInAccount(this.activity) == null;
+        return GoogleSignIn.getLastSignedInAccount(this.activity) != null;
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return GoogleSignIn.getLastSignedInAccount(this.activity) != null;
     }
 }

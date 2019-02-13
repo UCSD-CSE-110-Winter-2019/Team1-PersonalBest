@@ -18,7 +18,7 @@ import edu.ucsd.cse110.team1_personalbest.R;
 public class CountStepActivity extends AppCompatActivity {
 
     public static final String TAG = "[CountStepActivity]";
-    private SessionData sessionData;
+    private FitnessService service;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +27,7 @@ public class CountStepActivity extends AppCompatActivity {
         Button btnEndWalk = findViewById(R.id.buttonEndWalk);
         final Button historyBtn = findViewById(R.id.buttonHistory2);
 
-        final FitnessService service = FitnessServiceFactory.create(MainActivity.GOOGLE_FITNESS, this);
+        service = FitnessServiceFactory.create(MainActivity.GOOGLE_FITNESS, this);
         service.setup();
 
         int initialSteps = getIntent().getIntExtra(MainActivity.STEP_KEY, 0);
@@ -52,46 +52,13 @@ public class CountStepActivity extends AppCompatActivity {
         });
     }
 
-    /* Call this function to send an encouragement*/
-    public void showEncouragement(int previousSteps, int currentSteps, int goalSteps) {
-        /* When current steps is nearly doubled the previous steps*/
-        if(currentSteps >= 1.8 * previousSteps && currentSteps < 2 * previousSteps && currentSteps < goalSteps)
-            showEncouragementForNearlyDouble();
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (this.service != null)
+            service.stopListening();
 
-        if(currentSteps >= 1.4 * previousSteps && currentSteps < 1.8 * previousSteps  && currentSteps < goalSteps)
-            showEncouragementNotDouble();
-
-        if(currentSteps >= 2 * previousSteps && currentSteps < goalSteps)
-            showEncouragementDouble();
     }
 
-    /* Show an encouragement when current steps nearly doubled previous steps*/
-    public void showEncouragementForNearlyDouble(){
-        Context context = getApplicationContext();
-        CharSequence text = "You've nearly doubled your steps. Keep up the good work!";
-        int duration = Toast.LENGTH_LONG;
 
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
-
-    /* Show an encouragement when user significantly improve daily steps */
-    public void showEncouragementNotDouble(){
-        Context context = getApplicationContext();
-        CharSequence text = "Good job! You've made great prgroess!";
-        int duration = Toast.LENGTH_LONG;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
-
-    /* Show an encouragement when user double the step*/
-    public void showEncouragementDouble(){
-        Context context = getApplicationContext();
-        CharSequence text = "Excellent! You've doubled your steps!";
-        int duration = Toast.LENGTH_LONG;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
 }
