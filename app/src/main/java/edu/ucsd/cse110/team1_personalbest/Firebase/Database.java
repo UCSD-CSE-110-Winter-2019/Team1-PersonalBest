@@ -1,6 +1,5 @@
 package edu.ucsd.cse110.team1_personalbest.Firebase;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,36 +9,60 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Map;
 
 import static android.support.constraint.Constraints.TAG;
 import java.io.*;
+
 import org.json.*;
 
-import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
-
-public class Database extends AppCompatActivity {
+public class Database extends AppCompatActivity implements Subject {
 
     private FirebaseFirestore db;
+    private ArrayList<Observer> observers;
+    private Map<String, Object> data;
 
     public Database() {
         FirebaseApp.initializeApp(this);
         db = FirebaseFirestore.getInstance();
+        observers = new ArrayList<>();
     }
 
     public Database(FirebaseFirestore store) {
         db = store;
+        observers = new ArrayList<>();
     }
 
-    public void push(String range, Map map) {
+    @Override
+    public void register(Observer o) {
+        if ( !observers.contains(o) ) {
+            observers.add(o);
+        }
+    }
 
+    @Override
+    public void unregister(Observer o) {
+        observers.remove(o);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for( Observer obs : observers ) {
+            obs.update(data);
+        }
+    }
+
+
+    /**
+     * Push to a document reference and insert a Map
+     */
+    public void push(String document, Map map) {
         db.collection("calendar")
-                .document(range)
+                .document(document)
                 .set(map)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -55,15 +78,20 @@ public class Database extends AppCompatActivity {
                 });
     }
 
-    public void get(String range) {
+    /**
+     * Notifies observers with the Map data
+     * @param document the document location to get the object
+     */
+    public void get(String document) {
         db.collection("calendar")
-                .document(range)
+                .document(document)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if ( task.isSuccessful() ) {
-
+                            data = task.getResult().getData();
+                            notifyObservers();
                             Log.d(TAG, "Got document info");
                         }
                     }
