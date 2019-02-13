@@ -50,6 +50,7 @@ import java.util.concurrent.TimeUnit;
 
 import edu.ucsd.cse110.team1_personalbest.Activities.CountStepActivity;
 import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
+import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Objects.SessionData;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Objects.Steps;
@@ -71,18 +72,19 @@ public class GoogleFitAdapter implements FitnessService,
 
     private GoogleSignInAccount googleAccount;
     private GoogleApiClient mClient;
+    private  List<FitnessObserver> observers;
+
+    private int initialNumSteps;
 
     private static final String START_TIME = "START_TIME";
 
     /**
      * Constructs an instance of the adapter for the given activity
      */
-    public GoogleFitAdapter(final Activity activity) {
+    public GoogleFitAdapter(final Activity activity, final List<FitnessObserver> observers, int initialNumSteps) {
         this.activity = activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
+        this.observers = observers;
+        this.initialNumSteps = initialNumSteps;
     }
 
     @Override
@@ -119,7 +121,7 @@ public class GoogleFitAdapter implements FitnessService,
     }
 
     @Override
-    public void startListening(final int initialNumSteps) {
+    public void startListening() {
 
         if (this.googleAccount == null) GoogleSignIn.getLastSignedInAccount(this.activity);
         if (this.googleAccount == null) return;
@@ -137,14 +139,11 @@ public class GoogleFitAdapter implements FitnessService,
 
         /* save start time */
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
-        SharedPreferences.Editor editor = pref.edit();
+        final SharedPreferences.Editor editor = pref.edit();
         editor.putLong(START_TIME, new Date().getTime());
         editor.apply();
 
-        final TextView dailyStepView = this.activity.findViewById(R.id.total_daily_step_view);
-        updateStepCount(dailyStepView);
-
-        final List<String> datasources = new ArrayList<>();
+        updateStepCount();
         Fitness.SensorsApi.findDataSources(mClient, new DataSourcesRequest.Builder()
                 .setDataTypes(DataType.TYPE_DISTANCE_DELTA)
                 .setDataSourceTypes(DataSource.TYPE_RAW, DataSource.TYPE_DERIVED)
@@ -152,13 +151,7 @@ public class GoogleFitAdapter implements FitnessService,
                 .setResultCallback(new ResultCallback<DataSourcesResult>() {
                     @Override
                     public void onResult(@NonNull DataSourcesResult dataSourcesResult) {
-                        datasources.clear();
                         for (DataSource dataSource : dataSourcesResult.getDataSources()) {
-                            Device device = dataSource.getDevice();
-                            String fields = dataSource.getDataType().getFields().toString();
-                            datasources.add(device.getManufacturer() + " " + device.getModel()
-                                    + " [" + dataSource.getDataType().getName() + " " + fields + "]");
-
                             Fitness.SensorsApi.add(mClient,
                                     new SensorRequest.Builder()
                                             .setDataSource(dataSource)
@@ -174,17 +167,9 @@ public class GoogleFitAdapter implements FitnessService,
                                                 switch (field.getName().toLowerCase()) {
                                                     case "distance":
                                                         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
-                                                        double cv = Double.parseDouble(((TextView) activity.findViewById(R.id.distance_view)).getText().toString());
-                                                        ((TextView) activity.findViewById(R.id.distance_view)).setText(String.format(Locale.ENGLISH,"%.2f", value.asFloat() + cv));
                                                         long timeElapsed = new Date().getTime() - pref.getLong(START_TIME, 0);
-                                                        double speed = (value.asFloat() + cv) / (timeElapsed/1000);
-                                                        ((TextView) activity.findViewById(R.id.speed_view)).setText(String.format(Locale.ENGLISH,"%.2f", speed));
-
-
-
-                                                            updateStepCount(dailyStepView);
-                                                            ((TextView) activity.findViewById(R.id.exercise_step_view)).setText(Integer.toString(Integer.parseInt(dailyStepView.getText().toString()) - initialNumSteps));
-
+                                                        notifyObservers(null, null, timeElapsed, value.asFloat());
+                                                        updateStepCount();
                                                         break;
                                                 }
 
@@ -218,6 +203,16 @@ public class GoogleFitAdapter implements FitnessService,
             this.mClient.disconnect();
     }
 
+    @Override
+    public void removeObservers() {
+        observers.clear();
+    }
+
+    @Override
+    public void registerObserver(FitnessObserver observer) {
+        observers.add(observer);
+    }
+
     /**
      * Start recording steps.
      */
@@ -229,8 +224,7 @@ public class GoogleFitAdapter implements FitnessService,
      * Reads the current daily step total, computed from midnight of the current day on the device's
      * current timezone.
      */
-    @Override
-    public void updateStepCount(final TextView tv) {
+    private void updateStepCount() {
         if (this.googleAccount == null) GoogleSignIn.getLastSignedInAccount(this.activity);
         if (this.googleAccount == null) return;
         Fitness.getHistoryClient(activity, googleAccount)
@@ -241,8 +235,9 @@ public class GoogleFitAdapter implements FitnessService,
                             public void onSuccess(final DataSet dataSet) {
                                 Log.d(TAG, dataSet.toString());
                                 if(!dataSet.isEmpty()) {
-                                    tv.setText(Integer.toString(dataSet.getDataPoints().get(0).getValue(
-                                            Field.FIELD_STEPS).asInt()));
+                                    int value = dataSet.getDataPoints().get(0).getValue(
+                                            Field.FIELD_STEPS).asInt();
+                                    notifyObservers(value, value-initialNumSteps, null, null);
                                 }
                             }
                         })
@@ -263,9 +258,9 @@ public class GoogleFitAdapter implements FitnessService,
         return GOOGLE_FIT_PERMISSIONS_REQUEST_CODE;
     }
 
-    private Task<Void> subscribeToDataType(final DataType dt) {
-        if(googleAccount == null) return null;
-        return Fitness.getRecordingClient(this.activity, this.googleAccount)
+    private void subscribeToDataType(final DataType dt) {
+        if(googleAccount == null) return;
+        Fitness.getRecordingClient(this.activity, this.googleAccount)
                 .subscribe(dt)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -300,6 +295,14 @@ public class GoogleFitAdapter implements FitnessService,
             this.activity.finish();
         } catch (IntentSender.SendIntentException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void notifyObservers(Integer numSteps, Integer deltaSteps, Long timeElapsed, Float distance) {
+        if(observers != null) {
+            for (FitnessObserver observer : observers) {
+                observer.update(numSteps, deltaSteps, timeElapsed, distance);
+            }
         }
     }
 }

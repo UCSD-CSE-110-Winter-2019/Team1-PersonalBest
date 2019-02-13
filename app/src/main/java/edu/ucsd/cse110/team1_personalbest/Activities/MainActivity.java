@@ -10,10 +10,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
+import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Objects.Steps;
+import edu.ucsd.cse110.team1_personalbest.Fitness.Observers.GoogleFitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Login.Adapters.GoogleLogInService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
@@ -35,11 +40,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Permissions.requestPermissions(this);
+        current_step_view = findViewById(R.id.current_step_view);
+        FitnessObserver observer = new GoogleFitnessObserver(current_step_view, null, null, null, this);
+        final List<FitnessObserver> observers = new ArrayList<>();
+        observers.add(observer);
 
         FitnessServiceFactory.put(GOOGLE_FITNESS, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(Activity activity) {
-                return new GoogleFitAdapter(activity);
+                return new GoogleFitAdapter(activity, observers, 0);
             }
         });
 
@@ -83,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
     public void launchStepCountActivity() {
         Intent intent = new Intent(this, CountStepActivity.class);
         intent.putExtra(STEP_KEY, Integer.parseInt(((TextView)findViewById(R.id.current_step_view)).getText().toString()));
+        this.fitnessService.stopListening();
+        this.fitnessService.removeObservers();
         startActivity(intent);
     }
 
@@ -95,14 +106,36 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (fitnessService != null)
-            fitnessService.updateStepCount(current_step_view);
 
         // show encouragement here
     }
 
     @Override
+    public void onRestart() {
+        super.onRestart();
+        if (this.fitnessService != null) {
+            FitnessObserver observer = new GoogleFitnessObserver(current_step_view,
+                    null, null, null, this);
+            this.fitnessService.registerObserver(observer);
+            this.fitnessService.startListening();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (this.fitnessService != null) {
+            this.fitnessService.removeObservers();
+            this.fitnessService.stopListening();
+        }
+    }
+
+    @Override
     public void onDestroy() {
+        if( this.fitnessService != null) {
+            this.fitnessService.stopListening();
+            this.fitnessService.removeObservers();
+        }
         super.onDestroy();
     }
 
@@ -158,11 +191,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setUpFitnessService() {
-
-        current_step_view = findViewById(R.id.current_step_view);
-
         this.fitnessService = FitnessServiceFactory.create(GOOGLE_FITNESS, this);
         fitnessService.setup();
-        fitnessService.updateStepCount(current_step_view);
+        fitnessService.startListening();
     }
 }
