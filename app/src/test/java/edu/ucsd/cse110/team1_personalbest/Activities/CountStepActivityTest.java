@@ -1,12 +1,6 @@
 package edu.ucsd.cse110.team1_personalbest.Activities;
 
-<<<<<<< HEAD
-import static org.junit.Assert.*;
 
-public class CountStepActivityTest {
-
-}
-=======
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -90,4 +84,4 @@ public class CountStepActivityTest {
         Assert.assertNotNull(obsCaptor.getValue());
     }
 }
->>>>>>> d6d50c9ab4467e211dd616742f69632f3fe871a3
+
