@@ -3,6 +3,9 @@ package edu.ucsd.cse110.team1_personalbest.Login.Adapters;
 import android.app.Activity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.DataType;
 
@@ -43,6 +46,11 @@ public class GoogleLogInService implements LoginService {
         }
 
         // check if an account has been signed into
-        return GoogleSignIn.getLastSignedInAccount(this.activity) == null;
+        return GoogleSignIn.getLastSignedInAccount(this.activity) != null;
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return GoogleSignIn.getLastSignedInAccount(this.activity) != null;
     }
 }

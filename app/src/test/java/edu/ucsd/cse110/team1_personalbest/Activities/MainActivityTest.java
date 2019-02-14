@@ -1,12 +1,5 @@
 package edu.ucsd.cse110.team1_personalbest.Activities;
 
-<<<<<<< HEAD
-import static org.junit.Assert.*;
-
-public class CountStepActivityTest {
-
-}
-=======
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -23,7 +16,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.android.internal.LocalPermissionGranter;
-import org.robolectric.shadows.ShadowToast;
 
 
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
@@ -33,12 +25,12 @@ import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
 
 @RunWith(RobolectricTestRunner.class)
-public class CountStepActivityTest {
-    private CountStepActivity activity;
+public class MainActivityTest {
+    private MainActivity activity;
     private static final String TEST_SERVICE = "TEST_SERVICE";
     private FitnessService service;
     private LoginService loginService;
-    private ActivityController<CountStepActivity> cont;
+    private ActivityController<MainActivity> cont;
 
     @Before
     public void setUp() throws Exception {
@@ -63,25 +55,23 @@ public class CountStepActivityTest {
         });
 
 
-        Intent intent = new Intent(RuntimeEnvironment.application, CountStepActivity.class);
-        cont = Robolectric.buildActivity(CountStepActivity.class, intent);
+        Intent intent = new Intent(RuntimeEnvironment.application, MainActivity.class);
+        cont = Robolectric.buildActivity(MainActivity.class, intent);
         activity = cont.get();
         activity.setKeys(TEST_SERVICE, TEST_SERVICE);
     }
 
     @Test
     public void loginFailed() {
-        Mockito.when(this.loginService.isLoggedIn()).thenReturn(false);
+        Mockito.when(this.loginService.login()).thenReturn(false);
         cont.create();
-        Mockito.verify(this.loginService).isLoggedIn();
+        Mockito.verify(this.loginService).login();
         Mockito.verify(this.service, Mockito.never()).setup();
-        Assert.assertEquals("No google account found", ShadowToast.getTextOfLatestToast());
-        Assert.assertTrue(this.activity.isFinishing());
     }
 
     @Test
     public void loginSuccess() {
-        Mockito.when(this.loginService.isLoggedIn()).thenReturn(true);
+        Mockito.when(this.loginService.login()).thenReturn(true);
         ArgumentCaptor<FitnessObserver> obsCaptor = ArgumentCaptor.forClass(FitnessObserver.class);
         cont.create();
         Mockito.verify(this.service).registerObserver(obsCaptor.capture());
@@ -90,4 +80,3 @@ public class CountStepActivityTest {
         Assert.assertNotNull(obsCaptor.getValue());
     }
 }
->>>>>>> d6d50c9ab4467e211dd616742f69632f3fe871a3
