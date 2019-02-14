@@ -1,42 +1,67 @@
 package edu.ucsd.cse110.team1_personalbest.Fitness.Adapters;
 
 import android.app.Activity;
+import android.content.IntentSender;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
+import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
+import com.google.android.gms.fitness.data.Device;
 import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.data.Session;
 import com.google.android.gms.fitness.data.Value;
+import com.google.android.gms.fitness.request.DataSourcesRequest;
 import com.google.android.gms.fitness.request.OnDataPointListener;
 import com.google.android.gms.fitness.request.SensorRequest;
 import com.google.android.gms.fitness.request.SessionReadRequest;
+import com.google.android.gms.fitness.result.DataSourcesResult;
 import com.google.android.gms.fitness.result.SessionReadResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import edu.ucsd.cse110.team1_personalbest.Activities.CountStepActivity;
+import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
+import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Objects.SessionData;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Objects.Steps;
+import edu.ucsd.cse110.team1_personalbest.R;
 
 
 /**
  * An implementation of {@link FitnessService} for the google fit api.
  */
-public class GoogleFitAdapter implements FitnessService {
+public class GoogleFitAdapter implements FitnessService,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     // permissions for gfit api
     private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(this)
@@ -44,22 +69,22 @@ public class GoogleFitAdapter implements FitnessService {
     private final String TAG = "GoogleFitAdapter";
 
     private Activity activity;
-    private String currentSessionName;
-
-    private Session session;
-    private Long sessionStartTime;
 
     private GoogleSignInAccount googleAccount;
-    private OnDataPointListener mListener;
+    private GoogleApiClient mClient;
+    private  List<FitnessObserver> observers;
+
+    private int initialNumSteps;
+
+    private static final String START_TIME = "START_TIME";
+
     /**
      * Constructs an instance of the adapter for the given activity
      */
-    public GoogleFitAdapter(final Activity activity) {
+    public GoogleFitAdapter(final Activity activity, final List<FitnessObserver> observers, int initialNumSteps) {
         this.activity = activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
+        this.observers = observers;
+        this.initialNumSteps = initialNumSteps;
     }
 
     @Override
@@ -95,126 +120,111 @@ public class GoogleFitAdapter implements FitnessService {
 
     }
 
-    /**
-     * Start recording steps.
-     */
-    private void startRecordingSteps() {
-        this.subscribeToDataType(DataType.TYPE_STEP_COUNT_CUMULATIVE);
-    }
-
-    /**
-     * Start a walk/run session
-     */
+    @Override
     public void startListening() {
 
         if (this.googleAccount == null) GoogleSignIn.getLastSignedInAccount(this.activity);
         if (this.googleAccount == null) return;
-        if (this.session != null) {
-            Toast.makeText(this.activity, "Activity already in progress", Toast.LENGTH_SHORT)
-                    .show();
-            return;
-        }
 
-        // subscribe to data
-        this.subscribeToDataType(DataType.AGGREGATE_STEP_COUNT_DELTA);
-        this.subscribeToDataType(DataType.TYPE_DISTANCE_DELTA);
-        this.subscribeToDataType(DataType.TYPE_ACTIVITY_SEGMENT);
-        this.subscribeToDataType(DataType.TYPE_SPEED);
-
-        this.sessionStartTime = new Date().getTime();
-        this.currentSessionName = "RUN_SESSION: " + sessionStartTime;
-        // start the session
-        this.session = new Session.Builder()
-                .setName(currentSessionName)
-                .setDescription("Run on: " + new Date().getTime())
-                .setIdentifier(currentSessionName)
-                .setStartTime(this.sessionStartTime, TimeUnit.MILLISECONDS)
+        this.mClient = new GoogleApiClient.Builder(this.activity)
+                .addApi(Fitness.SENSORS_API)
+                .addScope(new Scope(Scopes.FITNESS_BODY_READ_WRITE))
+                .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ_WRITE))
+                .addScope(new Scope(Scopes.FITNESS_LOCATION_READ))
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .build();
 
-        Task<Void> response = Fitness.getSessionsClient(this.activity, googleAccount)
-                .startSession(this.session)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
+        mClient.connect();
 
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
+        /* save start time */
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
+        final SharedPreferences.Editor editor = pref.edit();
+        editor.putLong(START_TIME, new Date().getTime());
+        editor.apply();
+
+        updateStepCount();
+        Fitness.SensorsApi.findDataSources(mClient, new DataSourcesRequest.Builder()
+                .setDataTypes(DataType.TYPE_DISTANCE_DELTA)
+                .setDataSourceTypes(DataSource.TYPE_RAW, DataSource.TYPE_DERIVED)
+                .build())
+                .setResultCallback(new ResultCallback<DataSourcesResult>() {
                     @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(activity, e.getMessage(), Toast.LENGTH_LONG).show();
+                    public void onResult(@NonNull DataSourcesResult dataSourcesResult) {
+                        for (DataSource dataSource : dataSourcesResult.getDataSources()) {
+                            Fitness.SensorsApi.add(mClient,
+                                    new SensorRequest.Builder()
+                                            .setDataSource(dataSource)
+                                            .setDataType(dataSource.getDataType())
+                                            .setSamplingRate(5, TimeUnit.SECONDS)
+                                            .build(),
+                                    new OnDataPointListener() {
+                                        @Override
+                                        public void onDataPoint(DataPoint dataPoint) {
+                                            String msg = "onDataPoint: ";
+                                            for (Field field : dataPoint.getDataType().getFields()) {
+                                                Value value = dataPoint.getValue(field);
+                                                switch (field.getName().toLowerCase()) {
+                                                    case "distance":
+                                                        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
+                                                        long timeElapsed = new Date().getTime() - pref.getLong(START_TIME, 0);
+                                                        notifyObservers(null, null, timeElapsed, value.asFloat());
+                                                        updateStepCount();
+                                                        break;
+                                                }
+
+                                            }
+
+                                        }
+                                    })
+                                    .setResultCallback(new ResultCallback<Status>() {
+                                        @Override
+                                        public void onResult(@NonNull Status status) {
+                                            if (status.isSuccess()) {
+
+                                            } else {
+                                                Toast.makeText(activity, "fail", Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
+
+                        }
                     }
                 });
+    }
 
+    @Override
+    public void stopListening() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putLong(START_TIME, 0);
+        editor.apply();
+        if (this.mClient != null && this.mClient.isConnected())
+            this.mClient.disconnect();
+    }
+
+    @Override
+    public void removeObservers() {
+        observers.clear();
+    }
+
+    @Override
+    public void registerObserver(FitnessObserver observer) {
+        observers.add(observer);
     }
 
     /**
-     * Stop a walk/run session
+     * Start recording steps.
      */
-    public void stopListening() {
-        this.session = null;
-        if (this.googleAccount == null) GoogleSignIn.getLastSignedInAccount(this.activity);
-        if (this.googleAccount == null) return;
-        Fitness.getSessionsClient(this.activity, googleAccount)
-                .stopSession(this.session.getIdentifier());
+    private void startRecordingSteps() {
+        this.subscribeToDataType(DataType.TYPE_STEP_COUNT_DELTA);
     }
-
-    public void updateSessionData(final SessionData sessionData) {
-        sessionData.setShouldUpdate(false);
-        if (this.session == null) return;
-        if (this.googleAccount == null) GoogleSignIn.getLastSignedInAccount(this.activity);
-        if (this.googleAccount == null) return;
-        if (this.sessionStartTime == null) this.sessionStartTime = new Date().getTime();
-
-        SessionReadRequest readRequest = new SessionReadRequest.Builder()
-                .setTimeInterval(this.sessionStartTime, new Date().getTime(), TimeUnit.MILLISECONDS)
-                .read(DataType.AGGREGATE_STEP_COUNT_DELTA)
-                .read(DataType.TYPE_SPEED)
-                .read(DataType.TYPE_DISTANCE_DELTA)
-                .read(DataType.TYPE_ACTIVITY_SEGMENT)
-                .setSessionName(currentSessionName)
-                .build();
-
-        Fitness.getSessionsClient(this.activity, this.googleAccount)
-                .readSession(readRequest)
-                .addOnSuccessListener(new OnSuccessListener<SessionReadResponse>() {
-                    @Override
-                    public void onSuccess(SessionReadResponse sessionReadResponse) {
-                        List<DataSet> data = sessionReadResponse.getDataSet(sessionReadResponse.getSessions().get(0));
-                        for (DataSet datum : data) {
-                            if (datum.isEmpty()) continue;
-                            DataPoint d = datum.getDataPoints().get(0);
-                            if (d.getValue(Field.FIELD_STEPS) != null)
-                                sessionData.setSteps(d.getValue(
-                                        Field.FIELD_STEPS).asInt());
-                            sessionData.setDistance(d.getValue(
-                                    Field.FIELD_DISTANCE).asFloat());
-                            sessionData.setDuration(Long.parseLong(d
-                                    .getValue(Field.FIELD_DURATION).asString()));
-                            sessionData.setSpeed(d.getValue(
-                                    Field.FIELD_SPEED).asFloat());
-
-                            }
-                        sessionData.setShouldUpdate(true);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(activity, "Failed to read data from session request",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
 
     /**
      * Reads the current daily step total, computed from midnight of the current day on the device's
      * current timezone.
      */
-    @Override
-    public void updateStepCount(final Steps steps) {
-        steps.setShouldUpdate(false);
+    private void updateStepCount() {
         if (this.googleAccount == null) GoogleSignIn.getLastSignedInAccount(this.activity);
         if (this.googleAccount == null) return;
         Fitness.getHistoryClient(activity, googleAccount)
@@ -225,10 +235,10 @@ public class GoogleFitAdapter implements FitnessService {
                             public void onSuccess(final DataSet dataSet) {
                                 Log.d(TAG, dataSet.toString());
                                 if(!dataSet.isEmpty()) {
-                                    steps.setSteps(dataSet.getDataPoints().get(0).getValue(
-                                            Field.FIELD_STEPS).asInt());
+                                    int value = dataSet.getDataPoints().get(0).getValue(
+                                            Field.FIELD_STEPS).asInt();
+                                    notifyObservers(value, value-initialNumSteps, null, null);
                                 }
-                                steps.setShouldUpdate(true);
                             }
                         })
                 .addOnFailureListener(
@@ -248,9 +258,9 @@ public class GoogleFitAdapter implements FitnessService {
         return GOOGLE_FIT_PERMISSIONS_REQUEST_CODE;
     }
 
-    private Task<Void> subscribeToDataType(final DataType dt) {
-        if(googleAccount == null) return null;
-        return Fitness.getRecordingClient(this.activity, this.googleAccount)
+    private void subscribeToDataType(final DataType dt) {
+        if(googleAccount == null) return;
+        Fitness.getRecordingClient(this.activity, this.googleAccount)
                 .subscribe(dt)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -266,5 +276,33 @@ public class GoogleFitAdapter implements FitnessService {
                         Log.i(TAG, "There was a problem subscribing.");
                     }
                 });
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Toast.makeText(activity, "suspended", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(activity, "failed " + connectionResult, Toast.LENGTH_LONG).show();
+        try {
+            connectionResult.startResolutionForResult(activity, 1);
+            this.activity.finish();
+        } catch (IntentSender.SendIntentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void notifyObservers(Integer numSteps, Integer deltaSteps, Long timeElapsed, Float distance) {
+        if(observers != null) {
+            for (FitnessObserver observer : observers) {
+                observer.update(numSteps, deltaSteps, timeElapsed, distance);
+            }
+        }
     }
 }
