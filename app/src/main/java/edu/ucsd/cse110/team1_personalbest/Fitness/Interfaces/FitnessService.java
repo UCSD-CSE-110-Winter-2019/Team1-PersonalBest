@@ -23,9 +23,10 @@ public interface FitnessService {
     /**
      * syncs step count with service.
      */
-    void updateStepCount(final TextView tv);
 
     /* sessions stuff */
-    void startListening(int initialNumSteps);
+    void startListening();
     void stopListening();
+    void removeObservers();
+    void registerObserver(FitnessObserver observer);
 }
