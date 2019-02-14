@@ -70,10 +70,11 @@ public class CountStepActivity extends AppCompatActivity {
 
         final LoginService loginService = LoginServiceFactory.create(GOOGLE_LOGIN, this);
 
-        if (loginService.login()) {
+        if (loginService.isLoggedIn()) {
             setUpFitnessService();
         } else {
             Toast.makeText(this,"No google account found", Toast.LENGTH_LONG).show();
+            this.finish();
         }
 
 
