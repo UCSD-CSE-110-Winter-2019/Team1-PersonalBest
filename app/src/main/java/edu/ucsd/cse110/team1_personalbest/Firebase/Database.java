@@ -96,7 +96,6 @@ public class Database extends AppCompatActivity implements Subject {
                         }
                     }
                 });
-
     }
 
     public void write(String fileName, JSONObject obj) {
@@ -112,7 +111,11 @@ public class Database extends AppCompatActivity implements Subject {
 
     public JSONObject read(String fileName) {
         try {
-            FileReader r = new FileReader(fileName);
+            File temp = new File(fileName);
+            if ( !temp.exists() ) {
+                return null;
+            }
+            FileReader r = new FileReader(temp);
             int i = 0;
             String line = "";
             while ( (i = r.read()) != -1 ) {

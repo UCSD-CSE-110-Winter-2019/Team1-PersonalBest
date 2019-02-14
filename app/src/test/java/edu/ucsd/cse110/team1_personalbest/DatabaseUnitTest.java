@@ -14,13 +14,14 @@ import java.util.Map;
 
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
 public class DatabaseUnitTest {
 
     private Database db;
     private static String FILENAME = "test.json";
-
+    private static String NOTEXIST = "dummy.json";
 
     @Before
     public void setup() {
@@ -48,6 +49,16 @@ public class DatabaseUnitTest {
         try {
             JSONObject obj = db.read(FILENAME);
             assertEquals(obj.toString(), "{\"test\":\"123\"}");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testNoFile() {
+        try {
+            JSONObject obj = db.read(NOTEXIST);
+            assertNull(obj);
         } catch (Exception e) {
             e.printStackTrace();
         }

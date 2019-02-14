@@ -5,15 +5,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
@@ -30,11 +37,14 @@ import static edu.ucsd.cse110.team1_personalbest.Activities.MainActivity.GOOGLE_
 public class CountStepActivity extends AppCompatActivity {
 
     public static final String TAG = "[CountStepActivity]";
+    private static final String FILENAME = "steps.json";
     private FitnessService service;
     private TextView current_daily_steps;
     private TextView delta_steps;
     private TextView speed;
     private TextView distance;
+    private Database db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +56,7 @@ public class CountStepActivity extends AppCompatActivity {
         delta_steps = findViewById(R.id.exercise_step_view);
         speed = findViewById(R.id.speed_view);
         distance = findViewById(R.id.distance_view);
-
+        db = new Database();
 
         LoginServiceFactory.put(GOOGLE_LOGIN, new LoginServiceFactory.BluePrint() {
             @Override
@@ -85,6 +95,21 @@ public class CountStepActivity extends AppCompatActivity {
                 if (service != null) {
                     service.stopListening();
                     service.removeObservers();
+                }
+                JSONObject steps = new JSONObject();
+                Date date = new Date();
+                DateFormat fmt = new SimpleDateFormat("yyyy/MM/dd");
+                Log.d(TAG, fmt.format(date));
+                int num_steps = 0;
+                try {
+                    JSONObject obj = db.read("test.json");
+                    if (obj != null ) {
+                        num_steps += (int)obj.get(fmt.format(date));
+                    }
+                    steps.put(fmt.format(date), num_steps);
+                    //db.write("test.json", steps);
+                } catch(Exception e) {
+                    e.printStackTrace();
                 }
                 finish();
             }

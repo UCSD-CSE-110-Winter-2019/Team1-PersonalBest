@@ -92,8 +92,10 @@ public class MainActivity extends AppCompatActivity {
     public void launchStepCountActivity() {
         Intent intent = new Intent(this, CountStepActivity.class);
         intent.putExtra(STEP_KEY, Integer.parseInt(((TextView)findViewById(R.id.current_step_view)).getText().toString()));
-        this.fitnessService.stopListening();
-        this.fitnessService.removeObservers();
+        if ( this.fitnessService != null ) {
+            this.fitnessService.stopListening();
+            this.fitnessService.removeObservers();
+        }
         startActivity(intent);
     }
 
