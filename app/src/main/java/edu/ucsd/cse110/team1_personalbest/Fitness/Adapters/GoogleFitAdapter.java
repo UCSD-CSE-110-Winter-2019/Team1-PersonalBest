@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -25,35 +25,24 @@ import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.DataSource;
 import com.google.android.gms.fitness.data.DataType;
-import com.google.android.gms.fitness.data.Device;
 import com.google.android.gms.fitness.data.Field;
-import com.google.android.gms.fitness.data.Session;
 import com.google.android.gms.fitness.data.Value;
 import com.google.android.gms.fitness.request.DataSourcesRequest;
 import com.google.android.gms.fitness.request.OnDataPointListener;
 import com.google.android.gms.fitness.request.SensorRequest;
-import com.google.android.gms.fitness.request.SessionReadRequest;
 import com.google.android.gms.fitness.result.DataSourcesResult;
-import com.google.android.gms.fitness.result.SessionReadResponse;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
+
 import java.util.concurrent.TimeUnit;
 
-import edu.ucsd.cse110.team1_personalbest.Activities.CountStepActivity;
-import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
+
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
-import edu.ucsd.cse110.team1_personalbest.Fitness.Objects.SessionData;
-import edu.ucsd.cse110.team1_personalbest.Fitness.Objects.Steps;
 import edu.ucsd.cse110.team1_personalbest.R;
 
 
@@ -81,9 +70,9 @@ public class GoogleFitAdapter implements FitnessService,
     /**
      * Constructs an instance of the adapter for the given activity
      */
-    public GoogleFitAdapter(final Activity activity, final List<FitnessObserver> observers, int initialNumSteps) {
+    public GoogleFitAdapter(final Activity activity, int initialNumSteps) {
         this.activity = activity;
-        this.observers = observers;
+        this.observers = new ArrayList<>();
         this.initialNumSteps = initialNumSteps;
     }
 
@@ -205,12 +194,12 @@ public class GoogleFitAdapter implements FitnessService,
 
     @Override
     public void removeObservers() {
-        observers.clear();
+        if (observers != null) observers.clear();
     }
 
     @Override
     public void registerObserver(FitnessObserver observer) {
-        observers.add(observer);
+        if (observers != null) observers.add(observer);
     }
 
     /**

@@ -2,13 +2,11 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +23,6 @@ import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
-import edu.ucsd.cse110.team1_personalbest.Fitness.Objects.SessionData;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Observers.GoogleFitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Login.Adapters.GoogleLogInService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
@@ -44,6 +41,9 @@ public class CountStepActivity extends AppCompatActivity {
     private TextView speed;
     private TextView distance;
     private Database db;
+
+    private String login_key = GOOGLE_LOGIN;
+    private String fitness_key = TAG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,20 +65,15 @@ public class CountStepActivity extends AppCompatActivity {
             }
         });
 
-        FitnessObserver observer = new GoogleFitnessObserver(current_daily_steps, delta_steps,
-                speed, distance, this);
-        final List<FitnessObserver> observers = new ArrayList<>();
-        observers.add(observer);
-
         FitnessServiceFactory.put(TAG, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(Activity activity) {
-                return new GoogleFitAdapter(activity, observers,
+                return new GoogleFitAdapter(activity,
                         getIntent().getIntExtra(MainActivity.STEP_KEY, 0));
             }
         });
 
-        final LoginService loginService = LoginServiceFactory.create(GOOGLE_LOGIN, this);
+        final LoginService loginService = LoginServiceFactory.create(login_key, this);
 
         if (loginService.isLoggedIn()) {
             setUpFitnessService();
@@ -136,13 +131,14 @@ public class CountStepActivity extends AppCompatActivity {
 
 
     public void setUpFitnessService() {
-        service = FitnessServiceFactory.create(TAG, this);
-        service.setup();
-
-//        int initialSteps = getIntent().getIntExtra(MainActivity.STEP_KEY, 0);
-//        ((TextView)findViewById(R.id.total_daily_step_view)).setText(Integer.toString(initialSteps));
-
-        service.startListening();
+        service = FitnessServiceFactory.create(fitness_key, this);
+        FitnessObserver observer = new GoogleFitnessObserver(current_daily_steps, delta_steps,
+                speed, distance, this);
+        if (this.service != null) {
+            service.registerObserver(observer);
+            service.setup();
+            service.startListening();
+        }
     }
 
     @Override
@@ -163,6 +159,11 @@ public class CountStepActivity extends AppCompatActivity {
             this.service.removeObservers();
             this.service.stopListening();
         }
+    }
+
+    public void setKeys(String login_key, String fitness_key) {
+        this.fitness_key = fitness_key;
+        this.login_key = login_key;
     }
 
 }

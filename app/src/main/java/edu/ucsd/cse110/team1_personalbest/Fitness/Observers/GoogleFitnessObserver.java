@@ -2,7 +2,6 @@ package edu.ucsd.cse110.team1_personalbest.Fitness.Observers;
 
 import android.content.Context;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Locale;
 

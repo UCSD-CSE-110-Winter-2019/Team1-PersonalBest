@@ -34,6 +34,7 @@ public class FitnessServiceFactory {
      */
     public static FitnessService create(final String key, final Activity activity) {
         Log.i(TAG, String.format("creating FitnessService with key %s", key));
+        if (blueprints.get(key) == null) return null;
         return blueprints.get(key).create(activity);
     }
 

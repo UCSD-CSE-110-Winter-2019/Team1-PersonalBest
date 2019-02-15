@@ -10,21 +10,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
-import edu.ucsd.cse110.team1_personalbest.Fitness.Objects.Steps;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Observers.GoogleFitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Login.Adapters.GoogleLogInService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
 import edu.ucsd.cse110.team1_personalbest.Permissions;
 import edu.ucsd.cse110.team1_personalbest.R;
-import edu.ucsd.cse110.team1_personalbest.SetGoalOptionActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,21 +30,24 @@ public class MainActivity extends AppCompatActivity {
     private FitnessService fitnessService;
     private TextView current_step_view;
 
+    private String login_key;
+    private String fitness_key;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (login_key == null) login_key = GOOGLE_LOGIN;
+        if (fitness_key == null) fitness_key = GOOGLE_FITNESS;
+
         Permissions.requestPermissions(this);
         current_step_view = findViewById(R.id.current_step_view);
-        FitnessObserver observer = new GoogleFitnessObserver(current_step_view, null, null, null, this);
-        final List<FitnessObserver> observers = new ArrayList<>();
-        observers.add(observer);
 
         FitnessServiceFactory.put(GOOGLE_FITNESS, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(Activity activity) {
-                return new GoogleFitAdapter(activity, observers, 0);
+                return new GoogleFitAdapter(activity, 0);
             }
         });
 
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final LoginService loginService = LoginServiceFactory.create(GOOGLE_LOGIN, this);
+        final LoginService loginService = LoginServiceFactory.create(login_key, this);
 
         if (loginService.login()) {
             setUpFitnessService();
@@ -193,8 +192,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setUpFitnessService() {
-        this.fitnessService = FitnessServiceFactory.create(GOOGLE_FITNESS, this);
-        fitnessService.setup();
-        fitnessService.startListening();
+        FitnessObserver observer = new GoogleFitnessObserver(current_step_view, null, null, null, this);
+        this.fitnessService = FitnessServiceFactory.create(fitness_key, this);
+        if (this.fitnessService !=  null) {
+            fitnessService.registerObserver(observer);
+            fitnessService.setup();
+            fitnessService.startListening();
+        }
+    }
+
+    public void setKeys(String login_key, String fitness_key) {
+        this.login_key = login_key;
+        this.fitness_key = fitness_key;
     }
 }
