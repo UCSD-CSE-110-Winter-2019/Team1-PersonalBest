@@ -21,6 +21,9 @@ import java.util.Date;
 import java.util.HashMap;
 
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
+import edu.ucsd.cse110.team1_personalbest.Firebase.IDatabase;
+import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
@@ -45,6 +48,9 @@ public class CountStepActivity extends AppCompatActivity {
 
     private String login_key = GOOGLE_LOGIN;
     private String fitness_key = TAG;
+
+    /* For tes*/
+    IDataObject data = new StepDataObject(0,0,0,"day1");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +97,11 @@ public class CountStepActivity extends AppCompatActivity {
                     service.stopListening();
                     service.removeObservers();
                 }
+
+
+                String text_current_step = current_daily_steps.getText().toString();
+                int currentSteps = Integer.parseInt(text_current_step);
+                //int previousSteps = data.getPreviousStepGoal();
                 finish();
             }
         });
