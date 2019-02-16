@@ -62,7 +62,7 @@ public class DatabaseTest {
         assertEquals(obj.getDailyStepCount(), result.getDailyStepCount());
         assertEquals(obj.getDailyIntentionalStepCount(), result.getDailyIntentionalStepCount());
         assertEquals(obj.getDailyStepGoal(), result.getDailyStepGoal());
-        assertEquals(obj1.getDate(), result1.getDate());
+        assertEquals(obj.getDate(), result.getDate());
         assertEquals(obj1.getDailyStepCount(), result1.getDailyStepCount());
         assertEquals(obj1.getDailyIntentionalStepCount(), result1.getDailyIntentionalStepCount());
         assertEquals(obj1.getDailyStepGoal(), result1.getDailyStepGoal());
@@ -79,6 +79,14 @@ public class DatabaseTest {
         result = db.readDataObject("2/16/2019");
         assertEquals(result.getDailyStepGoal(), 100);
         assertEquals(result.getDailyStepCount(), 5);
+    }
+
+    @Test
+    public void testWrongDate() {
+        IDataObject result = db.readDataObject("WRONG_DATE");
+        assertEquals(result.getDailyStepCount(), 0);
+        assertEquals(result.getDailyIntentionalStepCount(), 0);
+        assertEquals(result.getDailyStepGoal(), 0);
     }
 
 }
