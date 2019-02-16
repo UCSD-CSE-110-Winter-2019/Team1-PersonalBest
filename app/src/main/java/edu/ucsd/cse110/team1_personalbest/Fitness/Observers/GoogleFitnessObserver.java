@@ -49,6 +49,7 @@ public class GoogleFitnessObserver implements FitnessObserver {
         if(timeElapsed != null && this.speed != null && deltaDistance !=null && this.distance != null) {
             float curDistance = Float.parseFloat(this.distance.getText().toString());
             float newDistance = deltaDistance + curDistance;
+            newDistance *= 0.000621371; // convert to miles
 
             double newSpeed = 0;
             if (timeElapsed > 0) {
@@ -61,8 +62,8 @@ public class GoogleFitnessObserver implements FitnessObserver {
                     .toSeconds(timeElapsed - TimeUnit.HOURS.toMillis(hours) - TimeUnit.MINUTES.toMillis(minutes));
 
             this.timeElapsed.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
-            this.speed.setText(String.format(Locale.ENGLISH, "%.2f", newSpeed));
-            this.distance.setText(String.format(Locale.ENGLISH, "%.2f", newDistance));
+            this.speed.setText(String.format(Locale.ENGLISH, "%.3f", newSpeed));
+            this.distance.setText(String.format(Locale.ENGLISH, "%.3f", newDistance));
         }
 
         // TODO refactor this to use simple IDatabase call
