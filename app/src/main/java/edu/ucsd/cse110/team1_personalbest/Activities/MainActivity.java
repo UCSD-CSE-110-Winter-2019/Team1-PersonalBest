@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final TextView stepCount = findViewById(R.id.current_step_view);
         // TODO add deamon to do this im just hijacking this button for now
         Button btnViewHist = findViewById(R.id.buttonHistory);
 
@@ -91,8 +90,10 @@ public class MainActivity extends AppCompatActivity {
     public void launchStepCountActivity() {
         Intent intent = new Intent(this, CountStepActivity.class);
         intent.putExtra(STEP_KEY, Integer.parseInt(((TextView)findViewById(R.id.current_step_view)).getText().toString()));
-        this.fitnessService.stopListening();
-        this.fitnessService.removeObservers();
+        if ( this.fitnessService != null ) {
+            this.fitnessService.stopListening();
+            this.fitnessService.removeObservers();
+        }
         startActivity(intent);
     }
 
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         if (this.fitnessService != null) {
             FitnessObserver observer = new GoogleFitnessObserver(current_step_view,
-                    null, null, null, this);
+                    null, null, null, null, this);
             this.fitnessService.registerObserver(observer);
             this.fitnessService.startListening();
         }
@@ -148,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setUpFitnessService() {
-        FitnessObserver observer = new GoogleFitnessObserver(current_step_view, null, null, null, this);
+        FitnessObserver observer = new GoogleFitnessObserver(current_step_view, null, null, null, null, this);
         this.fitnessService = FitnessServiceFactory.create(fitness_key, this);
         if (this.fitnessService !=  null) {
             fitnessService.registerObserver(observer);

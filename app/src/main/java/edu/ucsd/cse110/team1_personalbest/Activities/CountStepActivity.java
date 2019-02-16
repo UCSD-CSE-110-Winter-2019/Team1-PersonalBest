@@ -5,13 +5,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 
+import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
@@ -32,6 +41,7 @@ public class CountStepActivity extends AppCompatActivity {
     private TextView delta_steps;
     private TextView speed;
     private TextView distance;
+    private TextView time;
 
     private String login_key = GOOGLE_LOGIN;
     private String fitness_key = TAG;
@@ -48,7 +58,7 @@ public class CountStepActivity extends AppCompatActivity {
         delta_steps = findViewById(R.id.exercise_step_view);
         speed = findViewById(R.id.speed_view);
         distance = findViewById(R.id.distance_view);
-
+        time = findViewById(R.id.time_elapsed_view);
 
         LoginServiceFactory.put(GOOGLE_LOGIN, new LoginServiceFactory.BluePrint() {
             @Override
@@ -73,8 +83,6 @@ public class CountStepActivity extends AppCompatActivity {
             Toast.makeText(this,"No google account found", Toast.LENGTH_LONG).show();
             this.finish();
         }
-
-
 
         btnEndWalk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +118,7 @@ public class CountStepActivity extends AppCompatActivity {
     public void setUpFitnessService() {
         service = FitnessServiceFactory.create(fitness_key, this);
         FitnessObserver observer = new GoogleFitnessObserver(current_daily_steps, delta_steps,
-                speed, distance, this);
+                speed, distance, time, this);
         if (this.service != null) {
             service.registerObserver(observer);
             service.setup();
@@ -123,7 +131,7 @@ public class CountStepActivity extends AppCompatActivity {
         super.onRestart();
         if (this.service != null) {
             FitnessObserver observer = new GoogleFitnessObserver(this.current_daily_steps,
-                    this.delta_steps, this.speed, this.distance, this);
+                    this.delta_steps, this.speed, this.distance, this.time, this);
             this.service.registerObserver(observer);
             this.service.startListening();
         }
