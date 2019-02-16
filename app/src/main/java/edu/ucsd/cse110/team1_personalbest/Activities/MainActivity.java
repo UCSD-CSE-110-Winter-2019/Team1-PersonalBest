@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // TODO add deamon to do this im just hijacking this button for now
         Button btnViewHist = findViewById(R.id.buttonHistory);
 
         btnViewHist.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     public void launchStepCountActivity() {
         Intent intent = new Intent(this, CountStepActivity.class);
         intent.putExtra(STEP_KEY, Integer.parseInt(((TextView)findViewById(R.id.current_step_view)).getText().toString()));
+        GoogleFitAdapter.putSessionStartTime(this);
         if ( this.fitnessService != null ) {
             this.fitnessService.stopListening();
             this.fitnessService.removeObservers();

@@ -126,11 +126,6 @@ public class GoogleFitAdapter implements FitnessService,
 
         mClient.connect();
 
-        /* save start time */
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
-        final SharedPreferences.Editor editor = pref.edit();
-        editor.putLong(START_TIME, new Date().getTime());
-        editor.apply();
 
         updateStepCount();
         Fitness.SensorsApi.findDataSources(mClient, new DataSourcesRequest.Builder()
@@ -193,10 +188,6 @@ public class GoogleFitAdapter implements FitnessService,
 
     @Override
     public void stopListening() {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putLong(START_TIME, 0);
-        editor.apply();
         if (this.mClient != null && this.mClient.isConnected())
             this.mClient.disconnect();
     }
@@ -300,5 +291,13 @@ public class GoogleFitAdapter implements FitnessService,
                 observer.update(numSteps, deltaSteps, timeElapsed, distance);
             }
         }
+    }
+
+    public static void putSessionStartTime(final Activity activity) {
+        /* save start time */
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
+        final SharedPreferences.Editor editor = pref.edit();
+        editor.putLong(START_TIME, new Date().getTime());
+        editor.commit();
     }
 }
