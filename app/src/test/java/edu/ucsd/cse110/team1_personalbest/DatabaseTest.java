@@ -11,6 +11,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -114,6 +115,53 @@ public class DatabaseTest {
             date = cal.getTime();
             assertEquals(obj.getJSONObject(format.format(date)).getInt("steps"), 120);
         } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testGoal() {
+        try {
+            JSONObject obj = new JSONObject();
+            Calendar cal = Calendar.getInstance();
+            Date date = cal.getTime();
+            DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+            HashMap<String, Integer> map = new HashMap<>();
+            map.put("goal", 6000);
+            obj.put(format.format(date), map);
+            db.write(FILENAME, obj, appContext);
+
+            map.remove("goal");
+
+            obj = db.read(FILENAME, appContext);
+            if ( obj.getJSONObject(format.format(date)).has("goal") ) {
+                map.put("goal", obj.getJSONObject(format.format(date)).getInt("goal"));
+            }
+            map.put("steps", 100);
+            obj.put(format.format(date), map);
+            db.write(FILENAME, obj, appContext);
+            obj = db.read(FILENAME, appContext);
+            assertEquals(obj.getJSONObject(format.format(date)).getInt("goal"), 6000);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testMissingData() {
+        try {
+            JSONObject obj = new JSONObject();
+            Calendar cal = Calendar.getInstance();
+            Date date = cal.getTime();
+            DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+            HashMap<String, Integer> map = new HashMap<>();
+            map.put("steps", 120);
+            obj.put(format.format(date), map);
+            db.write(FILENAME, obj, appContext);
+
+            obj = db.read(FILENAME, appContext);
+            assertEquals(obj.getJSONObject(format.format(date)).has("goal"), false);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -4,6 +4,7 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -33,13 +34,11 @@ import static edu.ucsd.cse110.team1_personalbest.Activities.MainActivity.GOOGLE_
 public class CountStepActivity extends AppCompatActivity {
 
     public static final String TAG = "[CountStepActivity]";
-    private static final String FILENAME = "steps.json";
     private FitnessService service;
     private TextView current_daily_steps;
     private TextView delta_steps;
     private TextView speed;
     private TextView distance;
-    private Database db;
 
     private String login_key = GOOGLE_LOGIN;
     private String fitness_key = TAG;
@@ -55,7 +54,6 @@ public class CountStepActivity extends AppCompatActivity {
         delta_steps = findViewById(R.id.exercise_step_view);
         speed = findViewById(R.id.speed_view);
         distance = findViewById(R.id.distance_view);
-        db = new Database();
 
         LoginServiceFactory.put(GOOGLE_LOGIN, new LoginServiceFactory.BluePrint() {
             @Override
@@ -81,38 +79,12 @@ public class CountStepActivity extends AppCompatActivity {
             this.finish();
         }
 
-
-
         btnEndWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (service != null) {
                     service.stopListening();
                     service.removeObservers();
-                }
-                Calendar cal = Calendar.getInstance();
-                Date date = cal.getTime();
-                DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-                HashMap<String, Integer> map = new HashMap<>();
-                JSONObject obj = db.read(FILENAME, getApplicationContext());
-                map.put("steps", Integer.valueOf(delta_steps.getText().toString()));
-                if ( obj == null ) {
-                    obj = new JSONObject();
-                    try {
-                        obj.put(format.format(date), map);
-                        db.write(FILENAME, obj, getApplicationContext());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        int steps = obj.getJSONObject(format.format(date)).getInt("steps");
-                        map.put("steps", map.get("steps") + steps);
-                        obj.put(format.format(date), map);
-                        db.write(FILENAME, obj, getApplicationContext());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
                 finish();
             }

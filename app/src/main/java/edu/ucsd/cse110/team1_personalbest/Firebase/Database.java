@@ -132,7 +132,7 @@ public class Database extends AppCompatActivity implements Subject {
         return null;
     }
 
-    public static JSONObject stringToJSON(String t) throws JSONException {
+    private static JSONObject stringToJSON(String t) throws JSONException {
 
         HashMap<String, Object> map = new HashMap<>();
         t = t.replaceAll("=", ":");
@@ -157,5 +157,12 @@ public class Database extends AppCompatActivity implements Subject {
         }
 
         return jObject;
+    }
+
+    public void deleteFile(String fileName, Context c) {
+        File temp = new File(c.getFilesDir(), fileName);
+        if ( temp.exists() ) {
+            temp.delete();
+        }
     }
 }
