@@ -63,6 +63,7 @@ public class GoogleFitnessObserver implements FitnessObserver {
             this.distance.setText(String.format(Locale.ENGLISH, "%.2f", newDistance));
         }
 
+        // TODO refactor this to use simple IDatabase call
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");

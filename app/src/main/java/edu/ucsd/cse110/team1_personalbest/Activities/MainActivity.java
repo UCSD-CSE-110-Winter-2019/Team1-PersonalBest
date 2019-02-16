@@ -19,7 +19,7 @@ import edu.ucsd.cse110.team1_personalbest.Fitness.Observers.GoogleFitnessObserve
 import edu.ucsd.cse110.team1_personalbest.Login.Adapters.GoogleLogInService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
-import edu.ucsd.cse110.team1_personalbest.Permissions;
+import edu.ucsd.cse110.team1_personalbest.Login.Permissions;
 import edu.ucsd.cse110.team1_personalbest.R;
 
 public class MainActivity extends AppCompatActivity {

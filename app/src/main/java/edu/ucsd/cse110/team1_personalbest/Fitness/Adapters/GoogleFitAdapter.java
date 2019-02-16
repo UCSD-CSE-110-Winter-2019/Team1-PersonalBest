@@ -243,7 +243,6 @@ public class GoogleFitAdapter implements FitnessService,
                         new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull final Exception e) {
-                                // TODO add error handling
                                 Toast.makeText(activity, "FAIL", Toast.LENGTH_LONG).show();
                                 Log.d(TAG, "There was a problem getting the step count.", e);
                             }
@@ -269,7 +268,6 @@ public class GoogleFitAdapter implements FitnessService,
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // TODO add error handling
                         Toast.makeText(activity, "FAIL on datatype " + dt.getName() + e, Toast.LENGTH_LONG).show();
                         Log.i(TAG, "There was a problem subscribing.");
                     }

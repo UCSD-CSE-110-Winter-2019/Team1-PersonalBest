@@ -84,6 +84,7 @@ public class CountStepActivity extends AppCompatActivity {
         btnEndWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO store steps walked during this session (can be read from delta_steps TextView object)
                 if (service != null) {
                     service.stopListening();
                     service.removeObservers();
