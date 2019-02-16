@@ -35,7 +35,7 @@ public class GoogleFitnessObserver implements FitnessObserver {
         this.distance = distance;
         this.timeElapsed = timeElapsed;
         this.context = c;
-        db = new Database();
+        db = new Database(c);
     }
 
     public void update(Integer numSteps, Integer numStepsDelta, Long timeElapsed, Float deltaDistance) {
@@ -62,39 +62,5 @@ public class GoogleFitnessObserver implements FitnessObserver {
             this.speed.setText(String.format(Locale.ENGLISH, "%.2f", newSpeed));
             this.distance.setText(String.format(Locale.ENGLISH, "%.2f", newDistance));
         }
-
-        Calendar cal = Calendar.getInstance();
-        Date date = cal.getTime();
-        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-        HashMap<String, Integer> map = new HashMap<>();
-        JSONObject obj = db.read(FILENAME, context);
-        int steps = 0;
-        if ( numSteps != null ) {
-            steps = numSteps;
-        }
-        if ( obj == null ) {
-            obj = new JSONObject();
-            try {
-                map.put("steps", steps);
-                obj.put(format.format(date), map);
-                db.write(FILENAME, obj, context);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                steps += obj.getJSONObject(format.format(date)).getInt("steps");
-                if ( obj.getJSONObject(format.format(date)).has("goal") ) {
-                    map.put("goal", obj.getJSONObject(format.format(date)).getInt("goal"));
-                }
-                map.put("steps", steps);
-                obj.put(format.format(date), map);
-                db.write(FILENAME, obj, context);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        Log.d(TAG, "Wrote " + steps + " steps to file");
-        Log.d(TAG, "JSONObject: " + obj);
     }
 }

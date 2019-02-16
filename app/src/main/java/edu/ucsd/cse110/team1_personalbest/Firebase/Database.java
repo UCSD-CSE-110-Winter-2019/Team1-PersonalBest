@@ -23,16 +23,18 @@ import java.io.*;
 
 import org.json.*;
 
-public class Database extends AppCompatActivity implements Subject {
+public class Database extends AppCompatActivity implements Subject, IDatabase {
 
     private FirebaseFirestore db;
     private ArrayList<Observer> observers;
     private Map<String, Object> data;
+    private Context c;
 
-    public Database() {
+    public Database(Context c) {
         //FirebaseApp.initializeApp(this);
         //db = FirebaseFirestore.getInstance();
         observers = new ArrayList<>();
+        this.c = c;
     }
 
     public Database(FirebaseFirestore store) {
@@ -63,6 +65,7 @@ public class Database extends AppCompatActivity implements Subject {
     /**
      * Push to a document reference and insert a Map
      */
+    @Deprecated
     public void push(String document, Map map) {
         db.collection("calendar")
                 .document(document)
@@ -85,6 +88,7 @@ public class Database extends AppCompatActivity implements Subject {
      * Notifies observers with the Map data
      * @param document the document location to get the object
      */
+    @Deprecated
     public void get(String document) {
         db.collection("calendar")
                 .document(document)
@@ -101,7 +105,7 @@ public class Database extends AppCompatActivity implements Subject {
                 });
     }
 
-    public void write(String fileName, JSONObject obj, Context c) {
+    private void write(String fileName, JSONObject obj, Context c) {
         try {
             File temp = new File(c.getFilesDir(), fileName);
             PrintWriter pw = new PrintWriter(temp);
@@ -113,7 +117,7 @@ public class Database extends AppCompatActivity implements Subject {
         }
     }
 
-    public JSONObject read(String fileName, Context c) {
+    private JSONObject read(String fileName, Context c) {
         try {
             File temp = new File(c.getFilesDir(), fileName);
             if ( !temp.exists() ) {
@@ -164,5 +168,43 @@ public class Database extends AppCompatActivity implements Subject {
         if ( temp.exists() ) {
             temp.delete();
         }
+    }
+
+    @Override
+    public void putDataObject(IDataObject object) {
+        try {
+            JSONObject tmp = new JSONObject();
+            JSONObject child = new JSONObject();
+            child.put("goal", object.getDailyStepGoal());
+            child.put("steps", object.getDailyStepCount());
+            child.put("intentional_steps", object.getDailyIntentionalStepCount());
+            tmp.put(object.getDate(), child);
+            write("steps.json", tmp, c);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public IDataObject readDataObject(String date) {
+        try {
+            JSONObject tmp = read("steps.json", c);
+            int dailyStepCount = 0;
+            if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("steps") ) {
+                dailyStepCount = tmp.getJSONObject(date).getInt("steps");
+            }
+            int dailyIntentionalStepCount = 0;
+            if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("intentional_steps") ) {
+                dailyStepCount = tmp.getJSONObject(date).getInt("intentional_steps");
+            }
+            int dailyStepGoal = 0;
+            if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("goal") ) {
+                dailyStepCount = tmp.getJSONObject(date).getInt("goal");
+            }
+            return new StepDataObject(dailyStepCount, dailyIntentionalStepCount, dailyStepGoal, date);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

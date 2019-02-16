@@ -20,6 +20,8 @@ import java.util.HashMap;
 
 import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
+import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
@@ -34,7 +36,7 @@ public class DatabaseTest {
 
     @Before
     public void setup() {
-        db = new Database();
+        db = new Database(appContext);
     }
 
     @After
@@ -46,123 +48,14 @@ public class DatabaseTest {
     }
 
     @Test
-    public void testNoFile() {
-        try {
-            JSONObject obj = db.read(NOTEXIST, appContext);
-            assertNull(obj);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void testWriteAndReadObject() {
+        StepDataObject obj = new StepDataObject(0, 0,0, "2/16/2019");
+        db.putDataObject(obj);
+        IDataObject result = db.readDataObject("2/16/2019");
+        assertEquals(obj.getDailyStepCount(), result.getDailyStepCount());
+        assertEquals(obj.getDailyIntentionalStepCount(), result.getDailyIntentionalStepCount());
+        assertEquals(obj.getDailyStepGoal(), result.getDailyStepGoal());
+        assertEquals(obj.getDate(), result.getDate());
     }
 
-    @Test
-    public void testDate() {
-        try {
-            JSONObject obj = new JSONObject();
-            Date date = new Date();
-            DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-            HashMap<String, Integer> map = new HashMap<>();
-            map.put("steps", 120);
-            map.put("goal", 6000);
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testDoubleWrite() {
-        try {
-            JSONObject obj = new JSONObject();
-            Date date = new Date();
-            DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-            HashMap<String, Integer> map = new HashMap<>();
-            map.put("steps", 120);
-            map.put("goal", 6000);
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-            obj = db.read(FILENAME, appContext);
-            map.put("steps", 150 + obj.getJSONObject(format.format(date)).getInt("steps"));
-            map.put("goal", 6000);
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-            obj = db.read(FILENAME, appContext);
-            assertEquals(obj.getJSONObject(format.format(date)).getInt("steps"), 270);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testMultipleDays() {
-        try {
-            JSONObject obj = new JSONObject();
-            Calendar cal = Calendar.getInstance();
-            Date date = cal.getTime();
-            DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-            HashMap<String, Integer> map = new HashMap<>();
-            map.put("steps", 120);
-            map.put("goal", 6000);
-            obj.put(format.format(date), map);
-            cal.add(Calendar.DATE, -1);
-            date = cal.getTime();
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-            obj = db.read(FILENAME, appContext);
-            assertEquals(obj.getJSONObject(format.format(date)).getInt("steps"), 120);
-            cal.add(Calendar.DATE, 1);
-            date = cal.getTime();
-            assertEquals(obj.getJSONObject(format.format(date)).getInt("steps"), 120);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testGoal() {
-        try {
-            JSONObject obj = new JSONObject();
-            Calendar cal = Calendar.getInstance();
-            Date date = cal.getTime();
-            DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-            HashMap<String, Integer> map = new HashMap<>();
-            map.put("goal", 6000);
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-
-            map.remove("goal");
-
-            obj = db.read(FILENAME, appContext);
-            if ( obj.getJSONObject(format.format(date)).has("goal") ) {
-                map.put("goal", obj.getJSONObject(format.format(date)).getInt("goal"));
-            }
-            map.put("steps", 100);
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-            obj = db.read(FILENAME, appContext);
-            assertEquals(obj.getJSONObject(format.format(date)).getInt("goal"), 6000);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testMissingData() {
-        try {
-            JSONObject obj = new JSONObject();
-            Calendar cal = Calendar.getInstance();
-            Date date = cal.getTime();
-            DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-            HashMap<String, Integer> map = new HashMap<>();
-            map.put("steps", 120);
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-
-            obj = db.read(FILENAME, appContext);
-            assertEquals(obj.getJSONObject(format.format(date)).has("goal"), false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
