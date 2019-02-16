@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.team1_personalbest.Fitness;
 
+import android.content.Context;
 import android.widget.TextView;
 
 import junit.framework.Assert;
@@ -31,6 +32,8 @@ public class GoogleFitnessObserverTest {
     TextView distance;
     @Mock
     TextView speed;
+    @Mock
+    TextView time;
 
     @Captor
     ArgumentCaptor<String> stepCaptor;
@@ -40,6 +43,11 @@ public class GoogleFitnessObserverTest {
     ArgumentCaptor<String> speedCaptor;
     @Captor
     ArgumentCaptor<String> distanceCaptor;
+    @Captor
+    ArgumentCaptor<String> timeCaptor;
+
+    @Mock
+    Context context;
 
     Integer st;
     Integer dst;
@@ -53,7 +61,7 @@ public class GoogleFitnessObserverTest {
         dst = 0;
         elapsed = 1000L;
         dist = 2.0F;
-        this.observer = new GoogleFitnessObserver(steps, deltaSteps, speed, distance, null);
+        this.observer = new GoogleFitnessObserver(steps, deltaSteps, speed, distance, time, context);
         when(this.distance.getText()).thenReturn("0");
     }
 
@@ -64,6 +72,7 @@ public class GoogleFitnessObserverTest {
         verify(this.deltaSteps).setText(deltaStepCaptor.capture());
         verify(this.distance).setText(distanceCaptor.capture());
         verify(this.speed).setText(speedCaptor.capture());
+        verify(this.time).setText(timeCaptor.capture());
 
         Assert.assertEquals("1", stepCaptor.getValue());
         Assert.assertEquals("0", deltaStepCaptor.getValue());
@@ -78,6 +87,7 @@ public class GoogleFitnessObserverTest {
         verify(this.deltaSteps, never()).setText(deltaStepCaptor.capture());
         verify(this.distance, never()).setText(distanceCaptor.capture());
         verify(this.speed, never()).setText(speedCaptor.capture());
+        verify(this.time, never()).setText(timeCaptor.capture());
     }
 
     @Test
@@ -87,6 +97,7 @@ public class GoogleFitnessObserverTest {
         verify(this.deltaSteps).setText(deltaStepCaptor.capture());
         verify(this.distance).setText(distanceCaptor.capture());
         verify(this.speed).setText(speedCaptor.capture());
+        verify(this.time).setText(timeCaptor.capture());
 
         Assert.assertEquals("1", stepCaptor.getValue());
         Assert.assertEquals("0", deltaStepCaptor.getValue());

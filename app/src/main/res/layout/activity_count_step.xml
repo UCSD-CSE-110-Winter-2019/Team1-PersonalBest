@@ -73,6 +73,20 @@
         android:text="0"
         android:textSize="18sp" />
 
+    <TextView
+        android:id="@+id/time_elapsed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/time_elapsed"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/time_elapsed_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0" />
+
     <Button
         android:id="@+id/buttonEndWalk"
         android:layout_width="wrap_content"

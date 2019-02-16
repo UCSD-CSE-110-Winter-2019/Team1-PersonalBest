@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         if (this.fitnessService != null) {
             FitnessObserver observer = new GoogleFitnessObserver(current_step_view,
-                    null, null, null, this);
+                    null, null, null, null, this);
             this.fitnessService.registerObserver(observer);
             this.fitnessService.startListening();
         }
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setUpFitnessService() {
-        FitnessObserver observer = new GoogleFitnessObserver(current_step_view, null, null, null, this);
+        FitnessObserver observer = new GoogleFitnessObserver(current_step_view, null, null, null, null, this);
         this.fitnessService = FitnessServiceFactory.create(fitness_key, this);
         if (this.fitnessService !=  null) {
             fitnessService.registerObserver(observer);
