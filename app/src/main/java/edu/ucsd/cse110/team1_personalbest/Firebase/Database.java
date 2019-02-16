@@ -107,7 +107,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
 
     private void write(String fileName, JSONObject obj, Context c) {
         try {
-            File temp = new File(c.getFilesDir(), fileName);
+            File temp = new File(c.getFilesDir(), fileName.replaceAll("/", "-"));
             PrintWriter pw = new PrintWriter(temp);
             pw.write(obj.toString());
             pw.flush();
@@ -119,7 +119,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
 
     private JSONObject read(String fileName, Context c) {
         try {
-            File temp = new File(c.getFilesDir(), fileName);
+            File temp = new File(c.getFilesDir(), fileName.replaceAll("/", "-"));
             if ( !temp.exists() ) {
                 return null;
             }
@@ -148,6 +148,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
             String value = jObject.getString(key);
             value = value.replaceAll("\\{", "");
             value = value.replaceAll("\\}", "");
+            value = value.replaceAll("\"", "");
             if ( value.contains(" ") ) {
                 value = value.replaceAll(" ", "");
             }
@@ -179,7 +180,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
             child.put("steps", object.getDailyStepCount());
             child.put("intentional_steps", object.getDailyIntentionalStepCount());
             tmp.put(object.getDate(), child);
-            write("steps.json", tmp, c);
+            write(object.getDate(), tmp, c);
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -188,18 +189,18 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
     @Override
     public IDataObject readDataObject(String date) {
         try {
-            JSONObject tmp = read("steps.json", c);
-            int dailyStepCount = 0;
+            JSONObject tmp = read(date, c);
+            int dailyStepCount = -1;
             if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("steps") ) {
                 dailyStepCount = tmp.getJSONObject(date).getInt("steps");
             }
-            int dailyIntentionalStepCount = 0;
+            int dailyIntentionalStepCount = -1;
             if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("intentional_steps") ) {
-                dailyStepCount = tmp.getJSONObject(date).getInt("intentional_steps");
+                dailyIntentionalStepCount = tmp.getJSONObject(date).getInt("intentional_steps");
             }
-            int dailyStepGoal = 0;
+            int dailyStepGoal = -1;
             if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("goal") ) {
-                dailyStepCount = tmp.getJSONObject(date).getInt("goal");
+                dailyStepGoal = tmp.getJSONObject(date).getInt("goal");
             }
             return new StepDataObject(dailyStepCount, dailyIntentionalStepCount, dailyStepGoal, date);
         } catch(Exception e) {
