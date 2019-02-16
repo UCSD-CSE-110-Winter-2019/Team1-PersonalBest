@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
@@ -22,15 +23,17 @@ public class GoogleFitnessObserver implements FitnessObserver {
     private TextView deltaSteps;
     private TextView speed;
     private TextView distance;
+    private TextView timeElapsed;
     private Context context;
     private Database db;
     private String FILENAME = "steps.json";
 
-    public GoogleFitnessObserver(TextView steps, TextView deltaSteps, TextView speed, TextView distance, Context c) {
+    public GoogleFitnessObserver(TextView steps, TextView deltaSteps, TextView speed, TextView distance, TextView timeElapsed, Context c) {
         this.steps = steps;
         this.deltaSteps = deltaSteps;
         this.speed = speed;
         this.distance = distance;
+        this.timeElapsed = timeElapsed;
         this.context = c;
         db = new Database();
     }
@@ -50,9 +53,16 @@ public class GoogleFitnessObserver implements FitnessObserver {
                 newSpeed = newDistance / (timeElapsed / 1000);
             }
 
+            long hours = TimeUnit.MILLISECONDS.toHours(timeElapsed);
+            long minutes = TimeUnit.MILLISECONDS.toMinutes(timeElapsed - TimeUnit.HOURS.toMillis(hours));
+            long seconds = TimeUnit.MILLISECONDS
+                    .toSeconds(timeElapsed - TimeUnit.HOURS.toMillis(hours) - TimeUnit.MINUTES.toMillis(minutes));
+
+            this.timeElapsed.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
             this.speed.setText(String.format(Locale.ENGLISH, "%.2f", newSpeed));
             this.distance.setText(String.format(Locale.ENGLISH, "%.2f", newDistance));
         }
+
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");

@@ -156,7 +156,16 @@ public class GoogleFitAdapter implements FitnessService,
                                                 switch (field.getName().toLowerCase()) {
                                                     case "distance":
                                                         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
-                                                        long timeElapsed = new Date().getTime() - pref.getLong(START_TIME, 0);
+                                                        long startTime = pref.getLong(START_TIME, 0);
+                                                        long timeElapsed = 0;
+                                                        if (startTime != 0)
+                                                        {
+                                                            timeElapsed = new Date().getTime() - pref.getLong(START_TIME, 0);
+                                                        } else {
+                                                            SharedPreferences.Editor editor = pref.edit();
+                                                            editor.putLong(START_TIME, new Date().getTime());
+                                                            editor.apply();
+                                                        }
                                                         notifyObservers(null, null, timeElapsed, value.asFloat());
                                                         updateStepCount();
                                                         break;
