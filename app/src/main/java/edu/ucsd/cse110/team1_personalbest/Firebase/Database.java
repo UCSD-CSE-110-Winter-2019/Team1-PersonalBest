@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.team1_personalbest.Firebase;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -13,6 +14,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static android.support.constraint.Constraints.TAG;
@@ -27,8 +30,8 @@ public class Database extends AppCompatActivity implements Subject {
     private Map<String, Object> data;
 
     public Database() {
-        FirebaseApp.initializeApp(this);
-        db = FirebaseFirestore.getInstance();
+        //FirebaseApp.initializeApp(this);
+        //db = FirebaseFirestore.getInstance();
         observers = new ArrayList<>();
     }
 
@@ -98,9 +101,10 @@ public class Database extends AppCompatActivity implements Subject {
                 });
     }
 
-    public void write(String fileName, JSONObject obj) {
+    public void write(String fileName, JSONObject obj, Context c) {
         try {
-            PrintWriter pw = new PrintWriter(fileName);
+            File temp = new File(c.getFilesDir(), fileName);
+            PrintWriter pw = new PrintWriter(temp);
             pw.write(obj.toString());
             pw.flush();
             pw.close();
@@ -109,9 +113,9 @@ public class Database extends AppCompatActivity implements Subject {
         }
     }
 
-    public JSONObject read(String fileName) {
+    public JSONObject read(String fileName, Context c) {
         try {
-            File temp = new File(fileName);
+            File temp = new File(c.getFilesDir(), fileName);
             if ( !temp.exists() ) {
                 return null;
             }
@@ -120,12 +124,38 @@ public class Database extends AppCompatActivity implements Subject {
             String line = "";
             while ( (i = r.read()) != -1 ) {
                 line += (char) i;
-                System.out.print((char) i);
             }
-            return new JSONObject(line);
+            return stringToJSON(line);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static JSONObject stringToJSON(String t) throws JSONException {
+
+        HashMap<String, Object> map = new HashMap<>();
+        t = t.replaceAll("=", ":");
+        JSONObject jObject = new JSONObject(t);
+        Iterator<?> keys = jObject.keys();
+
+        while( keys.hasNext() ){
+            String key = (String)keys.next();
+            String value = jObject.getString(key);
+            value = value.replaceAll("\\{", "");
+            value = value.replaceAll("\\}", "");
+            if ( value.contains(" ") ) {
+                value = value.replaceAll(" ", "");
+            }
+            String[] split = value.split(",");
+            JSONObject child = new JSONObject();
+            for ( String s : split ) {
+                child.put(s.split(":")[0], s.split(":")[1]);
+            }
+            jObject.put(key, child);
+
+        }
+
+        return jObject;
     }
 }

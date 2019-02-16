@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final TextView stepCount = findViewById(R.id.current_step_view);
         // TODO add deamon to do this im just hijacking this button for now
         Button btnViewHist = findViewById(R.id.buttonHistory);
 
