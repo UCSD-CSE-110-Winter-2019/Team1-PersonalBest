@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private FitnessService fitnessService;
     private TextView current_step_view;
 
+    private static final String TAG = "[MainActivity]";
+
     private String login_key;
     private String fitness_key;
 
@@ -41,7 +44,9 @@ public class MainActivity extends AppCompatActivity {
         if (login_key == null) login_key = GOOGLE_LOGIN;
         if (fitness_key == null) fitness_key = GOOGLE_FITNESS;
 
+        Log.i(TAG, "Requesting permssions...");
         Permissions.requestPermissions(this);
+
         current_step_view = findViewById(R.id.current_step_view);
 
         FitnessServiceFactory.put(GOOGLE_FITNESS, new FitnessServiceFactory.BluePrint() {
@@ -60,7 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
         final LoginService loginService = LoginServiceFactory.create(login_key, this);
 
+        Log.i(TAG, "Attempting Login...");
         if (loginService.login()) {
+            Log.i(TAG, "Login Successful \n Attempting fitness service setup...");
             setUpFitnessService();
         }
 
@@ -87,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchStepCountActivity() {
+        Log.i(TAG, "Launching Step Count Activity...");
         Intent intent = new Intent(this, CountStepActivity.class);
         intent.putExtra(STEP_KEY, Integer.parseInt(((TextView)findViewById(R.id.current_step_view)).getText().toString()));
         GoogleFitAdapter.putSessionStartTime(this);
@@ -186,7 +194,10 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
         if (resultCode == Activity.RESULT_OK) {
+            Log.i(TAG, "Login Successfull");
             setUpFitnessService();
+        } else {
+            Log.e(TAG, "Login failed!! Status code: " + resultCode);
         }
     }
 

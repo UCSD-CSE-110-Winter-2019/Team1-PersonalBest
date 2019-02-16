@@ -39,6 +39,8 @@ public class GoogleFitnessObserver implements FitnessObserver {
     }
 
     public void update(Integer numSteps, Integer numStepsDelta, Long timeElapsed, Float deltaDistance) {
+        Log.d(TAG, "observer recieved data: " + numSteps + ", " + numStepsDelta + ", " +
+                timeElapsed + ", " + deltaDistance);
         if(numSteps != null && this.steps != null) {
             this.steps.setText(Integer.toString(numSteps));
         }
