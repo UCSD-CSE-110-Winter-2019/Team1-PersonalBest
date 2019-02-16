@@ -190,15 +190,15 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
     public IDataObject readDataObject(String date) {
         try {
             JSONObject tmp = read(date, c);
-            int dailyStepCount = -1;
+            int dailyStepCount = 0;
             if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("steps") ) {
                 dailyStepCount = tmp.getJSONObject(date).getInt("steps");
             }
-            int dailyIntentionalStepCount = -1;
+            int dailyIntentionalStepCount = 0;
             if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("intentional_steps") ) {
                 dailyIntentionalStepCount = tmp.getJSONObject(date).getInt("intentional_steps");
             }
-            int dailyStepGoal = -1;
+            int dailyStepGoal = 0;
             if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("goal") ) {
                 dailyStepGoal = tmp.getJSONObject(date).getInt("goal");
             }
