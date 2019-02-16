@@ -2,15 +2,23 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 
+import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
@@ -47,7 +55,6 @@ public class CountStepActivity extends AppCompatActivity {
         speed = findViewById(R.id.speed_view);
         distance = findViewById(R.id.distance_view);
 
-
         LoginServiceFactory.put(GOOGLE_LOGIN, new LoginServiceFactory.BluePrint() {
             @Override
             public LoginService create(Activity activity) {
@@ -71,8 +78,6 @@ public class CountStepActivity extends AppCompatActivity {
             Toast.makeText(this,"No google account found", Toast.LENGTH_LONG).show();
             this.finish();
         }
-
-
 
         btnEndWalk.setOnClickListener(new View.OnClickListener() {
             @Override

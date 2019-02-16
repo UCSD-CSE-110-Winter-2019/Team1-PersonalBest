@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final TextView stepCount = findViewById(R.id.current_step_view);
         // TODO add deamon to do this im just hijacking this button for now
         Button btnViewHist = findViewById(R.id.buttonHistory);
 
@@ -91,8 +90,10 @@ public class MainActivity extends AppCompatActivity {
     public void launchStepCountActivity() {
         Intent intent = new Intent(this, CountStepActivity.class);
         intent.putExtra(STEP_KEY, Integer.parseInt(((TextView)findViewById(R.id.current_step_view)).getText().toString()));
-        this.fitnessService.stopListening();
-        this.fitnessService.removeObservers();
+        if ( this.fitnessService != null ) {
+            this.fitnessService.stopListening();
+            this.fitnessService.removeObservers();
+        }
         startActivity(intent);
     }
 
