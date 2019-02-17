@@ -12,6 +12,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
+import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
@@ -38,10 +45,13 @@ public class MainActivity extends AppCompatActivity {
     private String login_key;
     private String fitness_key;
 
+    private Database db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        db = new Database(getApplicationContext());
 
         if (login_key == null) login_key = GOOGLE_LOGIN;
         if (fitness_key == null) fitness_key = GOOGLE_FITNESS;
@@ -125,7 +135,23 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        // show encouragement here
+        String steps = current_step_view.getText().toString();
+        int currSteps = Integer.parseInt(steps);
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        Date date = cal.getTime();
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        String preDate = format.format(date);
+        IDataObject result = db.readDataObject(preDate);
+
+        if (result != null) {
+            int previousSteps = result.getDailyStepCount();
+
+            if( currSteps >= 1.4 * previousSteps )
+                showEncouragement(previousSteps, currSteps);
+        }
+
     }
 
     @Override
@@ -158,15 +184,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /* Call this function to send an encouragement*/
-    public void showEncouragement(int previousSteps, int currentSteps, int goalSteps) {
+    public void showEncouragement(int previousSteps, int currentSteps) {
         /* When current steps is nearly doubled the previous steps*/
-        if(currentSteps >= 1.8 * previousSteps && currentSteps < 2 * previousSteps && currentSteps < goalSteps)
+        if(currentSteps >= 1.8 * previousSteps && currentSteps < 2 * previousSteps)
             showEncouragementForNearlyDouble();
 
-        if(currentSteps >= 1.4 * previousSteps && currentSteps < 1.8 * previousSteps  && currentSteps < goalSteps)
+        if(currentSteps >= 1.4 * previousSteps && currentSteps < 1.8 * previousSteps)
             showEncouragementNotDouble();
 
-        if(currentSteps >= 2 * previousSteps && currentSteps < goalSteps)
+        if(currentSteps >= 2 * previousSteps)
             showEncouragementDouble();
     }
 

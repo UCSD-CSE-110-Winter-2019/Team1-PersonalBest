@@ -1,8 +1,11 @@
 package edu.ucsd.cse110.team1_personalbest.Activities;
 
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.widget.Button;
+import android.widget.TextView;
 
 import junit.framework.Assert;
 
@@ -32,6 +35,7 @@ public class CountStepActivityTest {
     private FitnessService service;
     private LoginService loginService;
     private ActivityController<CountStepActivity> cont;
+
 
     @Before
     public void setUp() throws Exception {
@@ -83,3 +87,4 @@ public class CountStepActivityTest {
         Assert.assertNotNull(obsCaptor.getValue());
     }
 }
+

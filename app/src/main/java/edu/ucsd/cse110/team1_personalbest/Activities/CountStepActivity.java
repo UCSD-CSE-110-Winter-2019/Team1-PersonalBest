@@ -2,6 +2,8 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +22,9 @@ import java.util.Date;
 import java.util.HashMap;
 
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
+import edu.ucsd.cse110.team1_personalbest.Firebase.IDatabase;
+import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
@@ -49,6 +54,7 @@ public class CountStepActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_count_step);
 
         Button btnEndWalk = findViewById(R.id.buttonEndWalk);
@@ -95,6 +101,7 @@ public class CountStepActivity extends AppCompatActivity {
                     service.stopListening();
                     service.removeObservers();
                 }
+
                 finish();
             }
         });
@@ -163,5 +170,6 @@ public class CountStepActivity extends AppCompatActivity {
         this.fitness_key = fitness_key;
         this.login_key = login_key;
     }
+
 
 }
