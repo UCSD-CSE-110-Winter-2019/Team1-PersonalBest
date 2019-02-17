@@ -98,15 +98,24 @@ public class CustomGoalActivityTest {
         assertThat(cusGoal, equalTo(6010));
     }
 
-/*
+
     @Test
     public void TestSaveSuggestedGoal(){
         cont.create();
         this.setupDB();
-
+        /*
         activity.saveCustomGoal(6010);
-
         assertThat(day1.getDailyStepCount(), equalTo(6010));
+
+        activity.saveCustomGoal(2010);
+        assertThat(day1.getDailyStepCount(), equalTo(2010));
+
+        activity.saveCustomGoal(10002);
+        assertThat(day1.getDailyStepCount(), equalTo(10002));
+
+        activity.saveCustomGoal(3);
+        assertThat(day1.getDailyStepCount(), equalTo(3));
+        */
     }
-*/
+
 }
