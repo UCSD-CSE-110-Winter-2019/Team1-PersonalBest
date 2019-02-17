@@ -3,6 +3,7 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.ViewInteraction;
@@ -45,7 +46,7 @@ public class MainActivity_CountStepUITest {
 
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true,false);
 
     @Rule
     public GrantPermissionRule mGrantPermissionRule =
@@ -78,6 +79,7 @@ public class MainActivity_CountStepUITest {
         });
 
         activity.setKeys(TEST_SERVICE, TEST_SERVICE);
+        mActivityTestRule.launchActivity(new Intent());
     }
 
     @Test
