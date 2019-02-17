@@ -48,12 +48,12 @@ public class GoogleFitnessObserver implements FitnessObserver {
             this.deltaSteps.setText(Integer.toString(numStepsDelta));
         if(timeElapsed != null && this.speed != null && deltaDistance !=null && this.distance != null) {
             float curDistance = Float.parseFloat(this.distance.getText().toString());
+            deltaDistance *= 0.000621371F; // convert to miles
             float newDistance = deltaDistance + curDistance;
-            newDistance *= 0.000621371; // convert to miles
 
             double newSpeed = 0;
             if (timeElapsed > 0) {
-                newSpeed = newDistance / (timeElapsed / 1000);
+                newSpeed = (newDistance / (timeElapsed / 1000)) * 3600;
             }
 
             long hours = TimeUnit.MILLISECONDS.toHours(timeElapsed);
