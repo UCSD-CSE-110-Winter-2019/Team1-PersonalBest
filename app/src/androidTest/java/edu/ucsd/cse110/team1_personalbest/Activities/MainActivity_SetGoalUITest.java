@@ -3,6 +3,7 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.ViewInteraction;
@@ -45,7 +46,7 @@ public class MainActivity_SetGoalUITest {
     public static final String TEST_SERVICE = "TEST";
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Rule
     public GrantPermissionRule mGrantPermissionRule =
@@ -60,6 +61,7 @@ public class MainActivity_SetGoalUITest {
                 .getInstrumentation()
                 .getTargetContext()
                 .getApplicationContext();
+
         LoginServiceFactory.put(TEST_SERVICE, new LoginServiceFactory.BluePrint() {
             @Override
             public LoginService create(Activity activity) {
@@ -73,7 +75,9 @@ public class MainActivity_SetGoalUITest {
                 return new TestFitnessService();
             }
         });
+
         activity.setKeys(TEST_SERVICE, TEST_SERVICE);
+        mActivityTestRule.launchActivity(new Intent());
     }
 
     @Test
