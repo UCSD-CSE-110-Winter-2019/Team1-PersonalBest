@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "[MainActivity]";
 
-    private String login_key;
-    private String fitness_key;
+    public static String login_key;
+    public static String fitness_key;
 
     private Database db;
 
