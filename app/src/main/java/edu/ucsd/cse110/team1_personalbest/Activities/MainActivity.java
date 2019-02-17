@@ -124,14 +124,14 @@ public class MainActivity extends AppCompatActivity {
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String preDate = format.format(date);
-        IDataObject result = db.readDataObject(preDate);
-
+        //IDataObject result = db.readDataObject(preDate);
+        /*
         if (result != null) {
             int previousSteps = result.getDailyStepCount();
 
             if( currSteps >= 1.4 * previousSteps )
                 showEncouragement(previousSteps, currSteps);
-        }
+        }*/
 
     }
 
