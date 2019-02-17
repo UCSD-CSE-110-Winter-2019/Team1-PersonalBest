@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
         String preDate = format.format(date);
         IDataObject result = db.readDataObject(preDate);
 
+
         if (result != null) {
             int previousSteps = result.getDailyStepCount();
 
