@@ -2,6 +2,8 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 
 
 import android.app.Activity;
+import android.app.Application;
+import android.os.Bundle;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -52,22 +54,9 @@ public class MainActivity_CountStepUITest {
 
     @Before
     public void setup() {
-        mActivityTestRule.getActivity().setKeys(TEST_SERVICE, TEST_SERVICE);
-        LoginServiceFactory.put(TEST_SERVICE, new LoginServiceFactory.BluePrint() {
-            @Override
-            public LoginService create(Activity activity) {
-                return new TestLoginService();
-            }
-        });
-
-        FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(Activity activity) {
-                return new TestFitnessService();
-            }
-        });
-
+        monitorCurrentActivity();
     }
+
     @Test
     public void mainActivity_CountStepUITest() {
         // Added a sleep statement to match the app's execution delay.
@@ -291,5 +280,64 @@ public class MainActivity_CountStepUITest {
         public void registerObserver(FitnessObserver observer) {
 
         }
+    }
+    private void monitorCurrentActivity() {
+        mActivityTestRule.getActivity().getApplication()
+                .registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+                    @Override
+                    public void onActivityCreated(final Activity activity, final Bundle savedInstanceState) {
+                        if (activity.getClass() == MainActivity.class) {
+                            ((MainActivity)activity).setKeys(TEST_SERVICE, TEST_SERVICE);
+                            LoginServiceFactory.put(TEST_SERVICE, new LoginServiceFactory.BluePrint() {
+                                @Override
+                                public LoginService create(Activity activity) {
+                                    return new TestLoginService();
+                                }
+                            });
+
+                            FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
+                                @Override
+                                public FitnessService create(Activity activity) {
+                                    return new TestFitnessService();
+                                }
+                            });
+                        }
+
+                        if (activity.getClass() == CountStepActivity.class) {
+                            ((CountStepActivity)activity).setKeys(TEST_SERVICE, TEST_SERVICE);
+                            LoginServiceFactory.put(TEST_SERVICE, new LoginServiceFactory.BluePrint() {
+                                @Override
+                                public LoginService create(Activity activity) {
+                                    return new TestLoginService();
+                                }
+                            });
+
+                            FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
+                                @Override
+                                public FitnessService create(Activity activity) {
+                                    return new TestFitnessService();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onActivityStarted(final Activity activity) { }
+
+                    @Override
+                    public void onActivityResumed(final Activity activity) {
+                    }
+                    @Override
+                    public void onActivityPaused(final Activity activity) { }
+
+                    @Override
+                    public void onActivityStopped(final Activity activity) { }
+
+                    @Override
+                    public void onActivitySaveInstanceState(final Activity activity, final Bundle outState) { }
+
+                    @Override
+                    public void onActivityDestroyed(final Activity activity) { }
+                });
     }
 }
