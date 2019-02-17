@@ -49,9 +49,6 @@ public class CountStepActivity extends AppCompatActivity {
     private String login_key = GOOGLE_LOGIN;
     private String fitness_key = TAG;
 
-    /* For tes*/
-    IDataObject data = new StepDataObject(0,0,0,"day1");
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,10 +95,6 @@ public class CountStepActivity extends AppCompatActivity {
                     service.removeObservers();
                 }
 
-
-                String text_current_step = current_daily_steps.getText().toString();
-                int currentSteps = Integer.parseInt(text_current_step);
-                //int previousSteps = data.getPreviousStepGoal();
                 finish();
             }
         });
@@ -162,47 +155,5 @@ public class CountStepActivity extends AppCompatActivity {
         this.login_key = login_key;
     }
 
-    /* Call this function to send an encouragement*/
-    public void showEncouragement(int previousSteps, int currentSteps, int goalSteps) {
-        /* When current steps is nearly doubled the previous steps*/
-        if(currentSteps >= 1.8 * previousSteps && currentSteps < 2 * previousSteps && currentSteps < goalSteps)
-            showEncouragementForNearlyDouble();
-
-        if(currentSteps >= 1.4 * previousSteps && currentSteps < 1.8 * previousSteps  && currentSteps < goalSteps)
-            showEncouragementNotDouble();
-
-        if(currentSteps >= 2 * previousSteps && currentSteps < goalSteps)
-            showEncouragementDouble();
-    }
-
-    /* Show an encouragement when current steps nearly doubled previous steps*/
-    public void showEncouragementForNearlyDouble(){
-        Context context = getApplicationContext();
-        CharSequence text = "You've nearly doubled your steps. Keep up the good work!";
-        int duration = Toast.LENGTH_LONG;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
-
-    /* Show an encouragement when user significantly improve daily steps */
-    public void showEncouragementNotDouble(){
-        Context context = getApplicationContext();
-        CharSequence text = "Good job! You've made great prgroess!";
-        int duration = Toast.LENGTH_LONG;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
-
-    /* Show an encouragement when user double the step*/
-    public void showEncouragementDouble(){
-        Context context = getApplicationContext();
-        CharSequence text = "Excellent! You've doubled your steps!";
-        int duration = Toast.LENGTH_LONG;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
 
 }

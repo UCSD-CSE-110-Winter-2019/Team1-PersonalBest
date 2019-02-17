@@ -36,9 +36,6 @@ public class CountStepActivityTest {
     private LoginService loginService;
     private ActivityController<CountStepActivity> cont;
 
-    private TextView current_daily_steps;
-    private TextView previous_steps;
-    private Button btnEndWalk;
 
     @Before
     public void setUp() throws Exception {

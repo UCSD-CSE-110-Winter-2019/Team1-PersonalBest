@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
@@ -32,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String login_key;
     private String fitness_key;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +111,19 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        // show encouragement here
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        Date date = cal.getTime();
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        String preDate = format.format(date);
+
+        int previousSteps = 0;
+        String steps = current_step_view.getText().toString();
+        int currSteps = Integer.parseInt(steps);
+
+        if ( previousSteps != 0 )
+            if( currSteps >= 1.4 * previousSteps )
+                showEncouragement(previousSteps, currSteps);
     }
 
     @Override
@@ -161,5 +177,48 @@ public class MainActivity extends AppCompatActivity {
     public void setKeys(String login_key, String fitness_key) {
         this.login_key = login_key;
         this.fitness_key = fitness_key;
+    }
+
+    /* Call this function to send an encouragement*/
+    public void showEncouragement(int previousSteps, int currentSteps) {
+        /* When current steps is nearly doubled the previous steps*/
+        if(currentSteps >= 1.8 * previousSteps && currentSteps < 2 * previousSteps )
+            showEncouragementForNearlyDouble();
+
+        if(currentSteps >= 1.4 * previousSteps && currentSteps < 1.8 * previousSteps)
+            showEncouragementNotDouble();
+
+        if(currentSteps >= 2 * previousSteps)
+            showEncouragementDouble();
+    }
+
+    /* Show an encouragement when current steps nearly doubled previous steps*/
+    public void showEncouragementForNearlyDouble(){
+        Context context = getApplicationContext();
+        CharSequence text = "You've nearly doubled your steps. Keep up the good work!";
+        int duration = Toast.LENGTH_LONG;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
+    /* Show an encouragement when user significantly improve daily steps */
+    public void showEncouragementNotDouble(){
+        Context context = getApplicationContext();
+        CharSequence text = "Good job! You've made great prgroess!";
+        int duration = Toast.LENGTH_LONG;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
+    /* Show an encouragement when user double the step*/
+    public void showEncouragementDouble(){
+        Context context = getApplicationContext();
+        CharSequence text = "Excellent! You've doubled your steps!";
+        int duration = Toast.LENGTH_LONG;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 }
