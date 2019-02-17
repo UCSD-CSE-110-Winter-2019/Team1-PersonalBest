@@ -68,12 +68,9 @@ public class CustomGoalActivity extends AppCompatActivity {
 
                 int customGoal = getCustomGoal();
                 saveCustomGoal(customGoal);
-                //saveCustomGoal(customGoal, result);
                 startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
-
-
 
     }
 
@@ -82,25 +79,14 @@ public class CustomGoalActivity extends AppCompatActivity {
         return Integer.parseInt(newGoal.getText().toString());
     }
 
-    /*
-    public void saveCustomGoal(int cusGoal,IDataObject rul){
-
-        Calendar cal = Calendar.getInstance();
-        Date date = cal.getTime();
-        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-        String today = format.format(date);
-        IDataObject result = db.readDataObject(today);
-        rul.setDailyStepGoal(cusGoal);
-    }*/
-
     public void saveCustomGoal(int cusGoal){
-
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String today = format.format(date);
         IDataObject result = db.readDataObject(today);
         result.setDailyStepGoal(cusGoal);
+        db.putDataObject(result);
     }
 
     public void setKeys(String login_key, String fitness_key) {

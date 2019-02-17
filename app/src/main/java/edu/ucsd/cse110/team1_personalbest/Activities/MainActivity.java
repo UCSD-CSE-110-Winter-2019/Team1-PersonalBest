@@ -269,13 +269,11 @@ public class MainActivity extends AppCompatActivity {
         String today = format.format(date);
         IDataObject result = db.readDataObject(today);
 
-        stepGoal.setText(Integer.toString(result.getDailyStepGoal()));
-
-        if(currentGoal.equals("")){
-            stepGoal.setText("5000");
-
+        if(result.getDailyStepGoal() == 0){
             //store initial goal
+            stepGoal.setText("5000");
             result.setDailyStepGoal(5000);
+            db.putDataObject(result);
         }
         else{
             stepGoal.setText(Integer.toString(result.getDailyStepGoal()));

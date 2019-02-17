@@ -48,7 +48,8 @@ public class SetNewGoalActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveSuggestedGoal(newGoal);
-                startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                //startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
             }
         });
 
@@ -62,14 +63,14 @@ public class SetNewGoalActivity extends AppCompatActivity {
         btnCancelSetGoal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                //startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
             }
         });
 
     }
 
     public int getSuggestedGoal(){
-
 
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();
@@ -91,6 +92,7 @@ public class SetNewGoalActivity extends AppCompatActivity {
         IDataObject result = db.readDataObject(today);
 
         result.setDailyStepGoal(suggestedGoal);
+        db.putDataObject(result);
     }
 
     public void setKeys(String login_key, String fitness_key) {
