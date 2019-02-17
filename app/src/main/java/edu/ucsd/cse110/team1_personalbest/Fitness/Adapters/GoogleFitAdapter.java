@@ -43,7 +43,6 @@ import java.util.concurrent.TimeUnit;
 
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
-import edu.ucsd.cse110.team1_personalbest.R;
 
 
 /**
@@ -55,7 +54,7 @@ public class GoogleFitAdapter implements FitnessService,
     // permissions for gfit api
     private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(this)
             & 0xFFFF;
-    private final String TAG = "GoogleFitAdapter";
+    private static final String TAG = "[GoogleFitAdapter]";
 
     private Activity activity;
 
@@ -126,11 +125,6 @@ public class GoogleFitAdapter implements FitnessService,
 
         mClient.connect();
 
-        /* save start time */
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
-        final SharedPreferences.Editor editor = pref.edit();
-        editor.putLong(START_TIME, new Date().getTime());
-        editor.apply();
 
         updateStepCount();
         Fitness.SensorsApi.findDataSources(mClient, new DataSourcesRequest.Builder()
@@ -179,9 +173,9 @@ public class GoogleFitAdapter implements FitnessService,
                                         @Override
                                         public void onResult(@NonNull Status status) {
                                             if (status.isSuccess()) {
-
+                                                Log.i(TAG, "client connected.");
                                             } else {
-                                                Toast.makeText(activity, "fail", Toast.LENGTH_LONG).show();
+                                                Log.e(TAG, "Client Failed to connect");
                                             }
                                         }
                                     });
@@ -193,21 +187,19 @@ public class GoogleFitAdapter implements FitnessService,
 
     @Override
     public void stopListening() {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putLong(START_TIME, 0);
-        editor.apply();
         if (this.mClient != null && this.mClient.isConnected())
             this.mClient.disconnect();
     }
 
     @Override
     public void removeObservers() {
+        Log.d(TAG, "Clearing observers");
         if (observers != null) observers.clear();
     }
 
     @Override
     public void registerObserver(FitnessObserver observer) {
+        Log.d(TAG, "Registering observer");
         if (observers != null) observers.add(observer);
     }
 
@@ -215,6 +207,7 @@ public class GoogleFitAdapter implements FitnessService,
      * Start recording steps.
      */
     private void startRecordingSteps() {
+        Log.i(TAG, "Subscribing to steps");
         this.subscribeToDataType(DataType.TYPE_STEP_COUNT_DELTA);
     }
 
@@ -231,7 +224,7 @@ public class GoogleFitAdapter implements FitnessService,
                         new OnSuccessListener<DataSet>() {
                             @Override
                             public void onSuccess(final DataSet dataSet) {
-                                Log.d(TAG, dataSet.toString());
+                                Log.d(TAG, "Data request result: " + dataSet.toString());
                                 if(!dataSet.isEmpty()) {
                                     int value = dataSet.getDataPoints().get(0).getValue(
                                             Field.FIELD_STEPS).asInt();
@@ -243,9 +236,7 @@ public class GoogleFitAdapter implements FitnessService,
                         new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull final Exception e) {
-                                // TODO add error handling
-                                Toast.makeText(activity, "FAIL", Toast.LENGTH_LONG).show();
-                                Log.d(TAG, "There was a problem getting the step count.", e);
+                                Log.e(TAG, "There was a problem getting the step count.", e);
                             }
                         });
     }
@@ -269,8 +260,6 @@ public class GoogleFitAdapter implements FitnessService,
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // TODO add error handling
-                        Toast.makeText(activity, "FAIL on datatype " + dt.getName() + e, Toast.LENGTH_LONG).show();
                         Log.i(TAG, "There was a problem subscribing.");
                     }
                 });
@@ -278,29 +267,41 @@ public class GoogleFitAdapter implements FitnessService,
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.i(TAG, "service connected");
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Toast.makeText(activity, "suspended", Toast.LENGTH_LONG).show();
+        Log.d(TAG, "client connection lost");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(activity, "failed " + connectionResult, Toast.LENGTH_LONG).show();
+        Log.e(TAG, "Conection failed attempting resolution...");
         try {
             connectionResult.startResolutionForResult(activity, 1);
             this.activity.finish();
         } catch (IntentSender.SendIntentException e) {
+            Log.e(TAG, "Resolution attempt failed", e);
             e.printStackTrace();
         }
     }
 
     private void notifyObservers(Integer numSteps, Integer deltaSteps, Long timeElapsed, Float distance) {
         if(observers != null) {
+            Log.d(TAG, "notifiying observers");
             for (FitnessObserver observer : observers) {
                 observer.update(numSteps, deltaSteps, timeElapsed, distance);
             }
         }
+    }
+
+    public static void putSessionStartTime(final Activity activity) {
+        Log.d(TAG, "session started");
+        /* save start time */
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext());
+        final SharedPreferences.Editor editor = pref.edit();
+        editor.putLong(START_TIME, new Date().getTime());
+        editor.commit();
     }
 }
