@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.team1_personalbest.Activities;
 
 
+import android.app.Activity;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -14,10 +15,16 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
+import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
+import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
+import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
+import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
 import edu.ucsd.cse110.team1_personalbest.R;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -32,6 +39,8 @@ import static org.hamcrest.Matchers.allOf;
 @RunWith(AndroidJUnit4.class)
 public class MainActivity_SetGoalUITest {
 
+    public static final String TEST_SERVICE = "TEST";
+
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
@@ -42,6 +51,24 @@ public class MainActivity_SetGoalUITest {
                     "android.permission.ACCESS_COARSE_LOCATION",
                     "android.permission.INTERNET");
 
+    @Before
+    public void setup() {
+        mActivityTestRule.getActivity().setKeys(TEST_SERVICE, TEST_SERVICE);
+        LoginServiceFactory.put(TEST_SERVICE, new LoginServiceFactory.BluePrint() {
+            @Override
+            public LoginService create(Activity activity) {
+                return new TestLoginService();
+            }
+        });
+
+        FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
+            @Override
+            public FitnessService create(Activity activity) {
+                return new TestFitnessService();
+            }
+        });
+
+    }
     @Test
     public void mainActivity_SetGoalUITest() {
         // Added a sleep statement to match the app's execution delay.
@@ -52,6 +79,7 @@ public class MainActivity_SetGoalUITest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.setGoalMain), withText("Set New Goal"),
@@ -124,5 +152,51 @@ public class MainActivity_SetGoalUITest {
                         && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
+    }
+
+    private class TestLoginService implements LoginService {
+
+        @Override
+        public boolean login() {
+            return true;
+        }
+
+        @Override
+        public boolean isLoggedIn() {
+            return true;
+        }
+    }
+
+    private class TestFitnessService implements FitnessService {
+
+        @Override
+        public int getRequestCode() {
+            return 0;
+        }
+
+        @Override
+        public void setup() {
+
+        }
+
+        @Override
+        public void startListening() {
+
+        }
+
+        @Override
+        public void stopListening() {
+
+        }
+
+        @Override
+        public void removeObservers() {
+
+        }
+
+        @Override
+        public void registerObserver(FitnessObserver observer) {
+
+        }
     }
 }
