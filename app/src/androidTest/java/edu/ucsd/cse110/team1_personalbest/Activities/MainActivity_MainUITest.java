@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.team1_personalbest.Activities;
 
 
+import android.app.Activity;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -13,10 +14,15 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
+import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
+import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
+import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
 import edu.ucsd.cse110.team1_personalbest.R;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -25,6 +31,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static edu.ucsd.cse110.team1_personalbest.Activities.MainActivity_SetGoalUITest.TEST_SERVICE;
 import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
@@ -33,13 +40,17 @@ public class MainActivity_MainUITest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
-
     @Rule
     public GrantPermissionRule mGrantPermissionRule =
             GrantPermissionRule.grant(
                     "android.permission.ACCESS_FINE_LOCATION",
                     "android.permission.ACCESS_COARSE_LOCATION",
                     "android.permission.INTERNET");
+
+    @BeforeClass
+    public static void setup() {
+        MainActivity.TESTMODE = true;
+    }
 
     @Test
     public void mainActivity_MainUITest() {
@@ -151,4 +162,18 @@ public class MainActivity_MainUITest {
             }
         };
     }
+
+    private class TestLoginService implements LoginService {
+
+        @Override
+        public boolean login() {
+            return true;
+        }
+
+        @Override
+        public boolean isLoggedIn() {
+            return true;
+        }
+    }
+
 }

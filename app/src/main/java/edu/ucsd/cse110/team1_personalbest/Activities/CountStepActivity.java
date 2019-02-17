@@ -48,8 +48,6 @@ public class CountStepActivity extends AppCompatActivity {
     private TextView distance;
     private TextView time;
 
-    private String login_key = GOOGLE_LOGIN;
-    private String fitness_key = TAG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +78,7 @@ public class CountStepActivity extends AppCompatActivity {
             }
         });
 
-        final LoginService loginService = LoginServiceFactory.create(login_key, this);
+        final LoginService loginService = LoginServiceFactory.create(MainActivity.login_key, this);
 
         Log.i(TAG, "Checking login status");
         if (loginService.isLoggedIn()) {
@@ -136,7 +134,7 @@ public class CountStepActivity extends AppCompatActivity {
 
 
     public void setUpFitnessService() {
-        service = FitnessServiceFactory.create(fitness_key, this);
+        service = FitnessServiceFactory.create(MainActivity.fitness_key, this);
         FitnessObserver observer = new GoogleFitnessObserver(current_daily_steps, delta_steps,
                 speed, distance, time, this);
         if (this.service != null) {
@@ -167,8 +165,8 @@ public class CountStepActivity extends AppCompatActivity {
     }
 
     public void setKeys(String login_key, String fitness_key) {
-        this.fitness_key = fitness_key;
-        this.login_key = login_key;
+        MainActivity.fitness_key = fitness_key;
+        MainActivity.login_key = login_key;
     }
 
 
