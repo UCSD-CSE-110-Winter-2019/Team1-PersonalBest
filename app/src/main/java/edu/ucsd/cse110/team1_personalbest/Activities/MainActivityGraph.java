@@ -28,10 +28,10 @@ public class MainActivityGraph extends AppCompatActivity {
         weeklySteps.setText("Weekly Steps: " + weeklyStepsInt);
         BarGraphFactory factory = new BarGraphFactory();
         int[] intArray = {1000,2000,5000,7000,6000,5000,4000};
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd");
+        //DateFormat dateFormat = new SimpleDateFormat("MM/dd");
         GraphView graph = findViewById(R.id.weeklyBarGraph);
         factory.makeGraph(intArray,graph);
-        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getBaseContext(),dateFormat));
+        //graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getBaseContext(),dateFormat));
         Button backButton = findViewById(R.id.returnToMain);
 
         backButton.setOnClickListener(new View.OnClickListener(){

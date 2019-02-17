@@ -4,6 +4,7 @@ import android.graphics.Color;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.LegendRenderer;
 import com.jjoe64.graphview.ValueDependentColor;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
@@ -23,22 +24,16 @@ import edu.ucsd.cse110.team1_personalbest.R;
 
 public class BarGraphFactory implements GraphFactory {
     public GraphView makeGraph(int[] steps, GraphView graph) {
+        String[] days = new String[]{"Su", "M", "T", "W", "Th" , "F", "S"};
+        String[] lables = new String[7];
         Calendar calendar = Calendar.getInstance();
-        Date d1 = calendar.getTime();
-        calendar.add(Calendar.DATE, -1);
-        Date d2 = calendar.getTime();
-        calendar.add(Calendar.DATE, -1);
-        Date d3 = calendar.getTime();
-        calendar.add(Calendar.DATE, -1);
-        Date d4 = calendar.getTime();
-        calendar.add(Calendar.DATE, -1);
-        Date d5 = calendar.getTime();
+        int dayOfWeek = calendar.DAY_OF_WEEK;
+        dayOfWeek++;
+        for(int i = 0;i<7;i++){
+            lables[i] = days[dayOfWeek%7];
+            dayOfWeek++;
+        }
 
-        calendar.add(Calendar.DATE, -1);
-        Date d6 = calendar.getTime();
-        calendar.add(Calendar.DATE, -1);
-        Date d7 = calendar.getTime();
-        calendar.add(Calendar.DATE, -1);
 
 
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[]{
@@ -50,14 +45,15 @@ public class BarGraphFactory implements GraphFactory {
                 new DataPoint(6, steps[5]),
                 new DataPoint(7, steps[6])
         });
+
         LineGraphSeries<DataPoint> series2 = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(d7, steps[0]),
-                new DataPoint(d6, steps[1]),
-                new DataPoint(d5, steps[2]),
-                new DataPoint(d4, steps[3]),
-                new DataPoint(d3, steps[4]),
-                new DataPoint(d2, steps[5]),
-                new DataPoint(d1, steps[6])
+                new DataPoint(1, steps[0]),
+                new DataPoint(2, steps[1]),
+                new DataPoint(3, steps[2]),
+                new DataPoint(4, steps[3]),
+                new DataPoint(5, steps[4]),
+                new DataPoint(6, steps[5]),
+                new DataPoint(7, steps[6])
         });
         graph.addSeries(series);
         graph.addSeries(series2);
@@ -67,7 +63,7 @@ public class BarGraphFactory implements GraphFactory {
         //legendRenderer.setVisible(true);
         //viewport.setMaxX(7);
         //viewport.setMinX(0);
-        //viewport.setScalable(true);
+        graph.getViewport().setScalable(true);
 
 
         graph.getGridLabelRenderer().setNumHorizontalLabels(7); // only 4 because of the space
@@ -79,11 +75,11 @@ public class BarGraphFactory implements GraphFactory {
         graph.getGridLabelRenderer().setHumanRounding(false);
         labelRenderer.setHorizontalAxisTitle("Days of the Week");
         labelRenderer.setVerticalAxisTitle("Steps for the Day");
-        //StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
+        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
 
-        //staticLabelsFormatter.setHorizontalLabels(new String[]{"Su", "M", "T", "W", "Th" , "F", "S"});
+        staticLabelsFormatter.setHorizontalLabels(lables);
 
-        //graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
+        graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
 
 // styling
         series.setValueDependentColor(new ValueDependentColor<DataPoint>() {
@@ -96,8 +92,8 @@ public class BarGraphFactory implements GraphFactory {
                 return Color.GREEN;
             }
         });
-        series.setDataWidth(0.8);
-        series.setSpacing(10);
+        series.setDataWidth(0.6);
+        series.setSpacing(5);
         series.setDrawValuesOnTop(true);
         series.setValuesOnTopColor(Color.BLACK);
         return graph;
