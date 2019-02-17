@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
+import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 
 public class CustomGoalActivity extends AppCompatActivity {
 
@@ -52,13 +53,14 @@ public class CustomGoalActivity extends AppCompatActivity {
     public void saveCustomGoal(View view){
 
         EditText newGoal = (EditText) findViewById(R.id.customGoal);
-
-        SharedPreferences sharedPreferences = getSharedPreferences("new_goal", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putString("newGoal", newGoal.getText().toString());
-
-        editor.apply();
+/*
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        String today = format.format(date);
+        IDataObject result = db.readDataObject(today);
+        result.setDailyStepGoal(Integer.parseInt(newGoal.getText().toString()));
+*/
         startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
 

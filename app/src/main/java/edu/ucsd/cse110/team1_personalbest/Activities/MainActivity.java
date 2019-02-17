@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String GOOGLE_LOGIN = "GLOGIN";
     public static final String GOOGLE_FITNESS = "GFIT";
     public static final String STEP_KEY = "INITIAL_STEPS";
+    public static final String STEP_GOAL_KEY = "STEP_GOAL";
     private FitnessService fitnessService;
     private TextView current_step_view;
 
@@ -102,14 +103,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        setGoal();
+
         Button btnSetStepGoal = findViewById(R.id.setGoalMain);
         btnSetStepGoal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), SetNewGoalActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SetNewGoalActivity.class);
+                //intent.putExtra(STEP_GOAL_KEY, Integer.parseInt(((TextView)findViewById(R.id.step_goal_view)).getText().toString()));
                 startActivity(intent);
             }
         });
+
 
     }
 
@@ -250,5 +255,28 @@ public class MainActivity extends AppCompatActivity {
     public void setKeys(String login_key, String fitness_key) {
         this.login_key = login_key;
         this.fitness_key = fitness_key;
+    }
+
+    public void setGoal(){
+
+        TextView stepGoal = findViewById(R.id.step_goal_view);
+        String currentGoal = stepGoal.getText().toString();
+        Calendar cal = Calendar.getInstance();
+        //cal.add(Calendar.DATE, -1);
+        Date date = cal.getTime();
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        String today = format.format(date);
+        IDataObject result = db.readDataObject(today);
+
+        if(currentGoal.equals("")){
+            stepGoal.setText("5000");
+
+            //store initial goal
+            result.setDailyStepGoal(5000);
+            return;
+        }
+        else{
+            stepGoal.setText(Integer.toString(result.getDailyStepGoal()));
+        }
     }
 }

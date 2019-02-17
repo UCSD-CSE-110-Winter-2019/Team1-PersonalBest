@@ -34,6 +34,7 @@ public class SetGoalOptionActivity extends AppCompatActivity {
     }
 
     public void launchSetNewGoalActivity() {
+
         Intent intent = new Intent(this, SetNewGoalActivity.class);
         startActivity(intent);
     }

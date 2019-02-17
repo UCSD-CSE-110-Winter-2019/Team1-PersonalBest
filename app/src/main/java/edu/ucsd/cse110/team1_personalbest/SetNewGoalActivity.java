@@ -9,14 +9,38 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
+import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
+import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 
 public class SetNewGoalActivity extends AppCompatActivity {
+
+    private Database db;
+    private String FILENAME = "steps.json";
+    private Integer suggestedGoal;
+    IDataObject result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_new_goal);
+
+/*
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        String today = format.format(date);
+        IDataObject result = db.readDataObject(today);
+*/
+        int suggestedGoal = 5000;
+        TextView newSuggestedGoal = findViewById(R.id.newSuggestedGoal);
+        suggestedGoal += 500;
+        newSuggestedGoal.setText("5000");
 
         Button btnAcceptSuggestedGoal = (Button) findViewById(R.id.buttonAcceptSuggestedGoal);
         Button btnSetCustomGoal = (Button) findViewById(R.id.buttonSetCustomGoal);
@@ -46,8 +70,8 @@ public class SetNewGoalActivity extends AppCompatActivity {
     }
 
     public void saveSuggestedGoal(View view){
-
-        String newGoal = "";
+        db = new Database(getApplicationContext());
+        result.setDailyStepGoal(suggestedGoal);
         startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
 }
