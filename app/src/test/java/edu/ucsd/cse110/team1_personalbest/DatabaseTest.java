@@ -6,10 +6,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import java.io.File;
+import java.util.Calendar;
 
 import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
@@ -22,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 public class DatabaseTest {
 
     private Database db;
-    private static String[] FILENAMES = {"2/16/2019", "2/17/2019"};
+    private String[] FILENAMES = {"02/16/2019", "02/17/2019"};
     private Context appContext = Robolectric.setupActivity(MainActivity.class).getApplicationContext();
 
     @Before
@@ -42,9 +44,9 @@ public class DatabaseTest {
 
     @Test
     public void testWriteAndReadObject() {
-        StepDataObject obj = new StepDataObject(0, 0,0, "2/16/2019");
+        StepDataObject obj = new StepDataObject(5, 5,5, "02/16/2019");
         db.putDataObject(obj);
-        IDataObject result = db.readDataObject("2/16/2019");
+        IDataObject result = db.readDataObject("02/16/2019");
         assertEquals(obj.getDailyStepCount(), result.getDailyStepCount());
         assertEquals(obj.getDailyIntentionalStepCount(), result.getDailyIntentionalStepCount());
         assertEquals(obj.getDailyStepGoal(), result.getDailyStepGoal());
@@ -53,12 +55,12 @@ public class DatabaseTest {
 
     @Test
     public void testMultipleDates() {
-        StepDataObject obj = new StepDataObject(0, 0,0, "2/16/2019");
+        StepDataObject obj = new StepDataObject(2, 2,2, "02/16/2019");
         db.putDataObject(obj);
-        StepDataObject obj1 = new StepDataObject(1,1,1, "2/17/2019");
+        StepDataObject obj1 = new StepDataObject(1,1,1, "02/17/2019");
         db.putDataObject(obj1);
-        IDataObject result = db.readDataObject("2/16/2019");
-        IDataObject result1 = db.readDataObject("2/17/2019");
+        IDataObject result = db.readDataObject("02/16/2019");
+        IDataObject result1 = db.readDataObject("02/17/2019");
         assertEquals(obj.getDailyStepCount(), result.getDailyStepCount());
         assertEquals(obj.getDailyIntentionalStepCount(), result.getDailyIntentionalStepCount());
         assertEquals(obj.getDailyStepGoal(), result.getDailyStepGoal());
@@ -71,12 +73,12 @@ public class DatabaseTest {
 
     @Test
     public void testUpdateOneValue() {
-        StepDataObject obj = new StepDataObject(5,0,0, "2/16/2019");
+        StepDataObject obj = new StepDataObject(5,0,0, "02/16/2019");
         db.putDataObject(obj);
-        IDataObject result = db.readDataObject("2/16/2019");
+        IDataObject result = db.readDataObject("02/16/2019");
         result.setDailyStepGoal(100);
         db.putDataObject(result);
-        result = db.readDataObject("2/16/2019");
+        result = db.readDataObject("02/16/2019");
         assertEquals(result.getDailyStepGoal(), 100);
         assertEquals(result.getDailyStepCount(), 5);
     }
