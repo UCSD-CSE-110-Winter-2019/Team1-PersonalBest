@@ -40,12 +40,13 @@ public class MainActivity extends AppCompatActivity {
     private String login_key;
     private String fitness_key;
 
-    //private Database db = new Database(getApplicationContext());
+    private Database db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        db = new Database(getApplicationContext());
 
         if (login_key == null) login_key = GOOGLE_LOGIN;
         if (fitness_key == null) fitness_key = GOOGLE_FITNESS;
@@ -119,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
         String steps = current_step_view.getText().toString();
         int currSteps = Integer.parseInt(steps);
 
-        /*
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
         Date date = cal.getTime();
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
             if( currSteps >= 1.4 * previousSteps )
                 showEncouragement(previousSteps, currSteps);
-        }*/
+        }
 
     }
 
