@@ -1,90 +1,84 @@
 package edu.ucsd.cse110.team1_personalbest.Activities;
 
-import android.content.ReceiverCallNotAllowedException;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GridLabelRenderer;
-import com.jjoe64.graphview.LegendRenderer;
-import com.jjoe64.graphview.ValueDependentColor;
-import com.jjoe64.graphview.Viewport;
-import com.jjoe64.graphview.helper.StaticLabelsFormatter;
-import com.jjoe64.graphview.series.BarGraphSeries;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 
-import java.nio.charset.IllegalCharsetNameException;
-import java.time.MonthDay;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
+import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
+import edu.ucsd.cse110.team1_personalbest.Graph.Factories.BarGraphFactory;
 import edu.ucsd.cse110.team1_personalbest.R;
 
 public class MainActivityGraph extends AppCompatActivity {
-
+    private Database db;
+    private int totalSteps;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        db = new Database(getApplicationContext());
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar calendar = Calendar.getInstance();
+        Date d7 = calendar.getTime();
+        calendar.add(Calendar.DATE,-1);
+        Date d6 = calendar.getTime();
+        calendar.add(Calendar.DATE,-1);
+        Date d5 = calendar.getTime();
+        calendar.add(Calendar.DATE,-1);
+        Date d4 = calendar.getTime();
+        calendar.add(Calendar.DATE,-1);
+        Date d3 = calendar.getTime();
+        calendar.add(Calendar.DATE,-1);
+        Date d2 = calendar.getTime();
+        calendar.add(Calendar.DATE,-1);
+        Date d1 = calendar.getTime();
         setContentView(R.layout.activity_main_graph);
+
+        BarGraphFactory factory = new BarGraphFactory();
+        IDataObject result = db.readDataObject(format.format(d7));
+        int d7Steps = result.getDailyStepCount();
+        int d7IntentionalSteps = result.getDailyIntentionalStepCount();
+        int goal = result.getDailyStepGoal();
+        result = db.readDataObject(format.format(d6));
+        int d6Steps = result.getDailyStepCount();
+        int d6IntentionalSteps = result.getDailyIntentionalStepCount();
+        result = db.readDataObject(format.format(d5));
+        int d5Steps = result.getDailyStepCount();
+        int d5IntentionalSteps = result.getDailyIntentionalStepCount();
+        result = db.readDataObject(format.format(d4));
+        int d4Steps = result.getDailyStepCount();
+        int d4IntentionalSteps = result.getDailyIntentionalStepCount();
+        result = db.readDataObject(format.format(d3));
+        int d3Steps = result.getDailyStepCount();
+        int d3IntentionalSteps = result.getDailyIntentionalStepCount();
+        result = db.readDataObject(format.format(d2));
+        int d2Steps = result.getDailyStepCount();
+        int d2IntentionalSteps = result.getDailyIntentionalStepCount();
+        result = db.readDataObject(format.format(d1));
+        int d1Steps = result.getDailyStepCount();
+        int d1IntentionalSteps = result.getDailyIntentionalStepCount();
+        int[] dailySteps = {d1Steps,d2Steps,d3Steps,d4Steps,d5Steps,d6Steps,d7Steps};
+        int[] intentionalSteps = {d1IntentionalSteps,d2IntentionalSteps,d3IntentionalSteps,
+                d4IntentionalSteps,d5IntentionalSteps,d6IntentionalSteps,d7IntentionalSteps};
+        for(int i:dailySteps){
+            totalSteps += i;
+        }
         TextView weeklySteps = findViewById(R.id.WeeklyStepsText);
-        String weeklyStepsInt = Integer.toString(25000);
+        String weeklyStepsInt = Integer.toString(totalSteps);
         weeklySteps.setText("Weekly Steps: " + weeklyStepsInt);
-
         GraphView graph = findViewById(R.id.weeklyBarGraph);
-        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[]{
-                new DataPoint(1, 10000),
-                new DataPoint(2, 5000),
-                new DataPoint(3, 9000),
-                new DataPoint(4, 8000),
-                new DataPoint(5, 3000),
-                new DataPoint(6, 4000),
-                new DataPoint(7, 5000),
-        });
 
-        graph.addSeries(series);
-        graph.setTitle("Weekly Steps");
-        Viewport viewport = graph.getViewport();
-        GridLabelRenderer labelRenderer = graph.getGridLabelRenderer();
-        //LegendRenderer legendRenderer = graph.getLegendRenderer();
-        //legendRenderer.setVisible(true);
-        //viewport.setMaxX(7);
-        //viewport.setMinX(0);
-        //viewport.setScalable(true);
-        viewport.setScrollable(true);
-        labelRenderer.setHorizontalAxisTitle("Days of the Week");
-        labelRenderer.setVerticalAxisTitle("Steps for the Day");
-        StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
-
-        staticLabelsFormatter.setHorizontalLabels(new String[]{"Su", "M", "T", "W", "Th" , "F", "S"});
-
-        graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
-
-// styling
-        series.setValueDependentColor(new ValueDependentColor<DataPoint>() {
-            @Override
-            public int get(DataPoint data) {
-
-                if (data.getY() < 5000){
-                    return Color.RED;
-                }
-                return Color.GREEN;
-            }
-        });
-        series.setDataWidth(0.8);
-        series.setSpacing(10);
-        series.setDrawValuesOnTop(true);
-        series.setValuesOnTopColor(Color.BLACK);
-
+        factory.makeGraph(goal,intentionalSteps,dailySteps,graph);
         Button backButton = findViewById(R.id.returnToMain);
 
         backButton.setOnClickListener(new View.OnClickListener(){
