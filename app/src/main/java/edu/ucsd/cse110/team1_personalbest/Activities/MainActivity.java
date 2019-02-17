@@ -279,4 +279,6 @@ public class MainActivity extends AppCompatActivity {
             stepGoal.setText(Integer.toString(result.getDailyStepGoal()));
         }
     }
+
+
 }
