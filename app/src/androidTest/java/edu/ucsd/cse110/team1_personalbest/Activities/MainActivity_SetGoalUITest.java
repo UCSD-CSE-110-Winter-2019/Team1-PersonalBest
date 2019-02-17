@@ -14,6 +14,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,8 @@ import static org.hamcrest.Matchers.allOf;
 @RunWith(AndroidJUnit4.class)
 public class MainActivity_SetGoalUITest {
 
+    public static final String TEST_SERVICE = "TEST";
+
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
@@ -41,6 +44,11 @@ public class MainActivity_SetGoalUITest {
                     "android.permission.ACCESS_FINE_LOCATION",
                     "android.permission.ACCESS_COARSE_LOCATION",
                     "android.permission.INTERNET");
+
+    @BeforeClass
+    public static void setup() {
+        MainActivity.TESTMODE = true;
+    }
 
     @Test
     public void mainActivity_SetGoalUITest() {
@@ -52,6 +60,7 @@ public class MainActivity_SetGoalUITest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.setGoalMain), withText("Set New Goal"),
@@ -125,4 +134,5 @@ public class MainActivity_SetGoalUITest {
             }
         };
     }
+
 }

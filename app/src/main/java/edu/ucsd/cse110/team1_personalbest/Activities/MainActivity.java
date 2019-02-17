@@ -21,11 +21,13 @@ import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
+import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.TestFitnessService;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Observers.GoogleFitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Login.Adapters.GoogleLogInService;
+import edu.ucsd.cse110.team1_personalbest.Login.Adapters.TestLoginService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
 import edu.ucsd.cse110.team1_personalbest.Login.Permissions;
@@ -43,8 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "[MainActivity]";
 
-    private String login_key;
-    private String fitness_key;
+    public static String login_key;
+    public static String fitness_key;
+    public static boolean TESTMODE = false;
 
     private Database db;
 
@@ -52,6 +55,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (TESTMODE) {
+            Toast.makeText(this, "testmode", Toast.LENGTH_LONG).show();
+            setKeys("TEST", "TEST");
+            LoginServiceFactory.put("TEST", new LoginServiceFactory.BluePrint() {
+                @Override
+                public LoginService create(Activity activity) {
+                    return new TestLoginService();
+                }
+            });
+
+            FitnessServiceFactory.put("TEST", new FitnessServiceFactory.BluePrint() {
+                @Override
+                public FitnessService create(Activity activity) {
+                    return new TestFitnessService();
+                }
+            });
+        }
+
         db = new Database(getApplicationContext());
 
         if (login_key == null) login_key = GOOGLE_LOGIN;
