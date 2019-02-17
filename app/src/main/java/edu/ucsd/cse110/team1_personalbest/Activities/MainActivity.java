@@ -52,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        String str = getIntent().getStringExtra("TEST");
+        if (str != null) {
+            this.setKeys(str, str);
+        }
         db = new Database(getApplicationContext());
 
         if (login_key == null) login_key = GOOGLE_LOGIN;
