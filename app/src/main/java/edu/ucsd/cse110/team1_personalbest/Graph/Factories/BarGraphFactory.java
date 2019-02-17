@@ -26,10 +26,14 @@ public class BarGraphFactory implements GraphFactory {
         final int STEPGOAL = goal;
         String[] days = new String[]{"Su", "M", "T", "W", "Th" , "F", "S"};
         String[] labels = new String[7];
+
+
+
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.DAY_OF_WEEK;
         dayOfWeek++;
         for(int i = 0;i<7;i++){
+            labels[i] = days[dayOfWeek%7];
             labels[i] = days[dayOfWeek%7];
             dayOfWeek++;
         }
@@ -79,6 +83,7 @@ public class BarGraphFactory implements GraphFactory {
 
         staticLabelsFormatter.setHorizontalLabels(labels);
 
+
         graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
 
 // styling
@@ -87,6 +92,7 @@ public class BarGraphFactory implements GraphFactory {
             public int get(DataPoint data) {
 
                 if (data.getY() < STEPGOAL){
+
                     return Color.RED;
                 }
                 return Color.GREEN;
