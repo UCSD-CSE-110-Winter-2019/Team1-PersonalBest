@@ -2,13 +2,13 @@ package edu.ucsd.cse110.team1_personalbest.Firebase;
 
 public class StepDataObject implements IDataObject {
     private int dailyStepCount;
-    private int preDailyStepCount;
+    private int dailyIntentionalStepCount;
     private int dailyStepGoal;
     private String date;
 
-    public StepDataObject(int dailyStepCount, int preDailyStepCount, int dailyStepGoal, String date) {
+    public StepDataObject(int dailyStepCount, int dailyIntentionalStepCount, int dailyStepGoal, String date) {
         this.dailyStepCount = dailyStepCount;
-        this.preDailyStepCount = preDailyStepCount;
+        this.dailyIntentionalStepCount = dailyIntentionalStepCount;
         this.dailyStepGoal = dailyStepGoal;
         this.date = date;
     }
@@ -21,12 +21,12 @@ public class StepDataObject implements IDataObject {
         this.dailyStepGoal = dailyStepGoal;
     }
 
-    public int getPreDailyStepCount() {
-        return preDailyStepCount;
+    public int getDailyIntentionalStepCount() {
+        return dailyIntentionalStepCount;
     }
 
-    public void setPreDailyStepCount(int preDailyStepCount) {
-        this.preDailyStepCount = preDailyStepCount;
+    public void setDailyIntentionalStepCount(int dailyIntentionalStepCount) {
+        this.dailyIntentionalStepCount = dailyIntentionalStepCount;
     }
 
     public int getDailyStepCount() {
