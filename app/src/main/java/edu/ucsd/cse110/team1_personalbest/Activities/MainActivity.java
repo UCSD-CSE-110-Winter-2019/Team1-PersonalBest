@@ -119,13 +119,14 @@ public class MainActivity extends AppCompatActivity {
         String steps = current_step_view.getText().toString();
         int currSteps = Integer.parseInt(steps);
 
+        /*
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String preDate = format.format(date);
-        //IDataObject result = db.readDataObject(preDate);
-        /*
+        IDataObject result = db.readDataObject(preDate);
+
         if (result != null) {
             int previousSteps = result.getDailyStepCount();
 
