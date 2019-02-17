@@ -18,6 +18,7 @@ import java.util.Date;
 
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
@@ -130,8 +131,9 @@ public class MainActivity extends AppCompatActivity {
         if (result != null) {
             int previousSteps = result.getDailyStepCount();
 
-            if( currSteps >= 1.4 * previousSteps )
-                showEncouragement(previousSteps, currSteps);
+            if( previousSteps != 0)
+                if( currSteps >= 1.4 * previousSteps )
+                    showEncouragement(previousSteps, currSteps);
         }
 
     }
@@ -229,5 +231,14 @@ public class MainActivity extends AppCompatActivity {
     public void setKeys(String login_key, String fitness_key) {
         this.login_key = login_key;
         this.fitness_key = fitness_key;
+    }
+
+    public void setCurrSteps(long currSteps) {
+        current_step_view.setText(String.valueOf(currSteps));
+    }
+
+    public void setDataBase(StepDataObject day1, StepDataObject day2) {
+        db.putDataObject(day1);
+        db.putDataObject(day2);
     }
 }
