@@ -74,9 +74,12 @@ public class CountStepActivity extends AppCompatActivity {
 
         final LoginService loginService = LoginServiceFactory.create(login_key, this);
 
+        Log.i(TAG, "Checking login status");
         if (loginService.isLoggedIn()) {
             setUpFitnessService();
+            Log.i(TAG, "login found");
         } else {
+            Log.e(TAG, "Not Logged in quitting....");
             Toast.makeText(this,"No google account found", Toast.LENGTH_LONG).show();
             this.finish();
         }
@@ -84,6 +87,8 @@ public class CountStepActivity extends AppCompatActivity {
         btnEndWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //TODO store steps walked during this session (can be read from delta_steps TextView object)
+                Log.i(TAG, "Completing intentional walk/run");
                 if (service != null) {
                     service.stopListening();
                     service.removeObservers();

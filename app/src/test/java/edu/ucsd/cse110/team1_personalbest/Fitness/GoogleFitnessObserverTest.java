@@ -13,6 +13,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Locale;
+
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Observers.GoogleFitnessObserver;
 
@@ -54,6 +56,8 @@ public class GoogleFitnessObserverTest {
     Float dist;
     Long elapsed;
 
+    String expectedDistance;
+    String expectedSpeed;
 
     @Before
     public void setup() {
@@ -62,6 +66,10 @@ public class GoogleFitnessObserverTest {
         elapsed = 1000L;
         dist = 2.0F;
         this.observer = new GoogleFitnessObserver(steps, deltaSteps, speed, distance, time, context);
+        double distance = 2 * 0.000621371;
+        double speed = 2* 0.000621371;
+        expectedDistance = String.format(Locale.ENGLISH, "%.3f",distance);
+        expectedSpeed = String.format(Locale.ENGLISH, "%.3f",speed);
         when(this.distance.getText()).thenReturn("0");
     }
 
@@ -76,8 +84,8 @@ public class GoogleFitnessObserverTest {
 
         Assert.assertEquals("1", stepCaptor.getValue());
         Assert.assertEquals("0", deltaStepCaptor.getValue());
-        Assert.assertEquals("2.00", speedCaptor.getValue());
-        Assert.assertEquals("2.00", distanceCaptor.getValue());
+        Assert.assertEquals(expectedSpeed, speedCaptor.getValue());
+        Assert.assertEquals(expectedDistance, distanceCaptor.getValue());
     }
 
     @Test
@@ -101,8 +109,8 @@ public class GoogleFitnessObserverTest {
 
         Assert.assertEquals("1", stepCaptor.getValue());
         Assert.assertEquals("0", deltaStepCaptor.getValue());
-        Assert.assertEquals("0.00", speedCaptor.getValue());
-        Assert.assertEquals("2.00", distanceCaptor.getValue());
+        Assert.assertEquals("0.000", speedCaptor.getValue());
+        Assert.assertEquals(expectedDistance, distanceCaptor.getValue());
     }
 
     @Test
@@ -125,7 +133,7 @@ public class GoogleFitnessObserverTest {
         verify(this.distance).setText(distanceCaptor.capture());
         verify(this.speed).setText(speedCaptor.capture());
 
-        Assert.assertEquals("2.00", speedCaptor.getValue());
-        Assert.assertEquals("2.00", distanceCaptor.getValue());
+        Assert.assertEquals(expectedSpeed, speedCaptor.getValue());
+        Assert.assertEquals(expectedDistance, distanceCaptor.getValue());
     }
 }
