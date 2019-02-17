@@ -22,6 +22,8 @@ import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
 import edu.ucsd.cse110.team1_personalbest.Login.Permissions;
 import edu.ucsd.cse110.team1_personalbest.R;
+import edu.ucsd.cse110.team1_personalbest.SetGoalOptionActivity;
+import edu.ucsd.cse110.team1_personalbest.SetNewGoalActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -90,6 +92,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button btnSetStepGoal = findViewById(R.id.setGoalMain);
+        btnSetStepGoal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), SetNewGoalActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
