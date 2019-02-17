@@ -2,167 +2,93 @@ package edu.ucsd.cse110.team1_personalbest;
 
 import android.content.Context;
 
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 
 import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
+import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
 
-import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
 public class DatabaseTest {
 
     private Database db;
-    private static String FILENAME = "test.json";
-    private static String NOTEXIST = "dummy.json";
+    private String[] FILENAMES = {"02/16/2019", "02/17/2019"};
     private Context appContext = Robolectric.setupActivity(MainActivity.class).getApplicationContext();
 
     @Before
     public void setup() {
-        db = new Database();
+        db = new Database(appContext);
     }
 
     @After
     public void cleanup() {
-        File temp = new File(FILENAME);
-        if ( temp.exists() ) {
-            temp.delete();
-        }
-    }
-
-    @Test
-    public void testNoFile() {
-        try {
-            JSONObject obj = db.read(NOTEXIST, appContext);
-            assertNull(obj);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testDate() {
-        try {
-            JSONObject obj = new JSONObject();
-            Date date = new Date();
-            DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-            HashMap<String, Integer> map = new HashMap<>();
-            map.put("steps", 120);
-            map.put("goal", 6000);
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testDoubleWrite() {
-        try {
-            JSONObject obj = new JSONObject();
-            Date date = new Date();
-            DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-            HashMap<String, Integer> map = new HashMap<>();
-            map.put("steps", 120);
-            map.put("goal", 6000);
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-            obj = db.read(FILENAME, appContext);
-            map.put("steps", 150 + obj.getJSONObject(format.format(date)).getInt("steps"));
-            map.put("goal", 6000);
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-            obj = db.read(FILENAME, appContext);
-            assertEquals(obj.getJSONObject(format.format(date)).getInt("steps"), 270);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testMultipleDays() {
-        try {
-            JSONObject obj = new JSONObject();
-            Calendar cal = Calendar.getInstance();
-            Date date = cal.getTime();
-            DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-            HashMap<String, Integer> map = new HashMap<>();
-            map.put("steps", 120);
-            map.put("goal", 6000);
-            obj.put(format.format(date), map);
-            cal.add(Calendar.DATE, -1);
-            date = cal.getTime();
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-            obj = db.read(FILENAME, appContext);
-            assertEquals(obj.getJSONObject(format.format(date)).getInt("steps"), 120);
-            cal.add(Calendar.DATE, 1);
-            date = cal.getTime();
-            assertEquals(obj.getJSONObject(format.format(date)).getInt("steps"), 120);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void testGoal() {
-        try {
-            JSONObject obj = new JSONObject();
-            Calendar cal = Calendar.getInstance();
-            Date date = cal.getTime();
-            DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-            HashMap<String, Integer> map = new HashMap<>();
-            map.put("goal", 6000);
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-
-            map.remove("goal");
-
-            obj = db.read(FILENAME, appContext);
-            if ( obj.getJSONObject(format.format(date)).has("goal") ) {
-                map.put("goal", obj.getJSONObject(format.format(date)).getInt("goal"));
+        for ( String s : FILENAMES) {
+            File temp = new File(appContext.getFilesDir(), s);
+            if ( temp.exists() ) {
+                temp.delete();
             }
-            map.put("steps", 100);
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-            obj = db.read(FILENAME, appContext);
-            assertEquals(obj.getJSONObject(format.format(date)).getInt("goal"), 6000);
-        } catch(Exception e) {
-            e.printStackTrace();
         }
     }
 
     @Test
-    public void testMissingData() {
-        try {
-            JSONObject obj = new JSONObject();
-            Calendar cal = Calendar.getInstance();
-            Date date = cal.getTime();
-            DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-            HashMap<String, Integer> map = new HashMap<>();
-            map.put("steps", 120);
-            obj.put(format.format(date), map);
-            db.write(FILENAME, obj, appContext);
-
-            obj = db.read(FILENAME, appContext);
-            assertEquals(obj.getJSONObject(format.format(date)).has("goal"), false);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void testWriteAndReadObject() {
+        StepDataObject obj = new StepDataObject(5, 5,5, "02/16/2019");
+        db.putDataObject(obj);
+        IDataObject result = db.readDataObject("02/16/2019");
+        assertEquals(obj.getDailyStepCount(), result.getDailyStepCount());
+        assertEquals(obj.getDailyIntentionalStepCount(), result.getDailyIntentionalStepCount());
+        assertEquals(obj.getDailyStepGoal(), result.getDailyStepGoal());
+        assertEquals(obj.getDate(), result.getDate());
     }
+
+    @Test
+    public void testMultipleDates() {
+        StepDataObject obj = new StepDataObject(2, 2,2, "02/16/2019");
+        db.putDataObject(obj);
+        StepDataObject obj1 = new StepDataObject(1,1,1, "02/17/2019");
+        db.putDataObject(obj1);
+        IDataObject result = db.readDataObject("02/16/2019");
+        IDataObject result1 = db.readDataObject("02/17/2019");
+        assertEquals(obj.getDailyStepCount(), result.getDailyStepCount());
+        assertEquals(obj.getDailyIntentionalStepCount(), result.getDailyIntentionalStepCount());
+        assertEquals(obj.getDailyStepGoal(), result.getDailyStepGoal());
+        assertEquals(obj.getDate(), result.getDate());
+        assertEquals(obj1.getDailyStepCount(), result1.getDailyStepCount());
+        assertEquals(obj1.getDailyIntentionalStepCount(), result1.getDailyIntentionalStepCount());
+        assertEquals(obj1.getDailyStepGoal(), result1.getDailyStepGoal());
+        assertEquals(obj1.getDate(), result1.getDate());
+    }
+
+    @Test
+    public void testUpdateOneValue() {
+        StepDataObject obj = new StepDataObject(5,0,0, "02/16/2019");
+        db.putDataObject(obj);
+        IDataObject result = db.readDataObject("02/16/2019");
+        result.setDailyStepGoal(100);
+        db.putDataObject(result);
+        result = db.readDataObject("02/16/2019");
+        assertEquals(result.getDailyStepGoal(), 100);
+        assertEquals(result.getDailyStepCount(), 5);
+    }
+
+    @Test
+    public void testWrongDate() {
+        IDataObject result = db.readDataObject("WRONG_DATE");
+        assertEquals(result.getDailyStepCount(), 0);
+        assertEquals(result.getDailyIntentionalStepCount(), 0);
+        assertEquals(result.getDailyStepGoal(), 0);
+    }
+
 }
