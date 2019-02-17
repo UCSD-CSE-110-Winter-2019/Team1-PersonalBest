@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private String login_key;
     private String fitness_key;
 
-    private Database db = new Database(getApplicationContext());
+    //private Database db = new Database(getApplicationContext());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
