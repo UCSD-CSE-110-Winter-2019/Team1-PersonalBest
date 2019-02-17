@@ -3,6 +3,7 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.widget.TextView;
 
 import junit.framework.Assert;
 
@@ -30,6 +31,7 @@ import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
+import edu.ucsd.cse110.team1_personalbest.R;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNull;
@@ -149,7 +151,7 @@ public class MainActivityTest {
         Calendar cal1 = Calendar.getInstance();
         Date date1 = cal1.getTime();
         String currDate = format.format(date1);
-        day1 = new StepDataObject(1000, 0, 5000, currDate);
+        day1 = new StepDataObject(1000, 0, 5100, currDate);
         Calendar cal2 = Calendar.getInstance();
         cal2.add(Calendar.DATE, -1);
         Date date2 = cal2.getTime();
@@ -158,4 +160,24 @@ public class MainActivityTest {
         activity.setDataBase(day1, day2);
     }
 
+    @Test
+    public void testSetGoalInitialValue(){
+        cont.create();
+        int stepGoal = 5000;
+
+        TextView stepGoalView = activity.findViewById(R.id.step_goal_view);
+        assertThat(stepGoalView.getText().toString(), equalTo(String.valueOf(stepGoal)));
+    }
+
+    @Test
+    public void testSetGoal(){
+        cont.create();
+        this.setupDB();
+        int stepGoal = 5100;
+        day1.setDailyStepGoal(stepGoal);
+        activity.setGoal();
+
+        TextView stepGoalView = activity.findViewById(R.id.step_goal_view);
+        assertThat(stepGoalView.getText().toString(), equalTo(String.valueOf(stepGoal)));
+    }
 }

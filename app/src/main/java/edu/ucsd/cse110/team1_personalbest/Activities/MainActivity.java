@@ -264,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
         TextView stepGoal = findViewById(R.id.step_goal_view);
         String currentGoal = stepGoal.getText().toString();
         Calendar cal = Calendar.getInstance();
-        //cal.add(Calendar.DATE, -1);
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String today = format.format(date);
