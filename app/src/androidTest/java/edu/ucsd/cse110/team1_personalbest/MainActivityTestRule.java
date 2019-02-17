@@ -1,7 +1,9 @@
 package edu.ucsd.cse110.team1_personalbest;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.intercepting.SingleActivityFactory;
 
@@ -36,9 +38,9 @@ public class MainActivityTestRule extends ActivityTestRule<MainActivity> {
         super(activityClass, targetPackage, launchFlags, initialTouchMode, launchActivity);
     }
 
+
     @Override
-    public void beforeActivityLaunched() {
-        MainActivity activity = getActivity();
+    public Intent getActivityIntent() {
         LoginServiceFactory.put(TEST_SERVICE, new LoginServiceFactory.BluePrint() {
             @Override
             public LoginService create(Activity activity) {
@@ -52,7 +54,9 @@ public class MainActivityTestRule extends ActivityTestRule<MainActivity> {
                 return new TestFitnessService();
             }
         });
-        activity.setKeys(TEST_SERVICE, TEST_SERVICE);
+        Intent intent = new Intent(InstrumentationRegistry.getContext(), MainActivity.class);
+        intent.putExtra("TEST", TEST_SERVICE);
+        return intent;
     }
 
     private class TestLoginService implements LoginService {
