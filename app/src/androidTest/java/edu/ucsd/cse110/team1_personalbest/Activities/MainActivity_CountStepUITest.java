@@ -192,7 +192,7 @@ public class MainActivity_CountStepUITest {
         button2.check(matches(isDisplayed()));
 
         ViewInteraction button3 = onView(
-                allOf(withId(R.id.setGoalCountSet),
+                allOf(withId(R.id.setGoalCountStep),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),

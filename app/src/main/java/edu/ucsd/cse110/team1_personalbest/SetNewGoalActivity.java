@@ -26,15 +26,14 @@ public class SetNewGoalActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveSuggestedGoal(v);
-                setNewGoal(v);
             }
         });
 
         btnSetCustomGoal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchCustomGoalActivity();
-            }
+                Intent intent = new Intent(getApplicationContext(), CustomGoalActivity.class);
+                startActivity(intent);            }
         });
 
         btnCancelSetGoal.setOnClickListener(new View.OnClickListener() {
@@ -46,29 +45,9 @@ public class SetNewGoalActivity extends AppCompatActivity {
 
     }
 
-    public void launchCustomGoalActivity() {
-        Intent intent = new Intent(this, CustomGoalActivity.class);
-        startActivity(intent);
-    }
     public void saveSuggestedGoal(View view){
 
         String newGoal = "";
-
-        SharedPreferences sharedPreferences = getSharedPreferences("new_goal", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putString("newGoal", newGoal);
-
-        editor.apply();
-        //Toast.makeText(MainActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
-
-    public void setNewGoal(View view){
-
-        SharedPreferences sharedPreferences = getSharedPreferences("new_goal", MODE_PRIVATE);
-        String new_goal = sharedPreferences.getString("newGoal","");
-        TextView displayNewGoal = (TextView) findViewById(R.id.step_goal);
-        displayNewGoal.setText(new_goal);
-    }
-
 }

@@ -2,6 +2,7 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -28,6 +29,7 @@ import edu.ucsd.cse110.team1_personalbest.Login.Adapters.GoogleLogInService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
 import edu.ucsd.cse110.team1_personalbest.R;
+import edu.ucsd.cse110.team1_personalbest.SetNewGoalActivity;
 
 import static edu.ucsd.cse110.team1_personalbest.Activities.MainActivity.GOOGLE_LOGIN;
 
@@ -102,6 +104,15 @@ public class CountStepActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+            }
+        });
+
+        Button btnSetStepGoal = findViewById(R.id.setGoalCountStep);
+        btnSetStepGoal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SetNewGoalActivity.class);
+                startActivity(intent);
             }
         });
     }
