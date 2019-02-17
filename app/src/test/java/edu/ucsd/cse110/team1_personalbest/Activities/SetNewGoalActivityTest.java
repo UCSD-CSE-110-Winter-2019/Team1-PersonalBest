@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
@@ -29,6 +30,7 @@ import edu.ucsd.cse110.team1_personalbest.R;
 import edu.ucsd.cse110.team1_personalbest.SetNewGoalActivity;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.theInstance;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
@@ -91,11 +93,23 @@ public class SetNewGoalActivityTest {
     public void TestGetSuggestedGoal(){
         cont.create();
         this.setupDB();
-        activity.getSuggestedGoal();
+        int getGoal = activity.getSuggestedGoal();
         int suggestedGoal = day1.getDailyStepGoal() + 500;
 
         TextView suggestedGoalView = activity.findViewById(R.id.newSuggestedGoal);
+        assertThat(suggestedGoal, equalTo(getGoal));
         assertThat(String.valueOf(suggestedGoal), equalTo(suggestedGoalView.getText().toString()));
     }
 
+    @Test
+    public void TestSaveSuggestedGoal(){
+        cont.create();
+        this.setupDB();
+
+        int getGoal = activity.getSuggestedGoal();
+        day1.setDailyStepGoal(getGoal);
+        activity.saveSuggestedGoal(getGoal);
+
+        assertThat(day1.getDailyStepGoal(), equalTo(5600));
+    }
 }

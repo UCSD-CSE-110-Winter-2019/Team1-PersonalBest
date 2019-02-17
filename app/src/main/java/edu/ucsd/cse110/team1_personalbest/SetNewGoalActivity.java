@@ -26,7 +26,7 @@ public class SetNewGoalActivity extends AppCompatActivity {
     public static final String TAG = "[SetNewGoalActivity]";
     private Database db;
     private String FILENAME = "steps.json";
-    private Integer suggestedGoal;
+    private int newGoal;
     IDataObject result;
     private String login_key = GOOGLE_LOGIN;
     private String fitness_key = TAG;
@@ -37,7 +37,8 @@ public class SetNewGoalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_set_new_goal);
 
         db = new Database(getApplicationContext());
-        getSuggestedGoal();
+        newGoal = getSuggestedGoal();
+
 
         Button btnAcceptSuggestedGoal = (Button) findViewById(R.id.buttonAcceptSuggestedGoal);
         Button btnSetCustomGoal = (Button) findViewById(R.id.buttonSetCustomGoal);
@@ -46,7 +47,8 @@ public class SetNewGoalActivity extends AppCompatActivity {
         btnAcceptSuggestedGoal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveSuggestedGoal(v);
+                saveSuggestedGoal(newGoal);
+                startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
 
@@ -66,25 +68,28 @@ public class SetNewGoalActivity extends AppCompatActivity {
 
     }
 
-    public void getSuggestedGoal(){
+    public int getSuggestedGoal(){
 
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String today = format.format(date);
         IDataObject result = db.readDataObject(today);
-
         int suggestedGoal = result.getDailyStepGoal();
-        TextView newSuggestedGoal = findViewById(R.id.newSuggestedGoal);
         suggestedGoal = suggestedGoal + 500;
+        TextView newSuggestedGoal = findViewById(R.id.newSuggestedGoal);
         newSuggestedGoal.setText(String.valueOf(suggestedGoal));
-
+        return suggestedGoal;
     }
 
-    public void saveSuggestedGoal(View view){
-        //db = new Database(getApplicationContext());
-        //result.setDailyStepGoal(suggestedGoal);
-        startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+    public void saveSuggestedGoal(int suggestedGoal){
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        String today = format.format(date);
+        IDataObject result = db.readDataObject(today);
+        result.setDailyStepGoal(suggestedGoal);
+
     }
 
     public void setKeys(String login_key, String fitness_key) {
