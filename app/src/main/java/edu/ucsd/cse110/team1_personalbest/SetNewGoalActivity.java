@@ -30,7 +30,7 @@ public class SetNewGoalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_new_goal);
 
-/*
+        /*
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
@@ -70,8 +70,8 @@ public class SetNewGoalActivity extends AppCompatActivity {
     }
 
     public void saveSuggestedGoal(View view){
-        db = new Database(getApplicationContext());
-        result.setDailyStepGoal(suggestedGoal);
+        //db = new Database(getApplicationContext());
+        //result.setDailyStepGoal(suggestedGoal);
         startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
 }

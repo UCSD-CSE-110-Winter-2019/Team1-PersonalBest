@@ -47,7 +47,9 @@ public class CustomGoalActivity extends AppCompatActivity {
             }
         });
 
+
         db = new Database(getApplicationContext());
+
     }
 
     public void saveCustomGoal(View view){
