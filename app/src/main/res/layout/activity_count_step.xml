@@ -100,7 +100,14 @@
         android:id="@+id/buttonHistory2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:text="@string/step_history" />
 
+    <Button
+        android:id="@+id/setGoalCountSet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/set_new_goal"
+        />
 </LinearLayout>
