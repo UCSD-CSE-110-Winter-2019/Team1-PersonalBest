@@ -2,10 +2,12 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import junit.framework.Assert;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +21,7 @@ import org.robolectric.android.internal.LocalPermissionGranter;
 import org.robolectric.shadows.ShadowToast;
 
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -47,6 +50,7 @@ public class MainActivityTest {
     private long currSteps;
     private StepDataObject day1;
     private StepDataObject day2;
+    private Context appContext = Robolectric.setupActivity(MainActivity.class).getApplicationContext();
 
     @Before
     public void setUp() throws Exception {
@@ -158,4 +162,25 @@ public class MainActivityTest {
         activity.setDataBase(day1, day2);
     }
 
+    @After
+    public void cleanup() {
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar cal1 = Calendar.getInstance();
+        Date date1 = cal1.getTime();
+        String currDate = format.format(date1);
+
+        File temp = new File(appContext.getFilesDir(), currDate);
+        if ( temp.exists() )
+            temp.delete();
+
+        Calendar cal2 = Calendar.getInstance();
+        cal2.add(Calendar.DATE, -1);
+        Date date2 = cal2.getTime();
+        String preDate = format.format(date2);
+
+        temp = new File(appContext.getFilesDir(), preDate);
+        if ( temp.exists() )
+            temp.delete();
+
+    }
 }
