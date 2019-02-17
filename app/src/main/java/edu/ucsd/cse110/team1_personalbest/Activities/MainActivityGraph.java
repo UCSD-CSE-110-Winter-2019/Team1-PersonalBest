@@ -11,27 +11,72 @@ import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
+import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
+import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Graph.Factories.BarGraphFactory;
 import edu.ucsd.cse110.team1_personalbest.R;
 
 public class MainActivityGraph extends AppCompatActivity {
-
+    private Database db;
+    private int totalSteps;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        db = new Database(getApplicationContext());
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar calendar = Calendar.getInstance();
+        Date d7 = calendar.getTime();
+        calendar.add(Calendar.DATE,-1);
+        Date d6 = calendar.getTime();
+        calendar.add(Calendar.DATE,-1);
+        Date d5 = calendar.getTime();
+        calendar.add(Calendar.DATE,-1);
+        Date d4 = calendar.getTime();
+        calendar.add(Calendar.DATE,-1);
+        Date d3 = calendar.getTime();
+        calendar.add(Calendar.DATE,-1);
+        Date d2 = calendar.getTime();
+        calendar.add(Calendar.DATE,-1);
+        Date d1 = calendar.getTime();
         setContentView(R.layout.activity_main_graph);
-        TextView weeklySteps = findViewById(R.id.WeeklyStepsText);
-        String weeklyStepsInt = Integer.toString(25000);
-        weeklySteps.setText("Weekly Steps: " + weeklyStepsInt);
+
         BarGraphFactory factory = new BarGraphFactory();
-        int[] intArray = {1000,2000,5000,7000,6000,5000,4000};
-        //DateFormat dateFormat = new SimpleDateFormat("MM/dd");
+        IDataObject result = db.readDataObject(format.format(d7));
+        int d7Steps = result.getDailyStepCount();
+        int d7IntentionalSteps = result.getDailyIntentionalStepCount();
+        int goal = result.getDailyStepGoal();
+        result = db.readDataObject(format.format(d6));
+        int d6Steps = result.getDailyStepCount();
+        int d6IntentionalSteps = result.getDailyIntentionalStepCount();
+        result = db.readDataObject(format.format(d5));
+        int d5Steps = result.getDailyStepCount();
+        int d5IntentionalSteps = result.getDailyIntentionalStepCount();
+        result = db.readDataObject(format.format(d6));
+        int d4Steps = result.getDailyStepCount();
+        int d4IntentionalSteps = result.getDailyIntentionalStepCount();
+        result = db.readDataObject(format.format(d6));
+        int d3Steps = result.getDailyStepCount();
+        int d3IntentionalSteps = result.getDailyIntentionalStepCount();
+        int d2Steps = result.getDailyStepCount();
+        int d2IntentionalSteps = result.getDailyIntentionalStepCount();
+        int d1Steps = result.getDailyStepCount();
+        int d1IntentionalSteps = result.getDailyIntentionalStepCount();
+        int[] dailySteps = {d1Steps,d2Steps,d3Steps,d4Steps,d5Steps,d6Steps,d7Steps};
+        int[] intentionalSteps = {d1IntentionalSteps,d2IntentionalSteps,d3IntentionalSteps,
+                d4IntentionalSteps,d5IntentionalSteps,d6IntentionalSteps,d7IntentionalSteps};
+        for(int i:dailySteps){
+            totalSteps += i;
+        }
+        TextView weeklySteps = findViewById(R.id.WeeklyStepsText);
+        String weeklyStepsInt = Integer.toString(totalSteps);
+        weeklySteps.setText("Weekly Steps: " + weeklyStepsInt);
         GraphView graph = findViewById(R.id.weeklyBarGraph);
-        factory.makeGraph(intArray,graph);
-        //graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(getBaseContext(),dateFormat));
+
+        factory.makeGraph(goal,intentionalSteps,dailySteps,graph);
         Button backButton = findViewById(R.id.returnToMain);
 
         backButton.setOnClickListener(new View.OnClickListener(){

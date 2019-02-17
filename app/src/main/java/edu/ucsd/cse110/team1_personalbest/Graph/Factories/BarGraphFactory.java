@@ -21,16 +21,16 @@ import java.util.Date;
 import edu.ucsd.cse110.team1_personalbest.Activities.MainActivityGraph;
 import edu.ucsd.cse110.team1_personalbest.Graph.Interface.GraphFactory;
 import edu.ucsd.cse110.team1_personalbest.R;
-
 public class BarGraphFactory implements GraphFactory {
-    public GraphView makeGraph(int[] steps, GraphView graph) {
+    public GraphView makeGraph(int goal, int[]intentionalSteps, int[] steps, GraphView graph) {
+        final int STEPGOAL = goal;
         String[] days = new String[]{"Su", "M", "T", "W", "Th" , "F", "S"};
-        String[] lables = new String[7];
+        String[] labels = new String[7];
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.DAY_OF_WEEK;
         dayOfWeek++;
         for(int i = 0;i<7;i++){
-            lables[i] = days[dayOfWeek%7];
+            labels[i] = days[dayOfWeek%7];
             dayOfWeek++;
         }
 
@@ -47,13 +47,13 @@ public class BarGraphFactory implements GraphFactory {
         });
 
         LineGraphSeries<DataPoint> series2 = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(1, steps[0]),
-                new DataPoint(2, steps[1]),
-                new DataPoint(3, steps[2]),
-                new DataPoint(4, steps[3]),
-                new DataPoint(5, steps[4]),
-                new DataPoint(6, steps[5]),
-                new DataPoint(7, steps[6])
+                new DataPoint(1, intentionalSteps[0]),
+                new DataPoint(2, intentionalSteps[1]),
+                new DataPoint(3, intentionalSteps[2]),
+                new DataPoint(4, intentionalSteps[3]),
+                new DataPoint(5, intentionalSteps[4]),
+                new DataPoint(6, intentionalSteps[5]),
+                new DataPoint(7, intentionalSteps[6])
         });
         graph.addSeries(series);
         graph.addSeries(series2);
@@ -77,7 +77,7 @@ public class BarGraphFactory implements GraphFactory {
         labelRenderer.setVerticalAxisTitle("Steps for the Day");
         StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
 
-        staticLabelsFormatter.setHorizontalLabels(lables);
+        staticLabelsFormatter.setHorizontalLabels(labels);
 
         graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
 
@@ -86,7 +86,7 @@ public class BarGraphFactory implements GraphFactory {
             @Override
             public int get(DataPoint data) {
 
-                if (data.getY() < 5000){
+                if (data.getY() < STEPGOAL){
                     return Color.RED;
                 }
                 return Color.GREEN;
