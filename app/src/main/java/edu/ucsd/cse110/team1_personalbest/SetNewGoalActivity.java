@@ -37,8 +37,8 @@ public class SetNewGoalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_set_new_goal);
 
         db = new Database(getApplicationContext());
-        newGoal = getSuggestedGoal();
 
+        newGoal = getSuggestedGoal();
 
         Button btnAcceptSuggestedGoal = (Button) findViewById(R.id.buttonAcceptSuggestedGoal);
         Button btnSetCustomGoal = (Button) findViewById(R.id.buttonSetCustomGoal);
@@ -70,6 +70,7 @@ public class SetNewGoalActivity extends AppCompatActivity {
 
     public int getSuggestedGoal(){
 
+
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
@@ -88,8 +89,8 @@ public class SetNewGoalActivity extends AppCompatActivity {
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String today = format.format(date);
         IDataObject result = db.readDataObject(today);
-        result.setDailyStepGoal(suggestedGoal);
 
+        result.setDailyStepGoal(suggestedGoal);
     }
 
     public void setKeys(String login_key, String fitness_key) {

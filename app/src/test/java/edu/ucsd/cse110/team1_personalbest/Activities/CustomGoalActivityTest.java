@@ -3,6 +3,7 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.junit.Before;
@@ -20,7 +21,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
+import edu.ucsd.cse110.team1_personalbest.CustomGoalActivity;
+import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
@@ -30,18 +32,15 @@ import edu.ucsd.cse110.team1_personalbest.R;
 import edu.ucsd.cse110.team1_personalbest.SetNewGoalActivity;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.theInstance;
 import static org.junit.Assert.*;
-
 @RunWith(RobolectricTestRunner.class)
-public class SetNewGoalActivityTest {
-    private SetNewGoalActivity activity;
+public class CustomGoalActivityTest {
+    private CustomGoalActivity activity;
     private static final String TEST_SERVICE = "TEST_SERVICE";
     private FitnessService service;
     private LoginService loginService;
-    private ActivityController<SetNewGoalActivity> cont;
+    private ActivityController<CustomGoalActivity> cont;
 
-    private long currSteps;
     private StepDataObject day1;
     private StepDataObject day2;
 
@@ -67,10 +66,11 @@ public class SetNewGoalActivityTest {
             }
         });
 
-        Intent intent = new Intent(RuntimeEnvironment.application, SetNewGoalActivity.class);
-        cont = Robolectric.buildActivity(SetNewGoalActivity.class, intent);
+        Intent intent = new Intent(RuntimeEnvironment.application, CustomGoalActivity.class);
+        cont = Robolectric.buildActivity(CustomGoalActivity.class, intent);
         activity = cont.get();
         activity.setKeys(TEST_SERVICE, TEST_SERVICE);
+
 
     }
 
@@ -89,25 +89,24 @@ public class SetNewGoalActivityTest {
     }
 
     @Test
-    public void TestGetSuggestedGoal(){
+    public void TestGetCustomGoal(){
         cont.create();
-        this.setupDB();
-        int getGoal = activity.getSuggestedGoal();
-        int suggestedGoal = day1.getDailyStepGoal() + 500;
+        EditText goal = activity.findViewById(R.id.customGoal);
+        goal.setText("6010");
 
-        TextView suggestedGoalView = activity.findViewById(R.id.newSuggestedGoal);
-        assertThat(suggestedGoal, equalTo(getGoal));
-        assertThat(String.valueOf(suggestedGoal), equalTo(suggestedGoalView.getText().toString()));
+        int cusGoal = activity.getCustomGoal();
+        assertThat(cusGoal, equalTo(6010));
     }
 
-    /*
+/*
     @Test
     public void TestSaveSuggestedGoal(){
         cont.create();
         this.setupDB();
-        int getGoal = activity.getSuggestedGoal();
-        activity.saveSuggestedGoal(getGoal);
 
-        assertThat(day1.getDailyStepGoal(), equalTo(5600));
-    }*/
+        activity.saveCustomGoal(6010);
+
+        assertThat(day1.getDailyStepCount(), equalTo(6010));
+    }
+*/
 }

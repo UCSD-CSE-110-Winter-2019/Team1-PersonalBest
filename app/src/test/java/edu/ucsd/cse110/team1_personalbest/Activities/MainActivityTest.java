@@ -72,7 +72,6 @@ public class MainActivityTest {
             }
         });
 
-
         Intent intent = new Intent(RuntimeEnvironment.application, MainActivity.class);
         cont = Robolectric.buildActivity(MainActivity.class, intent);
         activity = cont.get();
@@ -173,11 +172,10 @@ public class MainActivityTest {
     public void testSetGoal(){
         cont.create();
         this.setupDB();
-        int stepGoal = 5100;
-        day1.setDailyStepGoal(stepGoal);
+        TextView stepGoalView = activity.findViewById(R.id.step_goal_view);
+        stepGoalView.setText("5500");
         activity.setGoal();
 
-        TextView stepGoalView = activity.findViewById(R.id.step_goal_view);
-        assertThat(stepGoalView.getText().toString(), equalTo(String.valueOf(stepGoal)));
+        assertThat(stepGoalView.getText().toString(), equalTo(String.valueOf(day1.getDailyStepGoal())));
     }
 }
