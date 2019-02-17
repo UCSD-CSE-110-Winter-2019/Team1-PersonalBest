@@ -28,6 +28,7 @@ import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
+import edu.ucsd.cse110.team1_personalbest.MainActivityTestRule;
 import edu.ucsd.cse110.team1_personalbest.R;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -44,7 +45,7 @@ import static org.hamcrest.Matchers.allOf;
 public class MainActivity_MainUITest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new MainActivityTestRule(MainActivity.class);
 
     @Rule
     public GrantPermissionRule mGrantPermissionRule =
@@ -52,31 +53,6 @@ public class MainActivity_MainUITest {
                     "android.permission.ACCESS_FINE_LOCATION",
                     "android.permission.ACCESS_COARSE_LOCATION",
                     "android.permission.INTERNET");
-
-    @Before
-    public void setup() {
-        MainActivity activity = (MainActivity)InstrumentationRegistry
-                .getInstrumentation()
-                .getTargetContext()
-                .getApplicationContext();
-        LoginServiceFactory.put(TEST_SERVICE, new LoginServiceFactory.BluePrint() {
-            @Override
-            public LoginService create(Activity activity) {
-                return new TestLoginService();
-            }
-        });
-
-        FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(Activity activity) {
-                return new TestFitnessService();
-            }
-        });
-        activity.setKeys(TEST_SERVICE, TEST_SERVICE);
-
-        Intent intent = new Intent(activity, MainActivity.class);
-        mActivityTestRule.launchActivity(intent);
-    }
 
     @Test
     public void mainActivity_MainUITest() {
@@ -199,39 +175,6 @@ public class MainActivity_MainUITest {
         @Override
         public boolean isLoggedIn() {
             return true;
-        }
-    }
-
-    private class TestFitnessService implements FitnessService {
-
-        @Override
-        public int getRequestCode() {
-            return 0;
-        }
-
-        @Override
-        public void setup() {
-
-        }
-
-        @Override
-        public void startListening() {
-
-        }
-
-        @Override
-        public void stopListening() {
-
-        }
-
-        @Override
-        public void removeObservers() {
-
-        }
-
-        @Override
-        public void registerObserver(FitnessObserver observer) {
-
         }
     }
 
