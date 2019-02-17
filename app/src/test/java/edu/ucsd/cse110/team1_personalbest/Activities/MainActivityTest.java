@@ -32,11 +32,13 @@ import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
 public class MainActivityTest {
     private MainActivity activity;
+    private MainActivity activity1;
     private static final String TEST_SERVICE = "TEST_SERVICE";
     private FitnessService service;
     private LoginService loginService;
@@ -74,27 +76,6 @@ public class MainActivityTest {
         activity = cont.get();
         activity.setKeys(TEST_SERVICE, TEST_SERVICE);
 
-        // Set up for testing encouragement
-        /*
-        currSteps = 1900;
-        activity.setCurrSteps(currSteps);*/
-
-
-        /*
-        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-        Calendar cal1 = Calendar.getInstance();
-        Date date1 = cal1.getTime();
-        String currDate = format.format(date1);
-        day1 = new StepDataObject(1000, 0, 5000, currDate);
-
-        Calendar cal2 = Calendar.getInstance();
-        cal2.add(Calendar.DATE, -1);
-        Date date2 = cal2.getTime();
-        String preDate = format.format(date2);
-        day2 = new StepDataObject(1000, 0, 5000, preDate);
-
-
-        activity.setDataBase(day1, day2);*/
     }
 
     @Test
@@ -117,9 +98,64 @@ public class MainActivityTest {
     }
 
     @Test
-    public void TestEncouragementNearlyDouble() {
-        //activity.onResume();
-        //System.out.println(ShadowToast.getTextOfLatestToast().toString());
-        //ShadowToast.getTextOfLatestToast().toString(), equalTo("You've nearly doubled your steps. Keep up the good work!"));
+    public void TestNoEncouragement() {
+        cont.create();
+        currSteps = 1100;
+        activity.setCurrSteps(currSteps);
+        this.setupDB();
+
+        activity.onResume();
+        assertNull(ShadowToast.getTextOfLatestToast());
     }
+
+    @Test
+    public void TestEncouragementNotDouble() {
+        cont.create();
+        currSteps = 1500;
+        activity.setCurrSteps(currSteps);
+        this.setupDB();
+
+        activity.onResume();
+        System.out.println(ShadowToast.getTextOfLatestToast().toString());
+        assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo( "Good job! You've made great prgroess!"));
+    }
+
+    @Test
+    public void TestEncouragementNearlyDouble() {
+        cont.create();
+        currSteps = 1900;
+        activity.setCurrSteps(currSteps);
+        this.setupDB();
+
+        activity.onResume();
+        System.out.println(ShadowToast.getTextOfLatestToast().toString());
+        assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("You've nearly doubled your steps. Keep up the good work!"));
+    }
+
+    @Test
+    public void TestEncouragementDouble() {
+        cont.create();
+        currSteps = 2100;
+        activity.setCurrSteps(currSteps);
+        this.setupDB();
+
+        activity.onResume();
+        System.out.println(ShadowToast.getTextOfLatestToast().toString());
+        assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("Excellent! You've doubled your steps!"));
+    }
+
+    public void setupDB() {
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar cal1 = Calendar.getInstance();
+        Date date1 = cal1.getTime();
+        String currDate = format.format(date1);
+        day1 = new StepDataObject(1000, 0, 5000, currDate);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.add(Calendar.DATE, -1);
+        Date date2 = cal2.getTime();
+        String preDate = format.format(date2);
+        day2 = new StepDataObject(1000, 0, 5000, preDate);
+        activity.setDataBase(day1, day2);
+    }
+
 }
