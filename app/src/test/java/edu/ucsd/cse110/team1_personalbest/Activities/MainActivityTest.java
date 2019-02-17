@@ -73,10 +73,12 @@ public class MainActivityTest {
 
         Intent intent = new Intent(RuntimeEnvironment.application, MainActivity.class);
         cont = Robolectric.buildActivity(MainActivity.class, intent);
-        activity = cont.create().get();
+        activity = cont.get();
+        //activity = cont.create().get();
         activity.setKeys(TEST_SERVICE, TEST_SERVICE);
 
         // Set up for testing encouragement
+        /*
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar cal1 = Calendar.getInstance();
         Date date1 = cal1.getTime();
@@ -88,9 +90,9 @@ public class MainActivityTest {
         String preDate = format.format(date2);
         day2 = new StepDataObject(1000, 0, 5000, preDate);
         activity.setDataBase(day1, day2);
+        */
     }
 
-    /*
     @Test
     public void loginFailed() {
         Mockito.when(this.loginService.login()).thenReturn(false);
@@ -109,8 +111,8 @@ public class MainActivityTest {
         Mockito.verify(this.service).startListening();
         Assert.assertNotNull(obsCaptor.getValue());
     }
-    */
 
+    /*
     @Test
     public void TestNoEncouragement() {
         currSteps = 1100;
@@ -145,4 +147,5 @@ public class MainActivityTest {
         System.out.println(ShadowToast.getTextOfLatestToast().toString());
         assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("Excellent! You've doubled your steps!"));
     }
+    */
 }
