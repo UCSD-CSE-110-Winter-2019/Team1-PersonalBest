@@ -73,7 +73,9 @@ public class MainActivity_MainUITest {
             }
         });
         activity.setKeys(TEST_SERVICE, TEST_SERVICE);
-        mActivityTestRule.launchActivity(new Intent());
+
+        Intent intent = new Intent(activity, MainActivity.class);
+        mActivityTestRule.launchActivity(intent);
     }
 
     @Test

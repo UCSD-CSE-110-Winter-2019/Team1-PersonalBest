@@ -78,8 +78,10 @@ public class MainActivity_CountStepUITest {
             }
         });
 
+        Intent intent = new Intent(activity, MainActivity.class);
+
         activity.setKeys(TEST_SERVICE, TEST_SERVICE);
-        mActivityTestRule.launchActivity(new Intent());
+        mActivityTestRule.launchActivity(intent);
     }
 
     @Test
