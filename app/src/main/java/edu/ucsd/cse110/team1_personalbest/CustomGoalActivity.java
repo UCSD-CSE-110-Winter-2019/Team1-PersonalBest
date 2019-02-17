@@ -68,7 +68,6 @@ public class CustomGoalActivity extends AppCompatActivity {
 
                 int customGoal = getCustomGoal();
                 saveCustomGoal(customGoal);
-                //startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 finish();
             }
         });
