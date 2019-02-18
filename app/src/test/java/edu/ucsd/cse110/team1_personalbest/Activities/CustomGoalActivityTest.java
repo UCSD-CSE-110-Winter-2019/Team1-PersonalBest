@@ -40,9 +40,8 @@ public class CustomGoalActivityTest {
     private FitnessService service;
     private LoginService loginService;
     private ActivityController<CustomGoalActivity> cont;
-
-    private StepDataObject day1;
-    private StepDataObject day2;
+    private String currDate;
+    private StepDataObject today;
 
     @Before
     public void setUp() throws Exception {
@@ -68,29 +67,19 @@ public class CustomGoalActivityTest {
 
         Intent intent = new Intent(RuntimeEnvironment.application, CustomGoalActivity.class);
         cont = Robolectric.buildActivity(CustomGoalActivity.class, intent);
-        activity = cont.get();
+        activity = cont.create().get();
         activity.setKeys(TEST_SERVICE, TEST_SERVICE);
 
-
-    }
-
-    public void setupDB() {
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar cal1 = Calendar.getInstance();
         Date date1 = cal1.getTime();
-        String currDate = format.format(date1);
-        day1 = new StepDataObject(1000, 0, 5100, currDate);
-        Calendar cal2 = Calendar.getInstance();
-        cal2.add(Calendar.DATE, -1);
-        Date date2 = cal2.getTime();
-        String preDate = format.format(date2);
-        day2 = new StepDataObject(1000, 0, 5000, preDate);
-        activity.setDataBase(day1, day2);
+        currDate = format.format(date1);
+        today = new StepDataObject(1000, 0, 5000, currDate);
+        activity.setDataBase(today);
     }
 
     @Test
     public void TestGetCustomGoal(){
-        cont.create();
         EditText goal = activity.findViewById(R.id.customGoal);
         goal.setText("6010");
 
@@ -101,21 +90,12 @@ public class CustomGoalActivityTest {
 
     @Test
     public void TestSaveSuggestedGoal(){
-        cont.create();
-        this.setupDB();
-        /*
+        Database db = activity.getDataBase();
+        assertThat(db.readDataObject(currDate).getDailyStepGoal(), equalTo(5000));
+
         activity.saveCustomGoal(6010);
-        assertThat(day1.getDailyStepCount(), equalTo(6010));
+        assertThat(db.readDataObject(currDate).getDailyStepGoal(), equalTo(6010));
 
-        activity.saveCustomGoal(2010);
-        assertThat(day1.getDailyStepCount(), equalTo(2010));
-
-        activity.saveCustomGoal(10002);
-        assertThat(day1.getDailyStepCount(), equalTo(10002));
-
-        activity.saveCustomGoal(3);
-        assertThat(day1.getDailyStepCount(), equalTo(3));
-        */
     }
 
 }
