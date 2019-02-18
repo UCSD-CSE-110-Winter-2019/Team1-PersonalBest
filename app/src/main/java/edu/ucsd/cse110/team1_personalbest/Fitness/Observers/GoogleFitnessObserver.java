@@ -1,6 +1,9 @@
 package edu.ucsd.cse110.team1_personalbest.Fitness.Observers;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +18,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import edu.ucsd.cse110.team1_personalbest.CustomGoalActivity;
+import edu.ucsd.cse110.team1_personalbest.Encouragement;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
@@ -82,6 +87,33 @@ public class GoogleFitnessObserver implements FitnessObserver {
             this.speed.setText(String.format(Locale.ENGLISH, "%.3f", newSpeed));
             this.distance.setText(String.format(Locale.ENGLISH, "%.3f", newDistance));
         }
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        if (pref != null) {
+            boolean messageShown = pref.getBoolean(format.format(calendar.getTime()), false);
+            if (object.getDailyStepGoal() != 0 && object.getDailyStepCount() != 0 && !messageShown) {
+                if (object.getDailyStepCount() >= object.getDailyStepGoal()) {
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putBoolean(format.format(calendar.getTime()), true);
+                    editor.apply();
+                    Intent intent = new Intent(context, CustomGoalActivity.class);
+                    Toast.makeText(context, "Goal met! Great Job!", Toast.LENGTH_LONG).show();
+                    context.startActivity(intent);
+                }
+            }
+        }
+
+        if (numSteps != null) {
+            Encouragement encouragement = new Encouragement(context);
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -1);
+            Date date = cal.getTime();
+            String preDate = format.format(date);
+            IDataObject result = db.readDataObject(preDate);
+
+            encouragement.showEncouragement(result.getDailyStepCount(), numSteps);
+        }
+
         db.putDataObject(object);
     }
 }

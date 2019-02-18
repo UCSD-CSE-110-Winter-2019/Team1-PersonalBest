@@ -3,6 +3,8 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -120,8 +122,16 @@ public class CountStepActivity extends AppCompatActivity {
                 String today = format1.format(date);
                 IDataObject result = db.readDataObject(today);
                 int stepGoal = result.getDailyStepGoal();
-                if(Integer.parseInt(current_daily_steps.getText().toString()) >= stepGoal){
+
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                boolean messageShown = pref.getBoolean(format.format(calendar.getTime()), false);
+
+                if(Integer.parseInt(current_daily_steps.getText().toString()) >= stepGoal && !messageShown){
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putBoolean(format.format(calendar.getTime()), true);
+                    editor.apply();
                     Intent intent = new Intent(getApplicationContext(), CustomGoalActivity.class);
+                    Toast.makeText(getBaseContext(), "Goal met! Great Job!", Toast.LENGTH_LONG).show();
                     startActivity(intent);
                 }
 
