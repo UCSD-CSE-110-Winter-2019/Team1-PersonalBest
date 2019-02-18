@@ -28,12 +28,10 @@ public class BarGraphFactory implements GraphFactory {
         String[] labels = new String[7];
 
 
-
         Calendar calendar = Calendar.getInstance();
         int dayOfWeek = calendar.DAY_OF_WEEK;
         dayOfWeek++;
         for(int i = 0;i<7;i++){
-            labels[i] = days[dayOfWeek%7];
             labels[i] = days[dayOfWeek%7];
             dayOfWeek++;
         }
@@ -62,12 +60,16 @@ public class BarGraphFactory implements GraphFactory {
         graph.addSeries(series);
         graph.addSeries(series2);
         graph.setTitle("Weekly Steps");
-        GridLabelRenderer labelRenderer = graph.getGridLabelRenderer();
-        //LegendRenderer legendRenderer = graph.getLegendRenderer();
-        //legendRenderer.setVisible(true);
-        //viewport.setMaxX(7);
-        //viewport.setMinX(0);
+        series2.setColor(Color.BLUE);
+        series.setColor(Color.GREEN);
+        series.setTitle("Daily Steps");
+        series2.setTitle("Intentional Walks");
+        LegendRenderer legendRenderer = graph.getLegendRenderer();
+        legendRenderer.setVisible(true);;
         graph.getViewport().setScalable(true);
+        GridLabelRenderer labelRenderer = graph.getGridLabelRenderer();
+        legendRenderer.setAlign(LegendRenderer.LegendAlign.TOP);
+        legendRenderer.setTextSize(30);
 
 
         graph.getGridLabelRenderer().setNumHorizontalLabels(7); // only 4 because of the space

@@ -118,8 +118,8 @@ public class CountStepActivity extends AppCompatActivity {
         historyBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent intent = new Intent(getApplicationContext(),MainActivityGraph.class);
-                //startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(),MainActivityGraph.class);
+                startActivity(intent);
 
             }
         });
