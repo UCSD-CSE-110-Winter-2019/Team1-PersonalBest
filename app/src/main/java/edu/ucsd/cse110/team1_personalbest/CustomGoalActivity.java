@@ -94,8 +94,11 @@ public class CustomGoalActivity extends AppCompatActivity {
         this.fitness_key = fitness_key;
     }
 
-    public void setDataBase(StepDataObject day1, StepDataObject day2) {
+    public void setDataBase(StepDataObject day1) {
         db.putDataObject(day1);
-        db.putDataObject(day2);
+    }
+
+    public Database getDataBase() {
+        return this.db;
     }
 }
