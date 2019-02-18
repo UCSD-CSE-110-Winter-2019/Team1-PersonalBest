@@ -163,25 +163,6 @@ public class MainActivityTest {
         activity.setDataBase(day1, day2);
     }
 
-    @Test
-    public void testSetGoalInitialValue(){
-        cont.create();
-        int stepGoal = 5000;
-
-        TextView stepGoalView = activity.findViewById(R.id.step_goal_view);
-        assertThat(stepGoalView.getText().toString(), equalTo(String.valueOf(stepGoal)));
-    }
-
-    @Test
-    public void testSetGoal() {
-        cont.create();
-        this.setupDB();
-        TextView stepGoalView = activity.findViewById(R.id.step_goal_view);
-        stepGoalView.setText("5500");
-        activity.setGoal();
-
-        assertThat(stepGoalView.getText().toString(), equalTo(String.valueOf(day1.getDailyStepGoal())));
-    }
 
     @After
     public void cleanup() {
