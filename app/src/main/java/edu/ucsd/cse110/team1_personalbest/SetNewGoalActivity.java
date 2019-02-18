@@ -76,7 +76,7 @@ public class SetNewGoalActivity extends AppCompatActivity {
 
     public int getSuggestedGoal(){
         int suggestedGoal = result.getDailyStepGoal();
-        suggestedGoal = suggestedGoal + 500;
+        suggestedGoal = suggestedGoal + 5;
         TextView newSuggestedGoal = findViewById(R.id.newSuggestedGoal);
         newSuggestedGoal.setText(String.valueOf(suggestedGoal));
         return suggestedGoal;

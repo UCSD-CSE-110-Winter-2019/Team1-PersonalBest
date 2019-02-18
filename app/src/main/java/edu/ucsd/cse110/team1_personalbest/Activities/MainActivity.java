@@ -271,8 +271,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(result.getDailyStepGoal() == 0){
             //store initial goal
-            stepGoal.setText("5000");
-            result.setDailyStepGoal(5000);
+            stepGoal.setText("5");
+            result.setDailyStepGoal(5);
             db.putDataObject(result);
         }
 
