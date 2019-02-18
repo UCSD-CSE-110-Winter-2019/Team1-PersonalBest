@@ -65,7 +65,7 @@ public class GoogleFitnessObserverTest {
         dst = 0;
         elapsed = 1000L;
         dist = 2.0F;
-        this.observer = new GoogleFitnessObserver(steps, deltaSteps, speed, distance, time, context);
+        this.observer = new GoogleFitnessObserver(null, steps, deltaSteps, speed, distance, time, context);
         double distance = 2 * 0.000621371;
         double speed = 2 * 0.000621371 * 3600;
         expectedDistance = String.format(Locale.ENGLISH, "%.3f",distance);

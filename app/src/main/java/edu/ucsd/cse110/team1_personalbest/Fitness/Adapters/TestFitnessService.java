@@ -34,4 +34,9 @@ public class TestFitnessService implements FitnessService {
     public void registerObserver(FitnessObserver observer) {
 
     }
+
+    @Override
+    public void setInitialNumSteps(int initialNumSteps) {
+
+    }
 }
