@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
+import edu.ucsd.cse110.team1_personalbest.CustomGoalActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDatabase;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
@@ -51,6 +52,7 @@ public class CountStepActivity extends AppCompatActivity {
     private String login_key = GOOGLE_LOGIN;
     private String fitness_key = TAG;
 
+    private Database db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,7 +104,20 @@ public class CountStepActivity extends AppCompatActivity {
                     service.removeObservers();
                 }
 
+                db = new Database(getApplication());
+                Calendar cal = Calendar.getInstance();
+                Date date = cal.getTime();
+                DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+                String today = format.format(date);
+                IDataObject result = db.readDataObject(today);
+                int stepGoal = result.getDailyStepGoal();
+                if(Integer.parseInt(current_daily_steps.getText().toString()) == stepGoal){
+                    Intent intent = new Intent(getApplicationContext(), CustomGoalActivity.class);
+                    startActivity(intent);
+                }
+
                 finish();
+
             }
         });
 
@@ -170,6 +185,5 @@ public class CountStepActivity extends AppCompatActivity {
         this.fitness_key = fitness_key;
         this.login_key = login_key;
     }
-
 
 }

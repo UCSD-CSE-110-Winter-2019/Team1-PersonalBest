@@ -2,9 +2,11 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.widget.TextView;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,11 +17,14 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.android.internal.LocalPermissionGranter;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import edu.ucsd.cse110.team1_personalbest.CustomGoalActivity;
+import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
@@ -44,6 +49,9 @@ public class SetNewGoalActivityTest {
     private long currSteps;
     private StepDataObject day1;
     private StepDataObject day2;
+    private String currDate;
+    private StepDataObject today;
+    private Context appContext = Robolectric.setupActivity(MainActivity.class).getApplicationContext();
 
     @Before
     public void setUp() throws Exception {
@@ -67,47 +75,42 @@ public class SetNewGoalActivityTest {
             }
         });
 
+
         Intent intent = new Intent(RuntimeEnvironment.application, SetNewGoalActivity.class);
         cont = Robolectric.buildActivity(SetNewGoalActivity.class, intent);
-        activity = cont.get();
+        activity = cont.create().get();
         activity.setKeys(TEST_SERVICE, TEST_SERVICE);
 
-    }
-
-    public void setupDB() {
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar cal1 = Calendar.getInstance();
         Date date1 = cal1.getTime();
-        String currDate = format.format(date1);
-        day1 = new StepDataObject(1000, 0, 5100, currDate);
-        Calendar cal2 = Calendar.getInstance();
-        cal2.add(Calendar.DATE, -1);
-        Date date2 = cal2.getTime();
-        String preDate = format.format(date2);
-        day2 = new StepDataObject(1000, 0, 5000, preDate);
-        activity.setDataBase(day1, day2);
+        currDate = format.format(date1);
+        today = new StepDataObject(1000, 0, 5000, currDate);
+        activity.setDataBase(today);
+
     }
 
     @Test
     public void TestGetSuggestedGoal(){
-        cont.create();
-        this.setupDB();
-        int getGoal = activity.getSuggestedGoal();
-        int suggestedGoal = day1.getDailyStepGoal() + 500;
 
-        TextView suggestedGoalView = activity.findViewById(R.id.newSuggestedGoal);
-        assertThat(suggestedGoal, equalTo(getGoal));
-        assertThat(String.valueOf(suggestedGoal), equalTo(suggestedGoalView.getText().toString()));
+        int cusGoal = activity.getSuggestedGoal();
+        assertThat(cusGoal, equalTo(5500));
+
     }
 
-    /*
     @Test
     public void TestSaveSuggestedGoal(){
-        cont.create();
-        this.setupDB();
-        int getGoal = activity.getSuggestedGoal();
-        activity.saveSuggestedGoal(getGoal);
+        Database db = activity.getDataBase();
+        assertThat(db.readDataObject(currDate).getDailyStepGoal(), equalTo(5000));
 
-        assertThat(day1.getDailyStepGoal(), equalTo(5600));
-    }*/
+        activity.saveSuggestedGoal(6010);
+        assertThat(db.readDataObject(currDate).getDailyStepGoal(), equalTo(6010));
+    }
+
+    @After
+    public void cleanup() {
+        File temp = new File(appContext.getFilesDir(), currDate);
+        if ( temp.exists() )
+            temp.delete();
+    }
 }
