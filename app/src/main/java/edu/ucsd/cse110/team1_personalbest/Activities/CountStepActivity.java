@@ -120,7 +120,7 @@ public class CountStepActivity extends AppCompatActivity {
                 String today = format1.format(date);
                 IDataObject result = db.readDataObject(today);
                 int stepGoal = result.getDailyStepGoal();
-                if(Integer.parseInt(current_daily_steps.getText().toString()) == stepGoal){
+                if(Integer.parseInt(current_daily_steps.getText().toString()) >= stepGoal){
                     Intent intent = new Intent(getApplicationContext(), CustomGoalActivity.class);
                     startActivity(intent);
                 }
