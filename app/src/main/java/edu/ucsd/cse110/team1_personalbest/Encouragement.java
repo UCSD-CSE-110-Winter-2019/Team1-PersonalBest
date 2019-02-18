@@ -1,7 +1,13 @@
 package edu.ucsd.cse110.team1_personalbest;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class Encouragement {
     private Context context;
@@ -25,28 +31,51 @@ public class Encouragement {
 
     /* Show an encouragement when current steps nearly doubled previous steps*/
     public void showEncouragementForNearlyDouble(){
-        CharSequence text = "You've nearly doubled your steps. Keep up the good work!";
-        int duration = Toast.LENGTH_LONG;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+        if (!getSystemPreference(1)) {
+            CharSequence text = "You've nearly doubled your steps. Keep up the good work!";
+            int duration = Toast.LENGTH_LONG;
+            updateSystemPreferences(1, true);
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
     }
 
     /* Show an encouragement when user significantly improve daily steps */
     public void showEncouragementNotDouble(){
-        CharSequence text = "Good job! You've made great prgroess!";
-        int duration = Toast.LENGTH_LONG;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+        if (!getSystemPreference(2)) {
+            CharSequence text = "Good job! You've made great prgroess!";
+            int duration = Toast.LENGTH_LONG;
+            updateSystemPreferences(2,true);
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
     }
 
     /* Show an encouragement when user double the step*/
     public void showEncouragementDouble(){
-        CharSequence text = "Excellent! You've doubled your steps!";
-        int duration = Toast.LENGTH_LONG;
+        if (!getSystemPreference(3)) {
+            updateSystemPreferences(3, true);
+            CharSequence text = "Excellent! You've doubled your steps!";
+            int duration = Toast.LENGTH_LONG;
 
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
+    }
+
+    private void updateSystemPreferences(int i, boolean b) {
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar calendar = Calendar.getInstance();
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean(format.format(calendar.getTime()) + Integer.toString(i), b);
+        editor.apply();
+    }
+
+    private boolean getSystemPreference(int i) {
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar calendar = Calendar.getInstance();
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        return pref.getBoolean(format.format(calendar.getTime()) + Integer.toString(i), false);
     }
 }

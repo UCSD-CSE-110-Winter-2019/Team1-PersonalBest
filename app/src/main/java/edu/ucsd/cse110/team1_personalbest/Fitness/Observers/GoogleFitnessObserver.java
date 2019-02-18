@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import edu.ucsd.cse110.team1_personalbest.CustomGoalActivity;
+import edu.ucsd.cse110.team1_personalbest.Encouragement;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
@@ -98,6 +99,17 @@ public class GoogleFitnessObserver implements FitnessObserver {
                 Toast.makeText(context, "Goal met! Great Job!", Toast.LENGTH_LONG).show();
                 context.startActivity(intent);
             }
+        }
+
+        if (numSteps != null) {
+            Encouragement encouragement = new Encouragement(context);
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, -1);
+            Date date = cal.getTime();
+            String preDate = format.format(date);
+            IDataObject result = db.readDataObject(preDate);
+
+            encouragement.showEncouragement(result.getDailyStepCount(), numSteps);
         }
 
         db.putDataObject(object);
