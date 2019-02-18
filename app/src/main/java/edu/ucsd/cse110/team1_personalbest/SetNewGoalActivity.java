@@ -53,6 +53,7 @@ public class SetNewGoalActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveSuggestedGoal(newGoal);
+                startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 finish();
             }
         });
