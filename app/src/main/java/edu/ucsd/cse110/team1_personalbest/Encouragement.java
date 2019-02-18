@@ -31,35 +31,38 @@ public class Encouragement {
 
     /* Show an encouragement when current steps nearly doubled previous steps*/
     public void showEncouragementForNearlyDouble(){
-        if (!getSystemPreference(1)) {
+        if (!getSystemPreference(1) && context != null) {
             CharSequence text = "You've nearly doubled your steps. Keep up the good work!";
             int duration = Toast.LENGTH_LONG;
             updateSystemPreferences(1, true);
             Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
+            if (toast != null)
+                toast.show();
         }
     }
 
     /* Show an encouragement when user significantly improve daily steps */
     public void showEncouragementNotDouble(){
-        if (!getSystemPreference(2)) {
+        if (!getSystemPreference(2) && context != null) {
             CharSequence text = "Good job! You've made great prgroess!";
             int duration = Toast.LENGTH_LONG;
             updateSystemPreferences(2,true);
             Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
+            if (toast != null)
+                toast.show();
         }
     }
 
     /* Show an encouragement when user double the step*/
     public void showEncouragementDouble(){
-        if (!getSystemPreference(3)) {
+        if (!getSystemPreference(3) && context != null) {
             updateSystemPreferences(3, true);
             CharSequence text = "Excellent! You've doubled your steps!";
             int duration = Toast.LENGTH_LONG;
 
             Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
+            if (toast != null)
+                toast.show();
         }
     }
 
@@ -67,15 +70,20 @@ public class Encouragement {
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar calendar = Calendar.getInstance();
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putBoolean(format.format(calendar.getTime()) + Integer.toString(i), b);
-        editor.apply();
+        if (pref != null) {
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean(format.format(calendar.getTime()) + Integer.toString(i), b);
+            editor.apply();
+        }
     }
 
     private boolean getSystemPreference(int i) {
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar calendar = Calendar.getInstance();
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        return pref.getBoolean(format.format(calendar.getTime()) + Integer.toString(i), false);
+        if (pref != null) {
+            return pref.getBoolean(format.format(calendar.getTime()) + Integer.toString(i), false);
+        }
+        else return false;
     }
 }

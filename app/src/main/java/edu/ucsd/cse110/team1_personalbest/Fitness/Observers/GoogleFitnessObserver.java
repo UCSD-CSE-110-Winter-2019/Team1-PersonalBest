@@ -89,15 +89,17 @@ public class GoogleFitnessObserver implements FitnessObserver {
         }
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean messageShown = pref.getBoolean(format.format(calendar.getTime()), false);
-        if (object.getDailyStepGoal() != 0 && object.getDailyStepCount() != 0 && !messageShown) {
-            if(object.getDailyStepCount() >= object.getDailyStepGoal()){
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putBoolean(format.format(calendar.getTime()), true);
-                editor.apply();
-                Intent intent = new Intent(context, CustomGoalActivity.class);
-                Toast.makeText(context, "Goal met! Great Job!", Toast.LENGTH_LONG).show();
-                context.startActivity(intent);
+        if (pref != null) {
+            boolean messageShown = pref.getBoolean(format.format(calendar.getTime()), false);
+            if (object.getDailyStepGoal() != 0 && object.getDailyStepCount() != 0 && !messageShown) {
+                if (object.getDailyStepCount() >= object.getDailyStepGoal()) {
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putBoolean(format.format(calendar.getTime()), true);
+                    editor.apply();
+                    Intent intent = new Intent(context, CustomGoalActivity.class);
+                    Toast.makeText(context, "Goal met! Great Job!", Toast.LENGTH_LONG).show();
+                    context.startActivity(intent);
+                }
             }
         }
 
