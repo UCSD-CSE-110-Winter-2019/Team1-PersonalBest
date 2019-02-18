@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String GOOGLE_LOGIN = "GLOGIN";
     public static final String GOOGLE_FITNESS = "GFIT";
     public static final String STEP_KEY = "INITIAL_STEPS";
+    public static final String STEP_GOAL_KEY = "STEP_GOAL";
     private FitnessService fitnessService;
     private TextView current_step_view;
     private TextView goal_view;
@@ -126,14 +127,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        setGoal();
+
         Button btnSetStepGoal = findViewById(R.id.setGoalMain);
         btnSetStepGoal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), SetNewGoalActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SetNewGoalActivity.class);
                 startActivity(intent);
             }
         });
+
 
     }
 
@@ -158,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        setGoal();
 
         String steps = current_step_view.getText().toString();
         int currSteps = Integer.parseInt(steps);
@@ -276,6 +282,28 @@ public class MainActivity extends AppCompatActivity {
     public void setKeys(String login_key, String fitness_key) {
         this.login_key = login_key;
         this.fitness_key = fitness_key;
+    }
+
+    public void setGoal(){
+
+        TextView stepGoal = findViewById(R.id.step_goal_view);
+        String currentGoal = stepGoal.getText().toString();
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        String today = format.format(date);
+        IDataObject result = db.readDataObject(today);
+
+        if(result.getDailyStepGoal() == 0){
+            //store initial goal
+            stepGoal.setText("5");
+            result.setDailyStepGoal(5);
+            db.putDataObject(result);
+        }
+
+        result = db.readDataObject(today);
+        stepGoal.setText(Integer.toString(result.getDailyStepGoal()));
+
     }
 
     public void setCurrSteps(long currSteps) {
