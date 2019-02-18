@@ -21,7 +21,8 @@ public class SetGoalOptionActivity extends AppCompatActivity {
         btnYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchSetNewGoalActivity();
+                Intent intent = new Intent(getApplicationContext(), SetNewGoalActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -31,10 +32,5 @@ public class SetGoalOptionActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
-    }
-
-    public void launchSetNewGoalActivity() {
-        Intent intent = new Intent(this, SetNewGoalActivity.class);
-        startActivity(intent);
     }
 }

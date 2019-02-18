@@ -2,12 +2,11 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.widget.TextView;
 
 import junit.framework.Assert;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +20,6 @@ import org.robolectric.android.internal.LocalPermissionGranter;
 import org.robolectric.shadows.ShadowToast;
 
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,6 +31,7 @@ import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
+import edu.ucsd.cse110.team1_personalbest.R;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNull;
@@ -50,7 +49,6 @@ public class MainActivityTest {
     private long currSteps;
     private StepDataObject day1;
     private StepDataObject day2;
-    private Context appContext = Robolectric.setupActivity(MainActivity.class).getApplicationContext();
 
     @Before
     public void setUp() throws Exception {
@@ -73,7 +71,6 @@ public class MainActivityTest {
                 return loginService;
             }
         });
-
 
         Intent intent = new Intent(RuntimeEnvironment.application, MainActivity.class);
         cont = Robolectric.buildActivity(MainActivity.class, intent);
@@ -153,7 +150,7 @@ public class MainActivityTest {
         Calendar cal1 = Calendar.getInstance();
         Date date1 = cal1.getTime();
         String currDate = format.format(date1);
-        day1 = new StepDataObject(1000, 0, 5000, currDate);
+        day1 = new StepDataObject(1000, 0, 5100, currDate);
         Calendar cal2 = Calendar.getInstance();
         cal2.add(Calendar.DATE, -1);
         Date date2 = cal2.getTime();
@@ -162,25 +159,14 @@ public class MainActivityTest {
         activity.setDataBase(day1, day2);
     }
 
-    @After
-    public void cleanup() {
-        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-        Calendar cal1 = Calendar.getInstance();
-        Date date1 = cal1.getTime();
-        String currDate = format.format(date1);
+    @Test
+    public void testSetGoal(){
+        cont.create();
+        this.setupDB();
+        TextView stepGoalView = activity.findViewById(R.id.step_goal_view);
+        stepGoalView.setText("5500");
+        activity.setGoal();
 
-        File temp = new File(appContext.getFilesDir(), currDate);
-        if ( temp.exists() )
-            temp.delete();
-
-        Calendar cal2 = Calendar.getInstance();
-        cal2.add(Calendar.DATE, -1);
-        Date date2 = cal2.getTime();
-        String preDate = format.format(date2);
-
-        temp = new File(appContext.getFilesDir(), preDate);
-        if ( temp.exists() )
-            temp.delete();
-
+        assertThat(stepGoalView.getText().toString(), equalTo(String.valueOf(day1.getDailyStepGoal())));
     }
 }
