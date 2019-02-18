@@ -75,6 +75,10 @@ public class GoogleFitAdapter implements FitnessService,
         this.initialNumSteps = initialNumSteps;
     }
 
+    public void setInitialNumSteps(int initialNumSteps) {
+        this.initialNumSteps = initialNumSteps;
+    }
+
     @Override
     public void setup() {
 

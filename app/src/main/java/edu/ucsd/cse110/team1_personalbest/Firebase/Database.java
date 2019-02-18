@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static android.support.constraint.Constraints.TAG;
-
 /*
     Database class stores the IDataObject into JSON files for easy read and write access.
  */
@@ -36,6 +34,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
     private Map<String, Object> data;
     // Context needed to get files written to and from by file location
     private Context c;
+    private static final String TAG = "[Database]";
 
     /**
      * Constructor:
@@ -178,7 +177,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      *
      * @param t the String to convert to JSON format
      * @return a JSONObject
-     * @throws JSONException
+     * @throws JSONException error if it cannot convert the string to JSON
      */
     private static JSONObject stringToJSON(String t) throws JSONException {
 
@@ -216,9 +215,9 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      * @param c the Context to find file location
      */
     public void deleteFile(String fileName, Context c) {
-        File temp = new File(c.getFilesDir(), fileName);
-        if ( temp.exists() ) {
-            temp.delete();
+        File temp = new File(c.getFilesDir(), fileName.replaceAll("/", "-"));
+        if ( temp.delete() ) {
+            Log.d(TAG, "deleted " + fileName.replaceAll("/", "-"));
         }
     }
 
@@ -230,6 +229,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
     @Override
     public void putDataObject(IDataObject object) {
         try {
+            Log.d(TAG, "Writing to " + object.getDate());
             JSONObject tmp = new JSONObject();
             JSONObject child = new JSONObject();
             child.put("goal", object.getDailyStepGoal());
@@ -251,6 +251,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
     @Override
     public IDataObject readDataObject(String date) {
         try {
+            Log.d(TAG, "Reading from " + date);
             JSONObject tmp = read(date, c);
             int dailyStepCount = 0;
             if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("steps") ) {

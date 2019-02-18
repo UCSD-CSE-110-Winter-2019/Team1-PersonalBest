@@ -38,6 +38,7 @@ import edu.ucsd.cse110.team1_personalbest.R;
 import edu.ucsd.cse110.team1_personalbest.SetNewGoalActivity;
 
 import static edu.ucsd.cse110.team1_personalbest.Activities.MainActivity.GOOGLE_LOGIN;
+import static edu.ucsd.cse110.team1_personalbest.Activities.MainActivity.STEP_KEY;
 
 public class CountStepActivity extends AppCompatActivity {
 
@@ -49,8 +50,6 @@ public class CountStepActivity extends AppCompatActivity {
     private TextView distance;
     private TextView time;
 
-    private String login_key = GOOGLE_LOGIN;
-    private String fitness_key = TAG;
 
     private Database db;
     @Override
@@ -82,7 +81,7 @@ public class CountStepActivity extends AppCompatActivity {
             }
         });
 
-        final LoginService loginService = LoginServiceFactory.create(login_key, this);
+        final LoginService loginService = LoginServiceFactory.create(MainActivity.login_key, this);
 
         Log.i(TAG, "Checking login status");
         if (loginService.isLoggedIn()) {
@@ -97,7 +96,16 @@ public class CountStepActivity extends AppCompatActivity {
         btnEndWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO store steps walked during this session (can be read from delta_steps TextView object)
+                IDatabase db = new Database(getApplicationContext());
+                DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+                Calendar calendar = Calendar.getInstance();
+                IDataObject object = db.readDataObject(format.format(calendar.getTime()));
+                if (object == null) {
+                    object = new StepDataObject(0,0,0, format.format(Calendar.DATE));
+                }
+                object.setDailyIntentionalStepCount(object.getDailyStepCount() +
+                        Integer.parseInt(delta_steps.getText().toString()));
+                db.putDataObject(object);
                 Log.i(TAG, "Completing intentional walk/run");
                 if (service != null) {
                     service.stopListening();
@@ -151,9 +159,10 @@ public class CountStepActivity extends AppCompatActivity {
 
 
     public void setUpFitnessService() {
-        service = FitnessServiceFactory.create(fitness_key, this);
-        FitnessObserver observer = new GoogleFitnessObserver(current_daily_steps, delta_steps,
+        service = FitnessServiceFactory.create(MainActivity.fitness_key, this);
+        FitnessObserver observer = new GoogleFitnessObserver(null, current_daily_steps, delta_steps,
                 speed, distance, time, this);
+        service.setInitialNumSteps(getIntent().getIntExtra(STEP_KEY, 0));
         if (this.service != null) {
             service.registerObserver(observer);
             service.setup();
@@ -165,7 +174,7 @@ public class CountStepActivity extends AppCompatActivity {
     public void onRestart() {
         super.onRestart();
         if (this.service != null) {
-            FitnessObserver observer = new GoogleFitnessObserver(this.current_daily_steps,
+            FitnessObserver observer = new GoogleFitnessObserver(null, this.current_daily_steps,
                     this.delta_steps, this.speed, this.distance, this.time, this);
             this.service.registerObserver(observer);
             this.service.startListening();
@@ -182,8 +191,8 @@ public class CountStepActivity extends AppCompatActivity {
     }
 
     public void setKeys(String login_key, String fitness_key) {
-        this.fitness_key = fitness_key;
-        this.login_key = login_key;
+        MainActivity.fitness_key = fitness_key;
+        MainActivity.login_key = login_key;
     }
 
 }
