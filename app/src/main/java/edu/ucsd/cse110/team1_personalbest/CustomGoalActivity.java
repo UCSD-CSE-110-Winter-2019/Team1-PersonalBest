@@ -51,7 +51,7 @@ public class CustomGoalActivity extends AppCompatActivity {
         btnCancelCustomGoal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
             }
         });
 
@@ -68,7 +68,7 @@ public class CustomGoalActivity extends AppCompatActivity {
 
                 int customGoal = getCustomGoal();
                 saveCustomGoal(customGoal);
-                startActivity(new Intent(getApplicationContext(),MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
             }
         });
 
@@ -94,11 +94,8 @@ public class CustomGoalActivity extends AppCompatActivity {
         this.fitness_key = fitness_key;
     }
 
-    public void setDataBase(StepDataObject day1) {
+    public void setDataBase(StepDataObject day1, StepDataObject day2) {
         db.putDataObject(day1);
-    }
-
-    public Database getDataBase() {
-        return this.db;
+        db.putDataObject(day2);
     }
 }

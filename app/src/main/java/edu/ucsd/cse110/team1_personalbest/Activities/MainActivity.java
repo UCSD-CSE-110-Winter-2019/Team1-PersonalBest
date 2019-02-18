@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SetNewGoalActivity.class);
-                //intent.putExtra(STEP_GOAL_KEY, Integer.parseInt(((TextView)findViewById(R.id.step_goal_view)).getText().toString()));
                 startActivity(intent);
             }
         });
@@ -140,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        setGoal();
 
         String steps = current_step_view.getText().toString();
         int currSteps = Integer.parseInt(steps);
