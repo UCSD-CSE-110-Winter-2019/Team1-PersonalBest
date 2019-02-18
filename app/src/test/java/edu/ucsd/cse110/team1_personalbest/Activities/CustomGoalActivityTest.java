@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +17,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.android.internal.LocalPermissionGranter;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -96,6 +98,13 @@ public class CustomGoalActivityTest {
         activity.saveCustomGoal(6010);
         assertThat(db.readDataObject(currDate).getDailyStepGoal(), equalTo(6010));
 
+    }
+
+    @After
+    public void cleanup() {
+        File temp = new File(appContext.getFilesDir(), currDate);
+        if ( temp.exists() )
+            temp.delete();
     }
 
 }
