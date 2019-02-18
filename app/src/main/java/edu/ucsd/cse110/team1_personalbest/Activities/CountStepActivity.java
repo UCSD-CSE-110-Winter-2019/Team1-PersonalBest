@@ -103,6 +103,7 @@ public class CountStepActivity extends AppCompatActivity {
                 if (object == null) {
                     object = new StepDataObject(0,0,0, format.format(Calendar.DATE));
                 }
+
                 object.setDailyIntentionalStepCount(object.getDailyStepCount() +
                         Integer.parseInt(delta_steps.getText().toString()));
                 db.putDataObject(object);
@@ -115,8 +116,8 @@ public class CountStepActivity extends AppCompatActivity {
                 db = new Database(getApplication());
                 Calendar cal = Calendar.getInstance();
                 Date date = cal.getTime();
-                DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-                String today = format.format(date);
+                DateFormat format1 = new SimpleDateFormat("MM/dd/yyyy");
+                String today = format1.format(date);
                 IDataObject result = db.readDataObject(today);
                 int stepGoal = result.getDailyStepGoal();
                 if(Integer.parseInt(current_daily_steps.getText().toString()) == stepGoal){
