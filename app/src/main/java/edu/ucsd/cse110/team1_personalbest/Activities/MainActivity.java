@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String STEP_KEY = "INITIAL_STEPS";
     private FitnessService fitnessService;
     private TextView current_step_view;
+    private TextView goal_view;
 
     private static final String TAG = "[MainActivity]";
 
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         Permissions.requestPermissions(this);
 
         current_step_view = findViewById(R.id.current_step_view);
-
+        goal_view = findViewById(R.id.step_goal_view);
         FitnessServiceFactory.put(GOOGLE_FITNESS, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(Activity activity) {
@@ -183,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRestart() {
         super.onRestart();
         if (this.fitnessService != null) {
-            FitnessObserver observer = new GoogleFitnessObserver(current_step_view,
+            FitnessObserver observer = new GoogleFitnessObserver(goal_view, current_step_view,
                     null, null, null, null, this);
             this.fitnessService.registerObserver(observer);
             this.fitnessService.startListening();
@@ -263,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setUpFitnessService() {
-        FitnessObserver observer = new GoogleFitnessObserver(current_step_view, null, null, null, null, this);
+        FitnessObserver observer = new GoogleFitnessObserver(goal_view, current_step_view, null, null, null, null, this);
         this.fitnessService = FitnessServiceFactory.create(fitness_key, this);
         if (this.fitnessService !=  null) {
             fitnessService.registerObserver(observer);

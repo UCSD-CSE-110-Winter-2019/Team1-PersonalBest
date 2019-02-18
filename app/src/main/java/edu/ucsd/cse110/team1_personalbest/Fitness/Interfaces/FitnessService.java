@@ -29,4 +29,5 @@ public interface FitnessService {
     void stopListening();
     void removeObservers();
     void registerObserver(FitnessObserver observer);
+    void setInitialNumSteps(int initialNumSteps);
 }
