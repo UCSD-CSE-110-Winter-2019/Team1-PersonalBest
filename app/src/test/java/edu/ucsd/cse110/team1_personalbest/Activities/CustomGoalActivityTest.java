@@ -2,6 +2,7 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -44,6 +45,7 @@ public class CustomGoalActivityTest {
     private ActivityController<CustomGoalActivity> cont;
     private String currDate;
     private StepDataObject today;
+    private Context appContext = Robolectric.setupActivity(MainActivity.class).getApplicationContext();
 
     @Before
     public void setUp() throws Exception {
