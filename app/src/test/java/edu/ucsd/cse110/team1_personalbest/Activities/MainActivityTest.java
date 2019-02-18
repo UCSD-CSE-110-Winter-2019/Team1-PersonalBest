@@ -160,15 +160,6 @@ public class MainActivityTest {
     }
 
     @Test
-    public void testSetGoalInitialValue(){
-        cont.create();
-        int stepGoal = 5000;
-
-        TextView stepGoalView = activity.findViewById(R.id.step_goal_view);
-        assertThat(stepGoalView.getText().toString(), equalTo(String.valueOf(stepGoal)));
-    }
-
-    @Test
     public void testSetGoal(){
         cont.create();
         this.setupDB();
