@@ -1,15 +1,10 @@
 package edu.ucsd.cse110.team1_personalbest.Firebase;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONException;
@@ -21,6 +16,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -31,7 +27,8 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
     // Not used in this implementation
     private FirebaseFirestore db;
     private ArrayList<Observer> observers;
-    private Map<String, Object> data;
+    private User user;
+    private Map<String, User> allUsers;
     // Context needed to get files written to and from by file location
     private Context c;
     private static final String TAG = "[Database]";
@@ -43,94 +40,86 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      * @param c the Context needed to know where file locations are
      */
     public Database(Context c) {
-        //FirebaseApp.initializeApp(this);
-        //db = FirebaseFirestore.getInstance();
+        FirebaseApp.initializeApp(c.getApplicationContext());
+        db = FirebaseFirestore.getInstance();
         observers = new ArrayList<>();
         this.c = c;
     }
 
     /**
-     *
      * @param store the Firestore instance that this database
      */
-    @Deprecated
     public Database(FirebaseFirestore store) {
         db = store;
         observers = new ArrayList<>();
     }
 
-    @Deprecated
     @Override
     public void register(Observer o) {
-        if ( !observers.contains(o) ) {
+        if (!observers.contains(o)) {
             observers.add(o);
         }
     }
 
-    @Deprecated
     @Override
     public void unregister(Observer o) {
         observers.remove(o);
     }
 
-    @Deprecated
     @Override
     public void notifyObservers() {
-        for( Observer obs : observers ) {
-            obs.update(data);
+        for (Observer obs : observers) {
+            obs.update(user);
+            obs.update(allUsers);
         }
     }
 
-
-    /**
-     * Push to a document reference and insert a Map
-     */
-    @Deprecated
-    public void push(String document, Map map) {
-        db.collection("calendar")
-                .document(document)
-                .set(map)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Successfully added info");
-                    }
+    public void setUsers(Map<String, User> users) {
+        db.collection("users")
+                .document("users")
+                .set(users)
+                .addOnSuccessListener(documentReference -> {
+                    Log.d(TAG, "Successfully added friends list");
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding info", e);
-                    }
-                });
+                .addOnFailureListener(e -> Log.d(TAG, e.getLocalizedMessage()));
     }
 
-    /**
-     * Notifies observers with the Map data
-     * @param document the document location to get the object
-     */
-    @Deprecated
-    public void get(String document) {
-        db.collection("calendar")
-                .document(document)
+    public void getUsers() {
+        db.collection("users")
+                .document("users")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if ( task.isSuccessful() ) {
-                            data = task.getResult().getData();
-                            notifyObservers();
-                            Log.d(TAG, "Got document info");
-                        }
-                    }
-                });
+                .addOnSuccessListener(result -> {
+                    if ( result == null ) return;
+                    allUsers = (Map) result.getData();
+                    notifyObservers();
+                })
+                .addOnFailureListener(e -> Log.d(TAG, e.getLocalizedMessage()));
+    }
+
+    public void getUser(String email) {
+        db.collection("users")
+                .document("users")
+                .get()
+                .addOnSuccessListener(result -> {
+                    if ( result == null ) return;
+                    Map<String, Object> userInfo = (Map) result.getData().get(email);
+                    User temp = new User();
+                    temp.setName(userInfo.get("name").toString());
+                    temp.setEmail(userInfo.get("email").toString());
+                    temp.setFriends((List<String>) userInfo.get("friends"));
+                    user = temp;
+                    //Log.d(TAG, String.valueOf(user.getGraphData("03-01-2019")[0][0]));
+                    notifyObservers();
+                })
+                .addOnFailureListener(e -> Log.d(TAG, e.getLocalizedMessage()));
     }
 
     /**
      * write takes the fileName, JSONObject and context to write to a location in the phone
      *
      * @param fileName the name of the file to write to
-     * @param obj the object to write to file
-     * @param c the Context to get the file locations from
+     * @param obj      the object to write to file
+     * @param c        the Context to get the file locations from
      */
     private void write(String fileName, JSONObject obj, Context c) {
         try {
@@ -149,20 +138,20 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      * read takes a fileName and context to see which file to read from
      *
      * @param fileName the name of the file to write to
-     * @param c the Context to get the file locations from
+     * @param c        the Context to get the file locations from
      * @return a JSONObject if there is one in this file else null
      */
     private JSONObject read(String fileName, Context c) {
         try {
             // replace fileName special characters with -
             File temp = new File(c.getFilesDir(), fileName.replaceAll("/", "-"));
-            if ( !temp.exists() ) {
+            if (!temp.exists()) {
                 return null;
             }
             FileReader r = new FileReader(temp);
             int i = 0;
             String line = "";
-            while ( (i = r.read()) != -1 ) {
+            while ((i = r.read()) != -1) {
                 line += (char) i;
             }
             return stringToJSON(line);
@@ -186,19 +175,19 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
         JSONObject jObject = new JSONObject(t);
         Iterator<?> keys = jObject.keys();
 
-        while( keys.hasNext() ){
-            String key = (String)keys.next();
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
             String value = jObject.getString(key);
             // removes all JSON syntax for creating objects
             value = value.replaceAll("\\{", "");
             value = value.replaceAll("\\}", "");
             value = value.replaceAll("\"", "");
-            if ( value.contains(" ") ) {
+            if (value.contains(" ")) {
                 value = value.replaceAll(" ", "");
             }
             String[] split = value.split(",");
             JSONObject child = new JSONObject();
-            for ( String s : split ) {
+            for (String s : split) {
                 child.put(s.split(":")[0], s.split(":")[1]);
             }
             jObject.put(key, child);
@@ -212,11 +201,11 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      * Deletes a file on the phone if it exists
      *
      * @param fileName the file to delete
-     * @param c the Context to find file location
+     * @param c        the Context to find file location
      */
     public void deleteFile(String fileName, Context c) {
         File temp = new File(c.getFilesDir(), fileName.replaceAll("/", "-"));
-        if ( temp.delete() ) {
+        if (temp.delete()) {
             Log.d(TAG, "deleted " + fileName.replaceAll("/", "-"));
         }
     }
@@ -237,7 +226,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
             child.put("intentional_steps", object.getDailyIntentionalStepCount());
             tmp.put(object.getDate(), child);
             write(object.getDate(), tmp, c);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -254,19 +243,19 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
             Log.d(TAG, "Reading from " + date);
             JSONObject tmp = read(date, c);
             int dailyStepCount = 0;
-            if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("steps") ) {
+            if (tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("steps")) {
                 dailyStepCount = tmp.getJSONObject(date).getInt("steps");
             }
             int dailyIntentionalStepCount = 0;
-            if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("intentional_steps") ) {
+            if (tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("intentional_steps")) {
                 dailyIntentionalStepCount = tmp.getJSONObject(date).getInt("intentional_steps");
             }
             int dailyStepGoal = 0;
-            if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("goal") ) {
+            if (tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("goal")) {
                 dailyStepGoal = tmp.getJSONObject(date).getInt("goal");
             }
             return new StepDataObject(dailyStepCount, dailyIntentionalStepCount, dailyStepGoal, date);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
