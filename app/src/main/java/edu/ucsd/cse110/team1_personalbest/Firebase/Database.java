@@ -1,10 +1,14 @@
 package edu.ucsd.cse110.team1_personalbest.Firebase;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONException;
@@ -80,40 +84,63 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
         db.collection("users")
                 .document("users")
                 .set(users)
-                .addOnSuccessListener(documentReference -> {
-                    Log.d(TAG, "Successfully added friends list");
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Successfully added friends list");
+                    }
                 })
-                .addOnFailureListener(e -> Log.d(TAG, e.getLocalizedMessage()));
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.getLocalizedMessage());
+                    }
+                });
     }
 
     public void getUsers() {
         db.collection("users")
                 .document("users")
                 .get()
-                .addOnSuccessListener(result -> {
-                    if ( result == null ) return;
-                    allUsers = (Map) result.getData();
-                    notifyObservers();
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if ( documentSnapshot == null ) return;
+                        allUsers = (Map) documentSnapshot.getData();
+                        notifyObservers();
+                    }
                 })
-                .addOnFailureListener(e -> Log.d(TAG, e.getLocalizedMessage()));
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.getLocalizedMessage());
+                    }
+                });
     }
 
-    public void getUser(String email) {
+    public void getUser(final String email) {
         db.collection("users")
                 .document("users")
                 .get()
-                .addOnSuccessListener(result -> {
-                    if ( result == null ) return;
-                    Map<String, Object> userInfo = (Map) result.getData().get(email);
-                    User temp = new User();
-                    temp.setName(userInfo.get("name").toString());
-                    temp.setEmail(userInfo.get("email").toString());
-                    temp.setFriends((List<String>) userInfo.get("friends"));
-                    user = temp;
-                    //Log.d(TAG, String.valueOf(user.getGraphData("03-01-2019")[0][0]));
-                    notifyObservers();
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if ( documentSnapshot == null ) return;
+                        Map<String, Object> userInfo = (Map) documentSnapshot.getData().get(email);
+                        User temp = new User();
+                        temp.setName(userInfo.get("name").toString());
+                        temp.setEmail(userInfo.get("email").toString());
+                        temp.setFriends((List<String>) userInfo.get("friends"));
+                        user = temp;
+                        notifyObservers();
+                    }
                 })
-                .addOnFailureListener(e -> Log.d(TAG, e.getLocalizedMessage()));
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.getLocalizedMessage());
+                    }
+                });
     }
 
     /**

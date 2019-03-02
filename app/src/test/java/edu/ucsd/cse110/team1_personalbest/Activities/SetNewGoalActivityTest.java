@@ -78,7 +78,7 @@ public class SetNewGoalActivityTest {
 
         Intent intent = new Intent(RuntimeEnvironment.application, SetNewGoalActivity.class);
         cont = Robolectric.buildActivity(SetNewGoalActivity.class, intent);
-        activity = Robolectric.setupActivity(SetNewGoalActivity.class);
+        activity = cont.create().get();
         activity.setKeys(TEST_SERVICE, TEST_SERVICE);
 
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
