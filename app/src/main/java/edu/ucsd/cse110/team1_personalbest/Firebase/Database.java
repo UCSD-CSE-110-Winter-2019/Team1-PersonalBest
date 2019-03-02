@@ -40,10 +40,12 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      * @param c the Context needed to know where file locations are
      */
     public Database(Context c) {
-        FirebaseApp.initializeApp(c.getApplicationContext());
-        db = FirebaseFirestore.getInstance();
         observers = new ArrayList<>();
         this.c = c;
+        if ( c.getApplicationContext() != null ) {
+            FirebaseApp.initializeApp(c.getApplicationContext());
+            db = FirebaseFirestore.getInstance();
+        }
     }
 
     /**
@@ -169,30 +171,8 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      * @throws JSONException error if it cannot convert the string to JSON
      */
     private static JSONObject stringToJSON(String t) throws JSONException {
-
-        HashMap<String, Object> map = new HashMap<>();
         t = t.replaceAll("=", ":");
         JSONObject jObject = new JSONObject(t);
-        Iterator<?> keys = jObject.keys();
-
-        while (keys.hasNext()) {
-            String key = (String) keys.next();
-            String value = jObject.getString(key);
-            // removes all JSON syntax for creating objects
-            value = value.replaceAll("\\{", "");
-            value = value.replaceAll("\\}", "");
-            value = value.replaceAll("\"", "");
-            if (value.contains(" ")) {
-                value = value.replaceAll(" ", "");
-            }
-            String[] split = value.split(",");
-            JSONObject child = new JSONObject();
-            for (String s : split) {
-                child.put(s.split(":")[0], s.split(":")[1]);
-            }
-            jObject.put(key, child);
-
-        }
 
         return jObject;
     }
