@@ -74,14 +74,14 @@ public class MainActivity_MainUITest {
         textView.check(matches(withText("Step Goal:")));
 
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.step_goal_view), withText("0"),
+                allOf(withId(R.id.step_goal_view), withText("5"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 1),
                         isDisplayed()));
-        textView2.check(matches(withText("0")));
+        textView2.check(matches(withText("5")));
 
         ViewInteraction textView3 = onView(
                 allOf(withId(R.id.current_step), withText("Daily Step:"),
