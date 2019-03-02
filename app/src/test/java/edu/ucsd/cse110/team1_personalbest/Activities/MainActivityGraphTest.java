@@ -61,7 +61,7 @@ public class MainActivityGraphTest {
     private ActivityController<MainActivityGraph> contGraph;
 
 
-    private Context appContext = Robolectric.setupActivity(MainActivity.class).getApplicationContext();
+    //private Context appContext = Robolectric.setupActivity(MainActivity.class).getApplicationContext();
     @Before
     public void setUp() throws Exception {
         service = Mockito.mock(FitnessService.class);
