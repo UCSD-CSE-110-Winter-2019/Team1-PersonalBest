@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.team1_personalbest;
+package edu.ucsd.cse110.team1_personalbest.Database;
 
 import android.content.Context;
 
@@ -6,12 +6,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import java.io.File;
-import java.util.Calendar;
 
 import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
