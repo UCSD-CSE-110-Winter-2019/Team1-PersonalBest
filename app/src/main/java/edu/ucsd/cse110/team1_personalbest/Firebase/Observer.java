@@ -6,3 +6,4 @@ public interface Observer {
     void update(User user);
     void update(Map<String, User> allUsers);
 }
+

@@ -14,3 +14,4 @@ public interface IMessagingService {
     void subscribe(final Activity activity, final String DOCUMENT_KEY);
     void removeListener();
 }
+
