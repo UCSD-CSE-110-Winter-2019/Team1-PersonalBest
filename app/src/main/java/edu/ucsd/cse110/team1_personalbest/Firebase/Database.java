@@ -53,6 +53,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
     }
 
     /**
+     *
      * @param store the Firestore instance that this database
      */
     public Database(FirebaseFirestore store) {
@@ -62,7 +63,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
 
     @Override
     public void register(Observer o) {
-        if (!observers.contains(o)) {
+        if ( !observers.contains(o) ) {
             observers.add(o);
         }
     }
@@ -74,7 +75,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
 
     @Override
     public void notifyObservers() {
-        for (Observer obs : observers) {
+        for( Observer obs : observers ) {
             obs.update(user);
             obs.update(allUsers);
         }
@@ -147,8 +148,8 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      * write takes the fileName, JSONObject and context to write to a location in the phone
      *
      * @param fileName the name of the file to write to
-     * @param obj      the object to write to file
-     * @param c        the Context to get the file locations from
+     * @param obj the object to write to file
+     * @param c the Context to get the file locations from
      */
     private void write(String fileName, JSONObject obj, Context c) {
         try {
@@ -167,20 +168,20 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      * read takes a fileName and context to see which file to read from
      *
      * @param fileName the name of the file to write to
-     * @param c        the Context to get the file locations from
+     * @param c the Context to get the file locations from
      * @return a JSONObject if there is one in this file else null
      */
     private JSONObject read(String fileName, Context c) {
         try {
             // replace fileName special characters with -
             File temp = new File(c.getFilesDir(), fileName.replaceAll("/", "-"));
-            if (!temp.exists()) {
+            if ( !temp.exists() ) {
                 return null;
             }
             FileReader r = new FileReader(temp);
             int i = 0;
             String line = "";
-            while ((i = r.read()) != -1) {
+            while ( (i = r.read()) != -1 ) {
                 line += (char) i;
             }
             return stringToJSON(line);
@@ -198,8 +199,30 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      * @throws JSONException error if it cannot convert the string to JSON
      */
     private static JSONObject stringToJSON(String t) throws JSONException {
+
+        HashMap<String, Object> map = new HashMap<>();
         t = t.replaceAll("=", ":");
         JSONObject jObject = new JSONObject(t);
+        Iterator<?> keys = jObject.keys();
+
+        while( keys.hasNext() ){
+            String key = (String)keys.next();
+            String value = jObject.getString(key);
+            // removes all JSON syntax for creating objects
+            value = value.replaceAll("\\{", "");
+            value = value.replaceAll("\\}", "");
+            value = value.replaceAll("\"", "");
+            if ( value.contains(" ") ) {
+                value = value.replaceAll(" ", "");
+            }
+            String[] split = value.split(",");
+            JSONObject child = new JSONObject();
+            for ( String s : split ) {
+                child.put(s.split(":")[0], s.split(":")[1]);
+            }
+            jObject.put(key, child);
+
+        }
 
         return jObject;
     }
@@ -208,11 +231,11 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      * Deletes a file on the phone if it exists
      *
      * @param fileName the file to delete
-     * @param c        the Context to find file location
+     * @param c the Context to find file location
      */
     public void deleteFile(String fileName, Context c) {
         File temp = new File(c.getFilesDir(), fileName.replaceAll("/", "-"));
-        if (temp.delete()) {
+        if ( temp.delete() ) {
             Log.d(TAG, "deleted " + fileName.replaceAll("/", "-"));
         }
     }
@@ -233,7 +256,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
             child.put("intentional_steps", object.getDailyIntentionalStepCount());
             tmp.put(object.getDate(), child);
             write(object.getDate(), tmp, c);
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
@@ -250,19 +273,19 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
             Log.d(TAG, "Reading from " + date);
             JSONObject tmp = read(date, c);
             int dailyStepCount = 0;
-            if (tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("steps")) {
+            if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("steps") ) {
                 dailyStepCount = tmp.getJSONObject(date).getInt("steps");
             }
             int dailyIntentionalStepCount = 0;
-            if (tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("intentional_steps")) {
+            if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("intentional_steps") ) {
                 dailyIntentionalStepCount = tmp.getJSONObject(date).getInt("intentional_steps");
             }
             int dailyStepGoal = 0;
-            if (tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("goal")) {
+            if ( tmp != null && tmp.getJSONObject(date) != null && tmp.getJSONObject(date).has("goal") ) {
                 dailyStepGoal = tmp.getJSONObject(date).getInt("goal");
             }
             return new StepDataObject(dailyStepCount, dailyIntentionalStepCount, dailyStepGoal, date);
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
         return null;

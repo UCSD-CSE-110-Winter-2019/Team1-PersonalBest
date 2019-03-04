@@ -27,3 +27,4 @@ public class MessagingServiceFactory {
         return u2 + CHAT_SEPARATOR + u1;
     }
 }
+
