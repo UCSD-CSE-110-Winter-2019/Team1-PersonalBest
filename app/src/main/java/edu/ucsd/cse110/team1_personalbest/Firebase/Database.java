@@ -5,10 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -21,6 +20,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -31,7 +31,8 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
     // Not used in this implementation
     private FirebaseFirestore db;
     private ArrayList<Observer> observers;
-    private Map<String, Object> data;
+    private User user;
+    private Map<String, User> allUsers;
     // Context needed to get files written to and from by file location
     private Context c;
     private static final String TAG = "[Database]";
@@ -43,23 +44,23 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      * @param c the Context needed to know where file locations are
      */
     public Database(Context c) {
-        //FirebaseApp.initializeApp(this);
-        //db = FirebaseFirestore.getInstance();
         observers = new ArrayList<>();
         this.c = c;
+        if ( c.getApplicationContext() != null ) {
+            FirebaseApp.initializeApp(c.getApplicationContext());
+            db = FirebaseFirestore.getInstance();
+        }
     }
 
     /**
      *
      * @param store the Firestore instance that this database
      */
-    @Deprecated
     public Database(FirebaseFirestore store) {
         db = store;
         observers = new ArrayList<>();
     }
 
-    @Deprecated
     @Override
     public void register(Observer o) {
         if ( !observers.contains(o) ) {
@@ -67,60 +68,78 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
         }
     }
 
-    @Deprecated
     @Override
     public void unregister(Observer o) {
         observers.remove(o);
     }
 
-    @Deprecated
     @Override
     public void notifyObservers() {
         for( Observer obs : observers ) {
-            obs.update(data);
+            obs.update(user);
+            obs.update(allUsers);
         }
     }
 
-
-    /**
-     * Push to a document reference and insert a Map
-     */
-    @Deprecated
-    public void push(String document, Map map) {
-        db.collection("calendar")
-                .document(document)
-                .set(map)
+    public void setUsers(Map<String, User> users) {
+        db.collection("users")
+                .document("users")
+                .set(users)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Successfully added info");
+                        Log.d(TAG, "Successfully added friends list");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding info", e);
+                        Log.d(TAG, e.getLocalizedMessage());
                     }
                 });
     }
 
-    /**
-     * Notifies observers with the Map data
-     * @param document the document location to get the object
-     */
-    @Deprecated
-    public void get(String document) {
-        db.collection("calendar")
-                .document(document)
+    public void getUsers() {
+        db.collection("users")
+                .document("users")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if ( task.isSuccessful() ) {
-                            data = task.getResult().getData();
-                            notifyObservers();
-                            Log.d(TAG, "Got document info");
-                        }
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if ( documentSnapshot == null ) return;
+                        allUsers = (Map) documentSnapshot.getData();
+                        notifyObservers();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.getLocalizedMessage());
+                    }
+                });
+    }
+
+    public void getUser(final String email) {
+        db.collection("users")
+                .document("users")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if ( documentSnapshot == null ) return;
+                        Map<String, Object> userInfo = (Map) documentSnapshot.getData().get(email);
+                        User temp = new User();
+                        temp.setName(userInfo.get("name").toString());
+                        temp.setEmail(userInfo.get("email").toString());
+                        temp.setFriends((List<String>) userInfo.get("friends"));
+                        user = temp;
+                        notifyObservers();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.getLocalizedMessage());
                     }
                 });
     }

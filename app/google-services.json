@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "260493943926",
-    "firebase_url": "https://cse110-team1.firebaseio.com",
-    "project_id": "cse110-team1",
-    "storage_bucket": "cse110-team1.appspot.com"
+    "project_number": "409757648150",
+    "firebase_url": "https://team1-personalbest.firebaseio.com",
+    "project_id": "team1-personalbest",
+    "storage_bucket": "team1-personalbest.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:260493943926:android:8ad8aa523ecacee6",
+        "mobilesdk_app_id": "1:409757648150:android:8ad8aa523ecacee6",
         "android_client_info": {
           "package_name": "edu.ucsd.cse110.team1_personalbest"
         }
       },
       "oauth_client": [
         {
-          "client_id": "260493943926-k6ov3jvrd31fct4nid8ehru7he103uj6.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "edu.ucsd.cse110.team1_personalbest",
-            "certificate_hash": "f0da5bf09870a02e667b6ad894de51ff3d2feedd"
-          }
-        },
-        {
-          "client_id": "260493943926-dhsi63gffh1cm6m8sf8n6d3utrrupcpk.apps.googleusercontent.com",
+          "client_id": "409757648150-uahlac7ffob65tajbists0gmubbs1v2t.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBb0UkyGPxhwP7HfGIJ6qH53Q9sj_n-CFA"
+          "current_key": "AIzaSyApJdQZ6jWTtma9QPfakFdvmXrzZXwUANw"
         }
       ],
       "services": {
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "260493943926-dhsi63gffh1cm6m8sf8n6d3utrrupcpk.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

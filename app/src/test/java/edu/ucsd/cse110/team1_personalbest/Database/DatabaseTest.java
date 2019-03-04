@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.team1_personalbest;
+package edu.ucsd.cse110.team1_personalbest.Database;
 
 import android.content.Context;
 
