@@ -1,11 +1,12 @@
 package edu.ucsd.cse110.team1_personalbest.Database;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
@@ -33,8 +34,10 @@ public class FirebaseTest {
     private CollectionReference mockCol;
     private DocumentReference mockRef;
     private Task<Void> mockTask;
+    private Task<DocumentSnapshot> mockTaskGet;
     private MainActivity activity;
     private Map<String, User> map = new HashMap<>();
+    private TestObserver obs;
 
     @Before
     public void setup() {
@@ -44,13 +47,19 @@ public class FirebaseTest {
         mockCol = Mockito.mock(CollectionReference.class);
         mockRef = Mockito.mock(DocumentReference.class);
         mockTask = Mockito.mock(Task.class);
+        mockTaskGet = Mockito.mock(Task.class);
 
         Mockito.when(mockFirestore.collection("users")).thenReturn(mockCol);
         Mockito.when(mockCol.document("users")).thenReturn(mockRef);
         Mockito.when(mockRef.set(map)).thenReturn(mockTask);
         Mockito.when(mockTask.addOnSuccessListener(any())).thenReturn(mockTask);
         Mockito.when(mockTask.addOnFailureListener(any())).thenReturn(mockTask);
-        Mockito.when(mockRef.get()).thenReturn(any());
+        Mockito.when(mockRef.get()).thenReturn(mockTaskGet);
+        Mockito.when(mockTaskGet.addOnSuccessListener(any())).thenReturn(mockTaskGet);
+        Mockito.when(mockTaskGet.addOnFailureListener(any())).thenReturn(mockTaskGet);
+
+        obs = new TestObserver();
+        db.register(obs);
     }
 
     @After
@@ -62,6 +71,12 @@ public class FirebaseTest {
     public void testPush() {
         db.setUsers(map);
         Mockito.verify(mockFirestore.collection("users").document("users")).set(map);
+    }
+
+    @Test
+    public void testGet() {
+        db.getUsers();
+        Mockito.verify(mockFirestore.collection("users").document("users")).get();
     }
 
     private void checkFriends() {
