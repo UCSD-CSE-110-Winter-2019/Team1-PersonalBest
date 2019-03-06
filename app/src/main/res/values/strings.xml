@@ -21,4 +21,10 @@
     <string name="time_elapsed">Time Elapsed</string>
     <string name="set_new_goal">Set New Goal</string>
     <string name="friends">Friends</string>
+    <string name="back">Back</string>
+    <string name="add_friend">Add Friend</string>
+    <string name="title_activity_friends_list">FriendsListActivity</string>
+    <string name="friend_email">"Friend's Email"</string>
+    <string name="send">Send</string>
+    <string name="enter_friend_email">"Enter Friend's Email"</string>
 </resources>
