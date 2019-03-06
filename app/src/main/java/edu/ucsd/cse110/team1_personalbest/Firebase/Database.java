@@ -61,6 +61,10 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
         observers = new ArrayList<>();
     }
 
+    public FirebaseFirestore getDatabase() {
+        return db;
+    }
+
     @Override
     public void register(Observer o) {
         if ( !observers.contains(o) ) {
