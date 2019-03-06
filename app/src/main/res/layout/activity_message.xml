@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.MessageActivity">
+
+    <TextView
+        android:id="@+id/messageTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:text="@string/message"
+        android:textSize="27sp"
+        android:textStyle="bold"
+        />
+
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/text_message"
+        android:layout_below="@+id/messageTitle"
+        android:background="#ECEFF1"
+        android:fillViewport="true"
+        android:overScrollMode="always">
+
+        <TextView
+            android:id="@+id/chat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="message will appear here"
+            android:padding="10dp"
+            android:scrollbars="vertical" />
+    </ScrollView>
+
+    <EditText
+        android:id="@+id/text_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/buttonSendMessage"
+        android:layout_margin="10dp"
+        android:hint="message" />
+
+    <Button
+        android:id="@+id/buttonCancelMessage"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="0dp"
+        android:text="@string/cancel"
+        android:backgroundTint="#00BCD4"
+        android:textColor="#ffffff"
+        />
+
+    <Button
+        android:id="@+id/buttonSendMessage"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="0dp"
+        android:text="@string/send"
+        android:backgroundTint="#F44336"
+        android:textColor="#ffffff"
+        />
+
+</RelativeLayout>
+

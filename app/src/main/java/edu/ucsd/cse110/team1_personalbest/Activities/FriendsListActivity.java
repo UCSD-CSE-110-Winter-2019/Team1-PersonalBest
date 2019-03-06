@@ -32,6 +32,16 @@ public class FriendsListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        /* Will delete this part after finishing list view*/
+        Button btnToAct = (Button) findViewById(R.id.buttonTestToActivity);
+        btnToAct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ActivityOfFriendActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 }

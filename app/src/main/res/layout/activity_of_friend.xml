@@ -4,31 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.FriendsListActivity"
+    tools:context=".Activities.ActivityOfFriendActivity"
     android:gravity="center_horizontal"
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/FriendsList"
+        android:id="@+id/Activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:text="@string/friends"
+        android:layout_marginTop="40dp"
+        android:text="@string/Activity"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        />
+
 
     <Button
-        android:id="@+id/buttonAddFriend"
+        android:id="@+id/buttonToMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="@string/add_friend"
+        android:text="@string/send_message"
         android:backgroundTint="#F44336"
         android:textColor="#ffffff"
         />
 
     <Button
-        android:id="@+id/buttonBackMain"
+        android:id="@+id/buttonBackFriendList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -37,14 +39,5 @@
         android:textColor="#ffffff"
         />
 
-    <Button
-        android:id="@+id/buttonTestToActivity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="ToActivity"
-        android:backgroundTint="#4CAF50"
-        android:textColor="#ffffff"
-        />
 
 </LinearLayout>
