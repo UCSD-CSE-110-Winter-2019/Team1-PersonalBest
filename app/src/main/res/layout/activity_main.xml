@@ -68,4 +68,14 @@
         android:text="@string/set_new_goal"
         />
 
+    <Button
+        android:id="@+id/buttonFriends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/friends"
+        android:backgroundTint="#3F51B5"
+        android:textColor="#ffffff"
+        />
+
 </LinearLayout>

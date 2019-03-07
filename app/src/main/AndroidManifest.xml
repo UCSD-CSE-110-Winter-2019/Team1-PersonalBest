@@ -13,6 +13,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Activities.ActivityOfFriendActivity"></activity>
+        <activity android:name=".Activities.MessageActivity" />
+        <activity android:name=".Activities.AddFriendActivity" />
+        <activity
+            android:name=".Activities.FriendsListActivity"
+            android:label="@string/title_activity_friends_list"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +32,7 @@
         <activity android:name=".SetNewGoalActivity" />
         <activity android:name=".CustomGoalActivity" />
         <activity android:name=".HistoryActivity" />
-        <activity android:name=".Activities.MainActivityGraph"></activity>
+        <activity android:name=".Activities.MainActivityGraph" />
     </application>
 
 </manifest>
