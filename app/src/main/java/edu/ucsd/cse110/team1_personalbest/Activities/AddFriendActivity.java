@@ -1,10 +1,12 @@
 package edu.ucsd.cse110.team1_personalbest.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import edu.ucsd.cse110.team1_personalbest.R;
 
@@ -19,8 +21,12 @@ public class AddFriendActivity extends AppCompatActivity {
         btnSendFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), FriendsListActivity.class);
-                startActivity(intent);
+                Context context = getApplicationContext();
+                CharSequence text = "Send a friend request";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
             }
         });
 
