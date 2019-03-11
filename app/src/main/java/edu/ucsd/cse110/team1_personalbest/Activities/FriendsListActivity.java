@@ -4,16 +4,34 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 import edu.ucsd.cse110.team1_personalbest.R;
 
 public class FriendsListActivity extends AppCompatActivity {
+    ArrayList <String> FriendsList = new ArrayList<String> ();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
+
+        // Add a friend into friend's list here (e.g., FriendsList.add("Alice");)
+        /*
+        FriendsList.add("AAA");
+        FriendsList.add("CCC");
+        FriendsList.add("BBB");
+        FriendsList.add("DDD");
+        */
+
+        Collections.sort(FriendsList);
 
         Button btnAddFriends = (Button) findViewById(R.id.buttonAddFriend);
         btnAddFriends.setOnClickListener(new View.OnClickListener() {
@@ -33,15 +51,20 @@ public class FriendsListActivity extends AppCompatActivity {
             }
         });
 
-        /* Will delete this part after finishing list view*/
-        Button btnToAct = (Button) findViewById(R.id.buttonTestToActivity);
-        btnToAct.setOnClickListener(new View.OnClickListener() {
+        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_listview, FriendsList);
+        ListView listView = (ListView) findViewById(R.id.friends_list);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String name = ((TextView) view).getText().toString();
                 Intent intent = new Intent(getApplicationContext(), ActivityOfFriendActivity.class);
+                intent.putExtra("name", name);
                 startActivity(intent);
             }
         });
     }
+
 
 }

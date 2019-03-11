@@ -1,50 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:clickable="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.FriendsListActivity"
-    android:gravity="center_horizontal"
-    android:orientation="vertical" >
+    tools:context=".Activities.MessageActivity">
 
     <TextView
         android:id="@+id/FriendsList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="center_horizontal"
         android:text="@string/friends"
-        android:textSize="20sp"
+        android:textSize="25sp"
         android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/buttonAddFriend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="@string/add_friend"
-        android:backgroundTint="#F44336"
-        android:textColor="#ffffff"
-        />
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/buttonBackMain"
+        android:layout_below="@+id/FriendsList"
+        android:background="#ECEFF1"
+        android:fillViewport="true"
+        android:layout_marginTop="10dp"
+        android:overScrollMode="always">
+
+        <ListView
+            android:id="@+id/friends_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10sp">
+        </ListView>
+
+    </ScrollView>
 
     <Button
         android:id="@+id/buttonBackMain"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="0dp"
         android:text="@string/back"
         android:backgroundTint="#00BCD4"
         android:textColor="#ffffff"
         />
 
     <Button
-        android:id="@+id/buttonTestToActivity"
-        android:layout_width="wrap_content"
+        android:id="@+id/buttonAddFriend"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="ToActivity"
-        android:backgroundTint="#4CAF50"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="0dp"
+        android:text="@string/add_friend"
+        android:backgroundTint="#F44336"
         android:textColor="#ffffff"
         />
 
-</LinearLayout>
+</RelativeLayout>
+

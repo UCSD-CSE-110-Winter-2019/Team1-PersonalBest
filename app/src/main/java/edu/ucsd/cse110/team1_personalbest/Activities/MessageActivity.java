@@ -14,6 +14,8 @@ public class MessageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+        Intent i = getIntent();
+        String name = i.getStringExtra("name" );
 
         Button btnSendMessage = (Button) findViewById(R.id.buttonSendMessage);
         Button btnCancelMessage = (Button) findViewById(R.id.buttonCancelMessage);
@@ -29,6 +31,7 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ActivityOfFriendActivity.class);
+                intent.putExtra("name", name);
                 startActivity(intent);
             }
         });
