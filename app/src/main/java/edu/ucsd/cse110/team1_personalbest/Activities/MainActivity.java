@@ -1,8 +1,13 @@
 package edu.ucsd.cse110.team1_personalbest.Activities;
 
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -113,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         btnStartWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 launchStepCountActivity();
             }
         });
@@ -178,6 +184,11 @@ public class MainActivity extends AppCompatActivity {
 
         String steps = current_step_view.getText().toString();
         int currSteps = Integer.parseInt(steps);
+
+        TextView stepGoal = findViewById(R.id.step_goal_view);
+        int currentGoal = Integer.parseInt(stepGoal.getText().toString());
+
+        metGoalNotification(currSteps,currentGoal);
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
@@ -257,13 +268,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void setGoal(){
 
-        TextView stepGoal = findViewById(R.id.step_goal_view);
-        String currentGoal = stepGoal.getText().toString();
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String today = format.format(date);
         IDataObject result = db.readDataObject(today);
+
+        TextView stepGoal = findViewById(R.id.step_goal_view);
 
         if(result.getDailyStepGoal() == 0){
             //store initial goal
@@ -284,5 +295,36 @@ public class MainActivity extends AppCompatActivity {
     public void setDataBase(StepDataObject day1, StepDataObject day2) {
         db.putDataObject(day1);
         db.putDataObject(day2);
+    }
+
+    public void metGoalNotification(int step, int goal){
+        if(step >= goal)
+            setMetGoalNotification();
+    }
+
+    public void setMetGoalNotification(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "notification";
+            String description = "goal notification";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(TAG, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getBaseContext(), TAG)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentTitle("Good Job!")
+                .setContentText("You met the goal!")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        Intent notificationIntent = new Intent(getBaseContext(), SetNewGoalActivity.class);
+        PendingIntent contentIntent = (PendingIntent) PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, builder.build());
+        Toast.makeText(getBaseContext(), "show goal notification", Toast.LENGTH_LONG).show();
     }
 }
