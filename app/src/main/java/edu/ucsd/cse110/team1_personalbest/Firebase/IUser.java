@@ -15,6 +15,14 @@ public interface IUser {
 
     List<String> getFriends();
 
+    List<String> getPendingRequests();
+
+    void removeRequest(User user);
+
+    void setRequests(List<String> requests);
+
+    void sendRequest(User user);
+
     void addFriend(User user);
 
     void setFriends(List<String> friends);

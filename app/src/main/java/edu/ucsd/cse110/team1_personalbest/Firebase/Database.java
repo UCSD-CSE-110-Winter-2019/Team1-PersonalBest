@@ -92,7 +92,25 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "Successfully added friends list");
+                        Log.d(TAG, "Successfully added users");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.getLocalizedMessage());
+                    }
+                });
+    }
+
+    public void setUser(Map<String, Object> user) {
+        db.collection("users")
+                .document("users")
+                .update(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "Successfully added user");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -136,6 +154,7 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
                         temp.setName(userInfo.get("name").toString());
                         temp.setEmail(userInfo.get("email").toString());
                         temp.setFriends((List<String>) userInfo.get("friends"));
+                        temp.setRequests((List<String>) userInfo.get("pendingRequests"));
                         user = temp;
                         notifyObservers();
                     }

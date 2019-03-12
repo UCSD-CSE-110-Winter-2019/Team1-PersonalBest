@@ -77,8 +77,8 @@ public class FirebaseTest {
         Mockito.verify(mockFirestore.collection("users").document("users")).get();
     }
 
+    // example of how to use Firestore
     private void checkFriends() {
-
         TestIDatabaseObserver obs = new TestIDatabaseObserver();
         db.register(obs);
 
@@ -107,6 +107,14 @@ public class FirebaseTest {
         db.setUsers(users);
         db.getUser("test2@gmail.com");
         db.getUsers();
+
+        // single user push
+        Map<String, Object> user = new HashMap<>();
+        User test = new User();
+        test.setName("test");
+        test.setEmail("foo@ucsd.edu");
+        user.put(test.getEmail(), test);
+        db.setUser(user);
     }
 
 }
