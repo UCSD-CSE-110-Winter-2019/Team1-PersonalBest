@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class GoogleFitnessObserverTest {
+public class GoogleFitnessIDatabaseObserverTest {
     private static final String TEST_SERVICE = "TEST_SERVICE";
     private FitnessObserver observer;
     @Mock

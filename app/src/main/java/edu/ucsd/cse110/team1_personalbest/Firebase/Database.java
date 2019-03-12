@@ -26,11 +26,11 @@ import java.util.Map;
 /*
     Database class stores the IDataObject into JSON files for easy read and write access.
  */
-public class Database extends AppCompatActivity implements Subject, IDatabase {
+public class Database extends AppCompatActivity implements IDatabaseSubject, IDatabase {
 
     // Not used in this implementation
     private FirebaseFirestore db;
-    private ArrayList<Observer> observers;
+    private ArrayList<IDatabaseObserver> IDatabaseObservers;
     private User user;
     private Map<String, User> allUsers;
     // Context needed to get files written to and from by file location
@@ -44,7 +44,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      * @param c the Context needed to know where file locations are
      */
     public Database(Context c) {
-        observers = new ArrayList<>();
+        IDatabaseObservers = new ArrayList<>();
         this.c = c;
         if ( c.getApplicationContext() != null ) {
             FirebaseApp.initializeApp(c.getApplicationContext());
@@ -58,7 +58,7 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
      */
     public Database(FirebaseFirestore store) {
         db = store;
-        observers = new ArrayList<>();
+        IDatabaseObservers = new ArrayList<>();
     }
 
     public FirebaseFirestore getDatabase() {
@@ -66,20 +66,20 @@ public class Database extends AppCompatActivity implements Subject, IDatabase {
     }
 
     @Override
-    public void register(Observer o) {
-        if ( !observers.contains(o) ) {
-            observers.add(o);
+    public void register(IDatabaseObserver o) {
+        if ( !IDatabaseObservers.contains(o) ) {
+            IDatabaseObservers.add(o);
         }
     }
 
     @Override
-    public void unregister(Observer o) {
-        observers.remove(o);
+    public void unregister(IDatabaseObserver o) {
+        IDatabaseObservers.remove(o);
     }
 
     @Override
     public void notifyObservers() {
-        for( Observer obs : observers ) {
+        for( IDatabaseObserver obs : IDatabaseObservers) {
             obs.update(user);
             obs.update(allUsers);
         }
