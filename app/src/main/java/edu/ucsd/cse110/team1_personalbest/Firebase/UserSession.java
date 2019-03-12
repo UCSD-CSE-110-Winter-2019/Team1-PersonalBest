@@ -2,12 +2,18 @@ package edu.ucsd.cse110.team1_personalbest.Firebase;
 
 import android.app.Activity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import edu.ucsd.cse110.team1_personalbest.Login.Adapters.GoogleLogInService;
 
 public class UserSession {
     private static User user;
     private static IDatabase database;
     private static IDatabaseObserver observer;
+    private static Map<String, User> users;
 
     public static boolean isSetup() {
         return user != null;
@@ -20,22 +26,51 @@ public class UserSession {
         user.setEmail(userEmail);
         IDatabaseObserver obs = new UserSessionUpdater();
         database.register(obs);
+
+        database.getUser(userEmail);
+        database.getUsers();
     }
 
-    public static void updateUserObject() {
+    public static void updateCurrentUserObject() {
         database.getUser(user.getEmail());
     }
+    public static void updateAllUsers() {
+        database.getUsers();
+    }
 
-    public static User getUser() {
+    public static User getCurrentUser() {
         return user;
     }
 
-    protected static void setUser(final User newUser) {
+    public static User getUser(String email) {
+        return users.get(email);
+    }
+
+    protected static void setCurrentUser(final User newUser) {
         user = newUser;
     }
 
-    public void writeUserToDB() {
-        // add logic here
+    public static void writeUserToDB(final User user) {
+        HashMap<String,Object> map = new HashMap<>();
+        map.put(user.getEmail(), user);
+        database.setUser(map);
+    }
+
+    public void addFriend(String email) {
+        User newFriend = users.get(email);
+        if (newFriend.getPendingRequests().contains(user.getEmail())) {
+            user.addFriend(newFriend);
+            newFriend.addFriend(user);
+            newFriend.removeRequest(user);
+            writeUserToDB(newFriend);
+        } else {
+            user.sendRequest(users.get(email));
+        }
+        writeUserToDB(user);
+    }
+
+    protected static void setUsers(final Map<String,User> userList) {
+        users = userList;
     }
 
     /**
@@ -44,6 +79,6 @@ public class UserSession {
      */
     @Override
     public void finalize() {
-        this.writeUserToDB();
+        writeUserToDB(user);
     }
 }

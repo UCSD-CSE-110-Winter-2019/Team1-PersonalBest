@@ -5,11 +5,11 @@ import java.util.Map;
 public class UserSessionUpdater implements IDatabaseObserver {
     @Override
     public void update(User user) {
-        UserSession.setUser(user);
+        UserSession.setCurrentUser(user);
     }
 
     @Override
     public void update(Map<String, User> allUsers) {
-
+        UserSession.setUsers(allUsers);
     }
 }

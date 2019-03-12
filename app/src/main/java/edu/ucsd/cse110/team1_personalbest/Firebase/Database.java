@@ -85,6 +85,7 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
         }
     }
 
+    @Override
     public void setUsers(Map<String, User> users) {
         db.collection("users")
                 .document("users")
