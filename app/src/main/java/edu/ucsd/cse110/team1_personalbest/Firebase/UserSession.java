@@ -46,8 +46,9 @@ public class UserSession {
         return users.get(email);
     }
 
-    protected static void setCurrentUser(final User newUser) {
+    public static void setCurrentUser(final User newUser) {
         user = newUser;
+        writeUserToDB(user);
     }
 
     public static void writeUserToDB(final User user) {
