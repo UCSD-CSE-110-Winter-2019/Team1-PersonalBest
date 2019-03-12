@@ -6,8 +6,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +19,7 @@ import java.util.Map;
 
 import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
-import edu.ucsd.cse110.team1_personalbest.Firebase.TestObserver;
+import edu.ucsd.cse110.team1_personalbest.Firebase.TestIDatabaseObserver;
 import edu.ucsd.cse110.team1_personalbest.Firebase.User;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -37,7 +35,7 @@ public class FirebaseTest {
     private Task<DocumentSnapshot> mockTaskGet;
     private MainActivity activity;
     private Map<String, User> map = new HashMap<>();
-    private TestObserver obs;
+    private TestIDatabaseObserver obs;
 
     @Before
     public void setup() {
@@ -58,7 +56,7 @@ public class FirebaseTest {
         Mockito.when(mockTaskGet.addOnSuccessListener(any())).thenReturn(mockTaskGet);
         Mockito.when(mockTaskGet.addOnFailureListener(any())).thenReturn(mockTaskGet);
 
-        obs = new TestObserver();
+        obs = new TestIDatabaseObserver();
         db.register(obs);
     }
 
@@ -81,7 +79,7 @@ public class FirebaseTest {
 
     // example of how to use Firestore
     private void checkFriends() {
-        TestObserver obs = new TestObserver();
+        TestIDatabaseObserver obs = new TestIDatabaseObserver();
         db.register(obs);
 
         Map<String, User> users = new HashMap<>();
