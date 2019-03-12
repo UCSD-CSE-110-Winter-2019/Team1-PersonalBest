@@ -3,6 +3,7 @@ package edu.ucsd.cse110.team1_personalbest.Login.Adapters;
 import android.app.Activity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.Scope;
@@ -52,5 +53,13 @@ public class GoogleLogInService implements LoginService {
     @Override
     public boolean isLoggedIn() {
         return GoogleSignIn.getLastSignedInAccount(this.activity) != null;
+    }
+
+    public static String getLastLoggedInAccount(final Activity activity) {
+        GoogleSignInAccount gsa = GoogleSignIn.getLastSignedInAccount(activity);
+        if (gsa!=null) {
+            return gsa.getEmail();
+        }
+        return "";
     }
 }
