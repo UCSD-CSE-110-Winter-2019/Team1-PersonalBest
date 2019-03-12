@@ -7,15 +7,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,7 +37,6 @@ import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
 import edu.ucsd.cse110.team1_personalbest.Login.Permissions;
 import edu.ucsd.cse110.team1_personalbest.R;
-import edu.ucsd.cse110.team1_personalbest.SetGoalOptionActivity;
 import edu.ucsd.cse110.team1_personalbest.SetNewGoalActivity;
 
 public class MainActivity extends AppCompatActivity {

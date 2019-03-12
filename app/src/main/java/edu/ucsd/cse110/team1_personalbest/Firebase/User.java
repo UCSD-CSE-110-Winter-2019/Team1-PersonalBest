@@ -10,10 +10,12 @@ public class User implements IUser {
     private String name;
     private String email;
     private List<String> friends;
+    private List<String> friendRequests;
     Map<String, Map<String, Integer>> graphData;
 
     public User() {
         friends = new ArrayList<>();
+        friendRequests = new ArrayList<>();
         graphData = new HashMap<>();
     }
 
@@ -51,6 +53,28 @@ public class User implements IUser {
     @Override
     public List<String> getFriends() {
         return friends;
+    }
+
+    @Override
+    public List<String> getPendingRequests() {
+        return friendRequests;
+    }
+
+    @Override
+    public void removeRequest(User user) {
+        friendRequests.remove(user.getEmail());
+    }
+
+    @Override
+    public void setRequests(List<String> requests) {
+        this.friendRequests = requests;
+    }
+
+    @Override
+    public void sendRequest(User user) {
+        if ( !friendRequests.contains(user.getEmail()) ) {
+            friendRequests.add(user.getEmail());
+        }
     }
 
     @Override
