@@ -14,8 +14,4 @@ public class TestLoginService implements LoginService {
         return true;
     }
 
-    @Override
-    public String getLastLoggedInAccount() {
-        return null;
-    }
 }
