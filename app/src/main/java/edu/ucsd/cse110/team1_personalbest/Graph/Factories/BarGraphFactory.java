@@ -74,7 +74,7 @@ public class BarGraphFactory implements GraphFactory {
         });
         graph.addSeries(series);
         graph.addSeries(series2);
-        graph.setTitle("Weekly Steps");
+        graph.setTitle("Monthly Steps");
         series2.setColor(Color.BLUE);
         series.setColor(Color.GREEN);
         series.setTitle("Daily Steps");
@@ -104,17 +104,7 @@ public class BarGraphFactory implements GraphFactory {
         graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
 
 // styling
-        series.setValueDependentColor(new ValueDependentColor<DataPoint>() {
-            @Override
-            public int get(DataPoint data) {
-
-                if (data.getY() < STEPGOAL){
-
-                    return Color.RED;
-                }
-                return Color.GREEN;
-            }
-        });
+        series.setColor(Color.GREEN);
         series.setDataWidth(0.6);
         series.setSpacing(5);
         series.setDrawValuesOnTop(true);
