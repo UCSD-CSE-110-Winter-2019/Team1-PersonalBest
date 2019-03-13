@@ -17,6 +17,7 @@ public class AddFriendActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend);
 
+
         Button btnSendFriends = (Button) findViewById(R.id.buttonSendFriends);
         btnSendFriends.setOnClickListener(new View.OnClickListener() {
             @Override

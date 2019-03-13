@@ -25,6 +25,8 @@ import edu.ucsd.cse110.team1_personalbest.Encouragement;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.User;
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.TestFitnessService;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         if (TESTMODE) {
             Toast.makeText(this, "testmode", Toast.LENGTH_LONG).show();
@@ -194,13 +197,14 @@ public class MainActivity extends AppCompatActivity {
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String preDate = format.format(date);
         IDataObject result = db.readDataObject(preDate);
-
+//        UserSession.setup(this);
+//        User currUser = UserSession.getCurrentUser();
 
         if (result != null) {
             int previousSteps = result.getDailyStepCount();
 
             if(previousSteps != 0)
-                if( currSteps >= 1.4 * previousSteps ) {
+                if( currSteps >= 1.4 * previousSteps) {
                     Encouragement enc = new Encouragement(this);
                     enc.showEncouragement(previousSteps, currSteps);
                 }
