@@ -83,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-        if (enable_firestore)
-            UserSession.setup(this);
 
         db = new Database(getApplicationContext());
 
@@ -116,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
         if (loginService.login()) {
             Log.i(TAG, "Login Successful \n Attempting fitness service setup...");
             setUpFitnessService();
+            if (enable_firestore)
+                UserSession.setup(this);
         }
 
         Button btnStartWalk = findViewById(R.id.buttonStartWalk);

@@ -64,9 +64,11 @@ public class UserSession {
     }
 
     public static void writeUserToDB(final User user) {
-        HashMap<String,Object> map = new HashMap<>();
-        map.put(user.getEmail(), user);
-        database.setUser(map);
+        if (user.getEmail() != null) {
+            HashMap<String, Object> map = new HashMap<>();
+            map.put(user.getEmail(), user);
+            database.setUser(map);
+        }
     }
 
     public static void addFriend(String email) {
