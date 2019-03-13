@@ -30,6 +30,7 @@ public class MainActivityGraph extends AppCompatActivity {
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar calendar = Calendar.getInstance();
         Date d7 = calendar.getTime();
+
         calendar.add(Calendar.DATE,-1);
         Date d6 = calendar.getTime();
         calendar.add(Calendar.DATE,-1);
@@ -42,6 +43,7 @@ public class MainActivityGraph extends AppCompatActivity {
         Date d2 = calendar.getTime();
         calendar.add(Calendar.DATE,-1);
         Date d1 = calendar.getTime();
+
         setContentView(R.layout.activity_main_graph);
 
         BarGraphFactory factory = new BarGraphFactory();
@@ -67,15 +69,21 @@ public class MainActivityGraph extends AppCompatActivity {
         result = db.readDataObject(format.format(d1));
         int d1Steps = result.getDailyStepCount();
         int d1IntentionalSteps = result.getDailyIntentionalStepCount();
-        int[] dailySteps = {d1Steps,d2Steps,d3Steps,d4Steps,d5Steps,d6Steps,d7Steps};
-        int[] intentionalSteps = {d1IntentionalSteps,d2IntentionalSteps,d3IntentionalSteps,
-                d4IntentionalSteps,d5IntentionalSteps,d6IntentionalSteps,d7IntentionalSteps};
-        for(int i:dailySteps){
-            totalSteps += i;
-        }
-        TextView weeklySteps = findViewById(R.id.WeeklyStepsText);
-        String weeklyStepsInt = Integer.toString(totalSteps);
-        weeklySteps.setText("Weekly Steps: " + weeklyStepsInt);
+        //int[] dailySteps = {d1Steps,d2Steps,d3Steps,d4Steps,d5Steps,d6Steps,d7Steps};
+        //int[] intentionalSteps = {d1IntentionalSteps,d2IntentionalSteps,d3IntentionalSteps,
+        //        d4IntentionalSteps,d5IntentionalSteps,d6IntentionalSteps,d7IntentionalSteps};
+
+        //For Testing only
+        int[] dailySteps = {2000,3000,4000,3000,1500,1000,1500};
+        int[] intentionalSteps = {1000,1400,3000,2700,1400,0,700};
+        DateFormat forTextView = new SimpleDateFormat("MM/dd");
+
+        String endDate = forTextView.format(d7);
+        String startDate = forTextView.format(d1);
+        TextView dateText = findViewById(R.id.WeeklyStepsText);
+        String dates = (startDate + " - " + endDate);
+        dateText.setText(dates);
+
         GraphView graph = findViewById(R.id.weeklyBarGraph);
 
         factory.makeGraph(goal,intentionalSteps,dailySteps,graph);
