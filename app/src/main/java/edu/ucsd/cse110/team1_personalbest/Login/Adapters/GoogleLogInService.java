@@ -1,9 +1,12 @@
 package edu.ucsd.cse110.team1_personalbest.Login.Adapters;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.Scope;
@@ -29,6 +32,16 @@ public class GoogleLogInService implements LoginService {
 
     @Override
     public boolean login() {
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this.activity, gso);
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        this.activity.startActivityForResult(signInIntent, 50);
+
+        Log.d("Test", "Signing in");
         final FitnessOptions fitnessOptions = FitnessOptions.builder()
                 .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
                 .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
