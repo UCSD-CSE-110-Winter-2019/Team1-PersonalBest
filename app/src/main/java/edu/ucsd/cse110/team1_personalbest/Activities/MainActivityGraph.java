@@ -67,9 +67,13 @@ public class MainActivityGraph extends AppCompatActivity {
         result = db.readDataObject(format.format(d1));
         int d1Steps = result.getDailyStepCount();
         int d1IntentionalSteps = result.getDailyIntentionalStepCount();
-        int[] dailySteps = {d1Steps,d2Steps,d3Steps,d4Steps,d5Steps,d6Steps,d7Steps};
-        int[] intentionalSteps = {d1IntentionalSteps,d2IntentionalSteps,d3IntentionalSteps,
-                d4IntentionalSteps,d5IntentionalSteps,d6IntentionalSteps,d7IntentionalSteps};
+        //int[] dailySteps = {d1Steps,d2Steps,d3Steps,d4Steps,d5Steps,d6Steps,d7Steps};
+        //int[] intentionalSteps = {d1IntentionalSteps,d2IntentionalSteps,d3IntentionalSteps,
+        //        d4IntentionalSteps,d5IntentionalSteps,d6IntentionalSteps,d7IntentionalSteps};
+
+        //For Testing only
+        int[] dailySteps = {2000,3000,4000,3000,1500,1000,1500,2000,3000,4000,3000,1500,1000,1500};
+        int[] intentionalSteps = {1000,1400,3000,2700,1400,0,700,1000,1400,3000,2700,1400,0,700};
         for(int i:dailySteps){
             totalSteps += i;
         }
