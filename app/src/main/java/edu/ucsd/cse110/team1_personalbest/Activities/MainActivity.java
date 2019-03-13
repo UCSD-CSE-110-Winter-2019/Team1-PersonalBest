@@ -25,6 +25,7 @@ import edu.ucsd.cse110.team1_personalbest.Encouragement;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.TestFitnessService;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        UserSession.setup(this);
         if (TESTMODE) {
             Toast.makeText(this, "testmode", Toast.LENGTH_LONG).show();
             setKeys("TEST", "TEST");
