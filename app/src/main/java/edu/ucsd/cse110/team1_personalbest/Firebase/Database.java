@@ -156,12 +156,26 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if ( documentSnapshot == null ) return;
-                        Map<String, Object> userInfo = (Map) documentSnapshot.getData().get(email);
+                        if ( !email.contains("\\.") ) {
+                            return;
+                        }
+                        Map<String, Object> mapTemp = (Map) documentSnapshot.getData().get(email.split("\\.")[0]);
+                        if ( mapTemp == null ) return;
+                        Map<String, Object> userInfo = (Map) mapTemp.get(email.split("\\.")[1]);
+                        if ( userInfo == null ) return;
                         User temp = new User();
-                        temp.setName(userInfo.get("name").toString());
-                        temp.setEmail(userInfo.get("email").toString());
-                        temp.setFriends((List<String>) userInfo.get("friends"));
-                        temp.setRequests((List<String>) userInfo.get("pendingRequests"));
+                        if ( userInfo.containsKey("name") ) {
+                            temp.setName(userInfo.get("name").toString());
+                        }
+                        if ( userInfo.containsKey("email") ) {
+                            temp.setEmail(userInfo.get("email").toString());
+                        }
+                        if ( userInfo.containsKey("friends") ) {
+                            temp.setFriends((List<String>) userInfo.get("friends"));
+                        }
+                        if ( userInfo.containsKey("pendingRequests") ) {
+                            temp.setRequests((List<String>) userInfo.get("pendingRequests"));
+                        }
                         user = temp;
                         notifyObservers();
                     }
