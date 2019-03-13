@@ -30,6 +30,7 @@ public class MainActivityGraph extends AppCompatActivity {
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar calendar = Calendar.getInstance();
         Date d7 = calendar.getTime();
+
         calendar.add(Calendar.DATE,-1);
         Date d6 = calendar.getTime();
         calendar.add(Calendar.DATE,-1);
@@ -42,6 +43,8 @@ public class MainActivityGraph extends AppCompatActivity {
         Date d2 = calendar.getTime();
         calendar.add(Calendar.DATE,-1);
         Date d1 = calendar.getTime();
+        String endDate = d7.toString();
+        String startDate = d1.toString();
         setContentView(R.layout.activity_main_graph);
 
         BarGraphFactory factory = new BarGraphFactory();
@@ -72,8 +75,8 @@ public class MainActivityGraph extends AppCompatActivity {
         //        d4IntentionalSteps,d5IntentionalSteps,d6IntentionalSteps,d7IntentionalSteps};
 
         //For Testing only
-        int[] dailySteps = {2000,3000,4000,3000,1500,1000,1500,2000,3000,4000,3000,1500,1000,1500};
-        int[] intentionalSteps = {1000,1400,3000,2700,1400,0,700,1000,1400,3000,2700,1400,0,700};
+        int[] dailySteps = {2000,3000,4000,3000,1500,1000,1500};
+        int[] intentionalSteps = {1000,1400,3000,2700,1400,0,700};
         for(int i:dailySteps){
             totalSteps += i;
         }
