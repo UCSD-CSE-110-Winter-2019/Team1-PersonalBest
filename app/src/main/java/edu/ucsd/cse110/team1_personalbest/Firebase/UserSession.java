@@ -64,17 +64,18 @@ public class UserSession {
 
     public static void addFriend(String email) {
         User newFriend = users.get(email);
+        if (newFriend == null) return;
         if (newFriend.getPendingRequests().contains(user.getEmail())) {
             user.addFriend(newFriend);
             newFriend.addFriend(user);
             newFriend.removeRequest(user);
             writeUserToDB(newFriend);
-            FirestoreMessagingAdapter.subscribe(activity,
-                    MessagingServiceFactory.getConversationKey(user.getEmail(),
-                            newFriend.getEmail()));
         } else {
             user.sendRequest(users.get(email));
         }
+        FirestoreMessagingAdapter.subscribe(activity,
+                MessagingServiceFactory.getConversationKey(user.getEmail(),
+                        newFriend.getEmail()));
         writeUserToDB(user);
     }
 
