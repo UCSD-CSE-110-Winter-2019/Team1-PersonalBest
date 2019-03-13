@@ -55,6 +55,7 @@ public class SetNewGoalActivityTest {
 
     @Before
     public void setUp() throws Exception {
+        MainActivity.enable_firestore = false;
         service = Mockito.mock(FitnessService.class);
         loginService = Mockito.mock(LoginService.class);
         LocalPermissionGranter granter = new LocalPermissionGranter();
