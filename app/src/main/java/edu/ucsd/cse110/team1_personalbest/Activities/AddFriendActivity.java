@@ -18,7 +18,7 @@ public class AddFriendActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend);
-        UserSession.setup(this);
+        if (MainActivity.enable_firestore) UserSession.setup(this);
         Button btnSendFriends = (Button) findViewById(R.id.buttonSendFriends);
         EditText email = findViewById(R.id.enterEmail);
         btnSendFriends.setOnClickListener(new View.OnClickListener() {
