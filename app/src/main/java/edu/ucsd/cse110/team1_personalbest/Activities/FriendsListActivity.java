@@ -12,16 +12,25 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import edu.ucsd.cse110.team1_personalbest.Firebase.User;
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.R;
 
 public class FriendsListActivity extends AppCompatActivity {
-    ArrayList <String> FriendsList = new ArrayList<String> ();
+    private List<String> FriendsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
+
+        UserSession.setup(this);
+
+
+        User cur = UserSession.getCurrentUser();
+        this.FriendsList = cur.getFriends();
 
         // Add a friend into friend's list here (e.g., FriendsList.add("Alice");)
         /*
