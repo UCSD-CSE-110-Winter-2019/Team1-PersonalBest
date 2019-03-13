@@ -76,9 +76,6 @@ public class MainActivityGraph extends AppCompatActivity {
         //For Testing only
         int[] dailySteps = {2000,3000,4000,3000,1500,1000,1500};
         int[] intentionalSteps = {1000,1400,3000,2700,1400,0,700};
-        /*for(int i:dailySteps){
-            totalSteps += i;
-        }*/
         DateFormat forTextView = new SimpleDateFormat("MM/dd");
 
         String endDate = forTextView.format(d7);
