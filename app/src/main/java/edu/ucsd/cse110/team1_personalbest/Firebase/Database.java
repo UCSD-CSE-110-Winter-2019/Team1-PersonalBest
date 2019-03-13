@@ -111,6 +111,8 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
     }
 
     public void setUser(Map<String, Object> user) {
+        if ( user == null ) return;
+        if ( user.containsKey(null) ) return;
         db.collection("users")
                 .document("users")
                 .update(user)
@@ -149,6 +151,7 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
     }
 
     public void getUser(final String email) {
+        if ( email == null ) return;
         db.collection("users")
                 .document("users")
                 .get()
@@ -156,9 +159,7 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if ( documentSnapshot == null ) return;
-                        if ( !email.contains("\\.") ) {
-                            return;
-                        }
+                        if ( email != null && !email.contains("\\.") ) return;
                         Map<String, Object> mapTemp = (Map) documentSnapshot.getData().get(email.split("\\.")[0]);
                         if ( mapTemp == null ) return;
                         Map<String, Object> userInfo = (Map) mapTemp.get(email.split("\\.")[1]);
