@@ -50,6 +50,7 @@ public class MainActivity_MainUITest {
     @BeforeClass
     public static void setup() {
         MainActivity.TESTMODE = true;
+        MainActivity.enable_firestore = false;
     }
 
     @Test

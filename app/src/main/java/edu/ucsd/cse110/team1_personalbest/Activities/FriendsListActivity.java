@@ -26,7 +26,8 @@ public class FriendsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
 
-        UserSession.setup(this);
+        if(MainActivity.enable_firestore)
+            UserSession.setup(this);
 
 
         User cur = UserSession.getCurrentUser();

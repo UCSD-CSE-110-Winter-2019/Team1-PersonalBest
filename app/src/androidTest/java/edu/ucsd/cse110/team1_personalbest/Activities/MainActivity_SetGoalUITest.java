@@ -48,6 +48,7 @@ public class MainActivity_SetGoalUITest {
     @BeforeClass
     public static void setup() {
         MainActivity.TESTMODE = true;
+        MainActivity.enable_firestore = false;
     }
 
     @Test

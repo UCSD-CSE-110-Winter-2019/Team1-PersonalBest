@@ -46,6 +46,7 @@ public class MainActivity_CountStepUITest {
     @BeforeClass
     public static void setup() {
         MainActivity.TESTMODE = true;
+        MainActivity.enable_firestore = false;
     }
 
     @Test
