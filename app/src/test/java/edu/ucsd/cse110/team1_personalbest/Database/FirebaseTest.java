@@ -46,6 +46,7 @@ public class FirebaseTest {
         mockRef = Mockito.mock(DocumentReference.class);
         mockTask = Mockito.mock(Task.class);
         mockTaskGet = Mockito.mock(Task.class);
+        MainActivity.enable_firestore = false;
 
         Mockito.when(mockFirestore.collection("users")).thenReturn(mockCol);
         Mockito.when(mockCol.document("users")).thenReturn(mockRef);
