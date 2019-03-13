@@ -8,18 +8,22 @@ import java.util.List;
 import java.util.Map;
 
 import edu.ucsd.cse110.team1_personalbest.Login.Adapters.GoogleLogInService;
+import edu.ucsd.cse110.team1_personalbest.Messaging.FirestoreMessagingAdapter;
+import edu.ucsd.cse110.team1_personalbest.Messaging.MessagingServiceFactory;
 
 public class UserSession {
     private static User user;
     private static IDatabase database;
     private static IDatabaseObserver observer;
     private static Map<String, User> users;
+    private static Activity activity;
 
     public static boolean isSetup() {
         return user != null;
     }
 
     public static void setup(final Activity a) {
+        activity = a;
         String userEmail = GoogleLogInService.getLastLoggedInAccount(a);
         database = new Database(a.getApplicationContext());
         user = new User();
@@ -47,7 +51,8 @@ public class UserSession {
     }
 
     public static void setCurrentUser(final User newUser) {
-        user = newUser;
+        if (newUser != null)
+            user = newUser;
         writeUserToDB(user);
     }
 
@@ -57,13 +62,16 @@ public class UserSession {
         database.setUser(map);
     }
 
-    public void addFriend(String email) {
+    public static void addFriend(String email) {
         User newFriend = users.get(email);
         if (newFriend.getPendingRequests().contains(user.getEmail())) {
             user.addFriend(newFriend);
             newFriend.addFriend(user);
             newFriend.removeRequest(user);
             writeUserToDB(newFriend);
+            FirestoreMessagingAdapter.subscribe(activity,
+                    MessagingServiceFactory.getConversationKey(user.getEmail(),
+                            newFriend.getEmail()));
         } else {
             user.sendRequest(users.get(email));
         }

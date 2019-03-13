@@ -2,6 +2,7 @@ package edu.ucsd.cse110.team1_personalbest.Database;
 
 import android.content.Context;
 
+import org.apache.tools.ant.Main;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,8 @@ public class DatabaseTest {
 
     @Before
     public void setup() {
-        db = new Database(appContext);
+        db = new Database(appContext, true);
+        MainActivity.enable_firestore = false;
     }
 
     @After

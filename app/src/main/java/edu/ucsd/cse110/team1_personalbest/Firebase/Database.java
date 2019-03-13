@@ -46,10 +46,16 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
     public Database(Context c) {
         IDatabaseObservers = new ArrayList<>();
         this.c = c;
-        if ( c.getApplicationContext() != null ) {
+        if (c.getApplicationContext() != null ) {
             FirebaseApp.initializeApp(c.getApplicationContext());
             db = FirebaseFirestore.getInstance();
         }
+    }
+
+    // test constructor
+    public Database(Context c, Boolean Test) {
+        IDatabaseObservers = new ArrayList<>();
+        this.c = c;
     }
 
     /**
