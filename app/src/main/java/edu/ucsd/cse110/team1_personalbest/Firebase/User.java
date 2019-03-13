@@ -12,6 +12,8 @@ public class User implements IUser {
     private List<String> friends;
     private List<String> friendRequests;
     Map<String, Map<String, Integer>> graphData;
+    public static final String dailyStepKey = "daily_steps";
+    public static final String intentionalKey = "intentional_steps";
 
     public User() {
         friends = new ArrayList<>();
@@ -58,6 +60,11 @@ public class User implements IUser {
     @Override
     public List<String> getPendingRequests() {
         return friendRequests;
+    }
+
+    @Override
+    public boolean hasFriends() {
+        return friends.isEmpty();
     }
 
     @Override
