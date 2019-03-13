@@ -78,8 +78,7 @@ public class FirestoreMessagingAdapter implements IMessagingService {
         reg.remove();
     }
 
-    @Override
-    public void subscribe(final Activity activity, final String DOCUMENT_KEY) {
+    public static void subscribe(final Activity activity, final String DOCUMENT_KEY) {
         FirebaseMessaging.getInstance().subscribeToTopic(DOCUMENT_KEY)
                 .addOnCompleteListener(task -> {
                             String msg = "Subscribed to notifications";
