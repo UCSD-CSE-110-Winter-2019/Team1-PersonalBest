@@ -45,7 +45,15 @@ public class BarGraphFactory implements GraphFactory {
                 new DataPoint(4, steps[3]),
                 new DataPoint(5, steps[4]),
                 new DataPoint(6, steps[5]),
-                new DataPoint(7, steps[6])
+                new DataPoint(7, steps[6]),
+                /*new DataPoint(8, steps[7]),
+                new DataPoint(9, steps[8]),
+                new DataPoint(10, steps[9]),
+                new DataPoint(11, steps[10]),
+                new DataPoint(12, steps[11]),
+                new DataPoint(13, steps[12]),
+                new DataPoint(13, steps[13]),*/
+
         });
 
         LineGraphSeries<DataPoint> series2 = new LineGraphSeries<>(new DataPoint[] {
@@ -55,11 +63,18 @@ public class BarGraphFactory implements GraphFactory {
                 new DataPoint(4, intentionalSteps[3]),
                 new DataPoint(5, intentionalSteps[4]),
                 new DataPoint(6, intentionalSteps[5]),
-                new DataPoint(7, intentionalSteps[6])
+                new DataPoint(7, intentionalSteps[6]),
+                /*new DataPoint(8, intentionalSteps[7]),
+                new DataPoint(9, intentionalSteps[8]),
+                new DataPoint(10, intentionalSteps[9]),
+                new DataPoint(11, intentionalSteps[10]),
+                new DataPoint(12, intentionalSteps[11]),
+                new DataPoint(13, intentionalSteps[12]),
+                new DataPoint(14, intentionalSteps[13])*/
         });
         graph.addSeries(series);
         graph.addSeries(series2);
-        graph.setTitle("Weekly Steps");
+        graph.setTitle("Monthly Steps");
         series2.setColor(Color.BLUE);
         series.setColor(Color.GREEN);
         series.setTitle("Daily Steps");
@@ -70,7 +85,7 @@ public class BarGraphFactory implements GraphFactory {
         GridLabelRenderer labelRenderer = graph.getGridLabelRenderer();
         legendRenderer.setAlign(LegendRenderer.LegendAlign.TOP);
         legendRenderer.setTextSize(30);
-
+        graph.getViewport().setScrollable(true);
 
         graph.getGridLabelRenderer().setNumHorizontalLabels(7); // only 4 because of the space
         graph.getViewport().setMinX(1);
@@ -89,17 +104,7 @@ public class BarGraphFactory implements GraphFactory {
         graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
 
 // styling
-        series.setValueDependentColor(new ValueDependentColor<DataPoint>() {
-            @Override
-            public int get(DataPoint data) {
-
-                if (data.getY() < STEPGOAL){
-
-                    return Color.RED;
-                }
-                return Color.GREEN;
-            }
-        });
+        series.setColor(Color.GREEN);
         series.setDataWidth(0.6);
         series.setSpacing(5);
         series.setDrawValuesOnTop(true);

@@ -51,7 +51,8 @@ public class UserSession {
     }
 
     public static void setCurrentUser(final User newUser) {
-        user = newUser;
+        if (newUser != null)
+            user = newUser;
         writeUserToDB(user);
     }
 

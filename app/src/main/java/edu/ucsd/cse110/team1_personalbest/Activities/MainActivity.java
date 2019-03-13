@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public static String login_key;
     public static String fitness_key;
     public static boolean TESTMODE = false;
+    public static boolean enable_firestore = true;
 
     private Database db;
 
@@ -63,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         if (TESTMODE) {
             Toast.makeText(this, "testmode", Toast.LENGTH_LONG).show();
@@ -82,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+        if (enable_firestore)
+            UserSession.setup(this);
+
 
         db = new Database(getApplicationContext());
 

@@ -50,6 +50,7 @@ public class CustomGoalActivityTest {
     @Before
     public void setUp() throws Exception {
         service = Mockito.mock(FitnessService.class);
+        MainActivity.enable_firestore = false;
         loginService = Mockito.mock(LoginService.class);
         LocalPermissionGranter granter = new LocalPermissionGranter();
         granter.addPermissions(Manifest.permission.ACCESS_FINE_LOCATION,
