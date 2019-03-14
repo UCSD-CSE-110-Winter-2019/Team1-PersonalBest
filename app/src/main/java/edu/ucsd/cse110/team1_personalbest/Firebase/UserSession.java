@@ -27,11 +27,12 @@ public class UserSession {
         activity = a;
         String userEmail = GoogleLogInService.getLastLoggedInAccount(a);
         database = new Database(a.getApplicationContext());
-        user = new User();
-        user.setEmail(userEmail);
         IDatabaseObserver obs = new UserSessionUpdater();
         database.register(obs);
-
+        if (user == null) {
+            user = new User();
+            user.setEmail(userEmail);
+        }
         database.getUser(userEmail);
         database.getUsers();
     }
@@ -55,6 +56,11 @@ public class UserSession {
         if (newUser != null)
             user = newUser;
         writeUserToDB(user);
+    }
+
+    protected  static void setCurrentUserWithoutWrite(final User newUser) {
+        if (newUser != null)
+            user = newUser;
     }
 
     public static void writeUserToDB(final User user) {
