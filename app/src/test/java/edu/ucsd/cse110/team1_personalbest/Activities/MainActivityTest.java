@@ -3,6 +3,8 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.widget.TextView;
 
 import junit.framework.Assert;
@@ -32,10 +34,12 @@ import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
 import edu.ucsd.cse110.team1_personalbest.R;
+import edu.ucsd.cse110.team1_personalbest.SetNewGoalActivity;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 public class MainActivityTest {
@@ -170,4 +174,26 @@ public class MainActivityTest {
 
         assertThat(stepGoalView.getText().toString(), equalTo(String.valueOf(day1.getDailyStepGoal())));
     }
+
+    @Test
+    public void testMetGoalNotification(){
+        cont.create();
+        TextView stepGoalView = activity.findViewById(R.id.step_goal_view);
+        stepGoalView.setText("5500");
+        currSteps = 6000;
+        activity.setCurrSteps(currSteps);
+        activity.onResume();
+
+        assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("show goal notification"));
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("notify", false).apply();
+        activity.onResume();
+
+        assertTrue(!ShadowToast.getTextOfLatestToast().toString().equals("show goal notification"));
+        assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("goal notify off"));
+
+    }
+
 }

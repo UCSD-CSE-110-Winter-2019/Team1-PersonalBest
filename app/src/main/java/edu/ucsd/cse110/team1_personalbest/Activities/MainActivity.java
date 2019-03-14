@@ -6,8 +6,10 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -199,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
         String preDate = format.format(date);
         IDataObject result = db.readDataObject(preDate);
 
-
         if (result != null) {
             int previousSteps = result.getDailyStepCount();
 
@@ -286,8 +287,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         result = db.readDataObject(today);
-        stepGoal.setText(Integer.toString(result.getDailyStepGoal()));
-
+        if(TESTMODE == false)
+            stepGoal.setText(Integer.toString(result.getDailyStepGoal()));
+        else
+            stepGoal.setText("5");
     }
 
     public void setCurrSteps(long currSteps) {
@@ -300,8 +303,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void metGoalNotification(int step, int goal){
-        if(step >= goal)
-            setMetGoalNotification();
+        if(step >= goal) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            if(!sharedPreferences.contains("notify") || sharedPreferences.getBoolean("notify", false) == true) {
+                editor.putBoolean("notify", false).apply();
+                editor.putBoolean("showGoalNotifyOffToast", true).apply();
+                setMetGoalNotification();
+            }
+            else if(!sharedPreferences.contains("showGoalNotifyOffToast") || sharedPreferences.getBoolean("showGoalNotifyOffToast",false) == true){
+                editor.putBoolean("showGoalNotifyOffToast",false).apply();
+                Toast.makeText(MainActivity.this, "goal notify off", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void setMetGoalNotification(){
@@ -311,7 +325,6 @@ public class MainActivity extends AppCompatActivity {
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(TAG, name, importance);
             channel.setDescription(description);
-
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(channel);
         }
@@ -320,9 +333,10 @@ public class MainActivity extends AppCompatActivity {
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle("Good Job!")
                 .setContentText("You met the goal!")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
 
-        Intent notificationIntent = new Intent(getBaseContext(), SetNewGoalActivity.class);
+        Intent notificationIntent = new Intent(getBaseContext(), MainActivity.class);
         PendingIntent contentIntent = (PendingIntent) PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
