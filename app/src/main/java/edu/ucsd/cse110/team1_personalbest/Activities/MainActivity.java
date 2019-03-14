@@ -193,13 +193,13 @@ public class MainActivity extends AppCompatActivity {
         int currentGoal = Integer.parseInt(stepGoal.getText().toString());
 
         metGoalNotification(currSteps,currentGoal);
+
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String preDate = format.format(date);
         IDataObject result = db.readDataObject(preDate);
-
 
         if (result != null) {
             int previousSteps = result.getDailyStepCount();
