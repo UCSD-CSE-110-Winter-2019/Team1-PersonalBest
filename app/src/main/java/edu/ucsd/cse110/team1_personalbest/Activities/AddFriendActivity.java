@@ -29,10 +29,11 @@ public class AddFriendActivity extends AppCompatActivity {
                 Context context = getApplicationContext();
                 CharSequence text = "Send a friend request";
                 int duration = Toast.LENGTH_SHORT;
-                UserSession.addFriend(email.getText().toString());
-                email.setText("");
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
+                UserSession.addFriend(email.getText().toString());
+                email.setText("");
+
             }
         });
 

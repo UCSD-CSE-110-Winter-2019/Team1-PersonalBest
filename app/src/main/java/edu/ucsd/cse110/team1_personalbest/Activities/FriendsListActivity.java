@@ -32,13 +32,10 @@ public class FriendsListActivity extends AppCompatActivity {
         User cur = UserSession.getCurrentUser();
         this.FriendsList = cur.getFriends();
 
-
-        // Add a friend into friend's list here (e.g., FriendsList.add("Alice");)
-
-        FriendsList.add("AAA");
-        FriendsList.add("CCC");
-        FriendsList.add("BBB");
-        FriendsList.add("DDD");
+//        FriendsList.add("AAA");
+//        FriendsList.add("CCC");
+//        FriendsList.add("BBB");
+//        FriendsList.add("DDD");
 
 
         Collections.sort(FriendsList);

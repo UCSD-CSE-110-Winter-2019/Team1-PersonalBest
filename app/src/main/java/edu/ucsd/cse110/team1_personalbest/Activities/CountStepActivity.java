@@ -88,6 +88,7 @@ public class CountStepActivity extends AppCompatActivity {
         Log.i(TAG, "Checking login status");
         if (loginService.isLoggedIn()) {
             setUpFitnessService();
+            Toast.makeText(this,"Works", Toast.LENGTH_LONG).show();
             Log.i(TAG, "login found");
         } else {
             Log.e(TAG, "Not Logged in quitting....");
