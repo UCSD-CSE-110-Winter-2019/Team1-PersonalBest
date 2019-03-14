@@ -11,7 +11,7 @@ public class MessagingServiceFactory {
     public static void toggleTestMode() {
         TEST_MODE = true;
     }
-    public static IMessagingService createMessagingService(final String u1, final String u2) {
+    public static IMessagingService createMessagingService() {
         if (TEST_MODE) {
             return test_service;
         } else {
