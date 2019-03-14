@@ -150,18 +150,6 @@ public class MainActivityTest {
         assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("Excellent! You've doubled your steps!"));
     }
 
-    @Test
-    public void TestEncouragementForHasFriendPerson() {
-        cont.create();
-        currSteps = 2100;
-        activity.setCurrSteps(currSteps);
-        this.setupDB();
-
-        this.addFriends();
-        activity.onResume();
-        assertNull(ShadowToast.getTextOfLatestToast());
-    }
-
 
     public void setupDB() {
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
@@ -176,12 +164,6 @@ public class MainActivityTest {
         day2 = new StepDataObject(1000, 0, 5000, preDate);
         activity.setDataBase(day1, day2);
     }
-
-
-    public void addFriends() {
-        activity.addFriends();
-    }
-
 
     @Test
     public void testSetGoal(){

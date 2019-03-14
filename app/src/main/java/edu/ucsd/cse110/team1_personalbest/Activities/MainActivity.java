@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     public static boolean enable_firestore = true;
 
     private Database db;
-    private User currUser = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,8 +204,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(enable_firestore) {
             UserSession.setup(this);
-            currUser = UserSession.getCurrentUser();
         }
+        User currUser = UserSession.getCurrentUser();
 //        if (currUser.hasFriends())
 //            Toast.makeText(this, "No Friends", Toast.LENGTH_LONG).show();
 //        else
@@ -215,11 +214,20 @@ public class MainActivity extends AppCompatActivity {
         if (result != null) {
             int previousSteps = result.getDailyStepCount();
 
-            if (currUser.hasFriends()) {
+            if (currUser == null) {
                 if (previousSteps != 0) {
                     if (currSteps >= 1.4 * previousSteps) {
                       Encouragement enc = new Encouragement(this);
                       enc.showEncouragement(previousSteps, currSteps);
+                    }
+                }
+            }
+
+            else if ( currUser.hasFriends()) {
+                if (previousSteps != 0) {
+                    if (currSteps >= 1.4 * previousSteps) {
+                        Encouragement enc = new Encouragement(this);
+                        enc.showEncouragement(previousSteps, currSteps);
                     }
                 }
             }
@@ -315,9 +323,6 @@ public class MainActivity extends AppCompatActivity {
         db.putDataObject(day2);
     }
 
-    public void addFriends() {
-        currUser.addFriend(currUser);
-    }
 
     public void metGoalNotification(int step, int goal){
         if(step >= goal) {
