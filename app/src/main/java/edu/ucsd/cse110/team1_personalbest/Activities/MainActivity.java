@@ -18,6 +18,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -245,12 +251,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             Log.i(TAG, "Login Successfull");
             setUpFitnessService();
         } else {
             Log.e(TAG, "Login failed!! Status code: " + resultCode);
+            GoogleSignIn.getSignedInAccountFromIntent(data).addOnCompleteListener(task -> {
+                try {
+                    task.getResult(ApiException.class);
+                } catch (ApiException e) {
+                    Log.e(TAG, "Login failed!! Status code: " + e.getStatusCode());
+                }
+            });
         }
     }
 
