@@ -3,6 +3,8 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.widget.TextView;
 
 import junit.framework.Assert;
@@ -36,6 +38,7 @@ import edu.ucsd.cse110.team1_personalbest.R;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 public class MainActivityTest {
@@ -181,6 +184,15 @@ public class MainActivityTest {
         activity.onResume();
 
         assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("show goal notification"));
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("notify", false).apply();
+        activity.onResume();
+
+        assertTrue(!ShadowToast.getTextOfLatestToast().toString().equals("show goal notification"));
+        assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("goal notify off"));
+
     }
 
 }

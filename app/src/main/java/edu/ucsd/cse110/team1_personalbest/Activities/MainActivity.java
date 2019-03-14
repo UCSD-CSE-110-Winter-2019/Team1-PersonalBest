@@ -6,8 +6,10 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -300,8 +302,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void metGoalNotification(int step, int goal){
-        if(step >= goal)
-            setMetGoalNotification();
+        if(step >= goal) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            if(!sharedPreferences.contains("notify") || sharedPreferences.getBoolean("notify", false) == true) {
+                editor.putBoolean("notify", false).apply();
+                editor.putBoolean("showGoalNotifyOffToast", true).apply();
+                setMetGoalNotification();
+            }
+            else if(!sharedPreferences.contains("showGoalNotifyOffToast") || sharedPreferences.getBoolean("showGoalNotifyOffToast",false) == true){
+                editor.putBoolean("showGoalNotifyOffToast",false).apply();
+                Toast.makeText(MainActivity.this, "goal notify off", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void setMetGoalNotification(){
