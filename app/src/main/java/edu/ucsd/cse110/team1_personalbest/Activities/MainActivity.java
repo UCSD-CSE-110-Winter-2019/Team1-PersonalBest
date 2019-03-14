@@ -198,17 +198,33 @@ public class MainActivity extends AppCompatActivity {
         String preDate = format.format(date);
         IDataObject result = db.readDataObject(preDate);
 
+        //db = new Database(getApplicationContext());
+        User currUser;
+
+        if(enable_firestore) {
+            UserSession.setup(this);
+            currUser = UserSession.getCurrentUser();
+        }
+        else
+            currUser = new User();
+
+//        if (currUser.hasFriends())
+//            Toast.makeText(this, "No Friends", Toast.LENGTH_LONG).show();
+//        else
+//            Toast.makeText(this, "Has Friends", Toast.LENGTH_LONG).show();
 
         if (result != null) {
             int previousSteps = result.getDailyStepCount();
 
-            if(previousSteps != 0)
-                if( currSteps >= 1.4 * previousSteps) {
-                    Encouragement enc = new Encouragement(this);
-                    enc.showEncouragement(previousSteps, currSteps);
+            if (currUser.hasFriends()) {
+                if (previousSteps != 0) {
+                    if (currSteps >= 1.4 * previousSteps) {
+                      Encouragement enc = new Encouragement(this);
+                      enc.showEncouragement(previousSteps, currSteps);
+                    }
                 }
+            }
         }
-
     }
 
     @Override

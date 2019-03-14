@@ -100,7 +100,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void TestNoEncouragement() {
+    public void TestNoEncouragementForNoFriendPerson() {
         cont.create();
         currSteps = 1100;
         activity.setCurrSteps(currSteps);
@@ -111,7 +111,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void TestEncouragementNotDouble() {
+    public void TestEncouragementNotDoubleForNoFriendPerson() {
         cont.create();
         currSteps = 1500;
         activity.setCurrSteps(currSteps);
@@ -123,7 +123,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void TestEncouragementNearlyDouble() {
+    public void TestEncouragementNearlyDoubleForNoFriendPerson() {
         cont.create();
         currSteps = 1900;
         activity.setCurrSteps(currSteps);
@@ -135,7 +135,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void TestEncouragementDouble() {
+    public void TestEncouragementDoubleForNoFriendPerson() {
         cont.create();
         currSteps = 2100;
         activity.setCurrSteps(currSteps);
@@ -145,6 +145,8 @@ public class MainActivityTest {
         System.out.println(ShadowToast.getTextOfLatestToast().toString());
         assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("Excellent! You've doubled your steps!"));
     }
+
+
 
     public void setupDB() {
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
