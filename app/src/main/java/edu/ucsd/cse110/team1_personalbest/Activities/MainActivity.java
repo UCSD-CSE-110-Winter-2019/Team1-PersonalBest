@@ -25,7 +25,7 @@ import edu.ucsd.cse110.team1_personalbest.Encouragement;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
-//import edu.ucsd.cse110.team1_personalbest.Firebase.User;
+import edu.ucsd.cse110.team1_personalbest.Firebase.User;
 import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.TestFitnessService;
@@ -82,9 +82,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-
-//    if (enable_firestore)
-//        UserSession.setup(this);
 
         db = new Database(getApplicationContext());
 

@@ -93,9 +93,17 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
 
     @Override
     public void setUsers(Map<String, User> users) {
+        HashMap<String,User> modifiedMap = new HashMap<>();
+        for (String key : users.keySet()) {
+            String modifiedKey = key;
+            if (key.contains(".")) {
+                modifiedKey = key.replace(".", "#");
+            }
+            modifiedMap.put(modifiedKey, users.get(key));
+        }
         db.collection("users")
                 .document("users")
-                .set(users)
+                .set(modifiedMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -113,9 +121,17 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
     public void setUser(Map<String, Object> user) {
         if ( user == null ) return;
         if ( user.containsKey(null) ) return;
+        HashMap<String,Object> modifiedMap = new HashMap<>();
+        for (String key : user.keySet()) {
+            String modifiedKey = key;
+            if (key.contains(".")) {
+                modifiedKey = key.replace(".", "#");
+            }
+            modifiedMap.put(modifiedKey, user.get(key));
+        }
         db.collection("users")
                 .document("users")
-                .update(user)
+                .update(modifiedMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -138,7 +154,20 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if ( documentSnapshot == null ) return;
-                        allUsers = (Map) documentSnapshot.getData();
+                        HashMap<String,User> map = new HashMap<>();
+                        Map<String,Object> doc = documentSnapshot.getData();
+                        if (doc == null) return;
+                        for (String key : doc.keySet()) {
+                            Map userinfo = (Map)doc.get(key);
+                            String modifiedKey = key;
+                            if (key.contains("#")) {
+                                modifiedKey = key.replace("#", ".");
+                            } else {
+                                continue;
+                            }
+                            map.put(modifiedKey, makeUser(userinfo));
+                        }
+                        allUsers = map;
                         notifyObservers();
                     }
                 })
@@ -151,6 +180,7 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
     }
 
     public void getUser(final String email) {
+        final String newEmail = email.replace(".", "#");
         if ( email == null ) return;
         db.collection("users")
                 .document("users")
@@ -158,26 +188,11 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if ( documentSnapshot == null ) return;
-                        if ( email != null && !email.contains("\\.") ) return;
-                        Map<String, Object> mapTemp = (Map) documentSnapshot.getData().get(email.split("\\.")[0]);
-                        if ( mapTemp == null ) return;
-                        Map<String, Object> userInfo = (Map) mapTemp.get(email.split("\\.")[1]);
-                        if ( userInfo == null ) return;
-                        User temp = new User();
-                        if ( userInfo.containsKey("name") ) {
-                            temp.setName(userInfo.get("name").toString());
-                        }
-                        if ( userInfo.containsKey("email") ) {
-                            temp.setEmail(userInfo.get("email").toString());
-                        }
-                        if ( userInfo.containsKey("friends") ) {
-                            temp.setFriends((List<String>) userInfo.get("friends"));
-                        }
-                        if ( userInfo.containsKey("pendingRequests") ) {
-                            temp.setRequests((List<String>) userInfo.get("pendingRequests"));
-                        }
-                        user = temp;
+                        if ( documentSnapshot == null) return;
+                        if (documentSnapshot.getData()  == null) return;;
+                        Map userInfo = (Map)documentSnapshot.getData().get(newEmail);
+                        if (userInfo == null) return;
+                        user = makeUser(userInfo);
                         notifyObservers();
                     }
                 })
@@ -187,6 +202,31 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
                         Log.d(TAG, e.getLocalizedMessage());
                     }
                 });
+    }
+
+    private User makeUser(Map userInfo) {
+        User temp = new User();
+        if ( userInfo.containsKey("name") && userInfo.get("name") != null) {
+            temp.setName(userInfo.get("name").toString());
+        } else {
+            temp.setName("");
+        }
+        if ( userInfo.containsKey("email") && userInfo.get("email") != null) {
+            temp.setEmail(userInfo.get("email").toString());
+        } else {
+            temp.setEmail("");
+        }
+        if ( userInfo.containsKey("friends") && userInfo.get("friends") != null) {
+            temp.setFriends((List<String>) userInfo.get("friends"));
+        } else {
+            temp.setFriends(new ArrayList<>());
+        }
+        if ( userInfo.containsKey("pendingRequests") && userInfo.get("pendingRequests") != null) {
+            temp.setRequests((List<String>) userInfo.get("pendingRequests"));
+        } else {
+            temp.setRequests(new ArrayList<>());
+        }
+        return temp;
     }
 
     /**
