@@ -193,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
         int currentGoal = Integer.parseInt(stepGoal.getText().toString());
 
         metGoalNotification(currSteps,currentGoal);
-
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
         Date date = cal.getTime();
@@ -333,9 +332,10 @@ public class MainActivity extends AppCompatActivity {
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle("Good Job!")
                 .setContentText("You met the goal!")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
 
-        Intent notificationIntent = new Intent(getBaseContext(), SetNewGoalActivity.class);
+        Intent notificationIntent = new Intent(getBaseContext(), MainActivity.class);
         PendingIntent contentIntent = (PendingIntent) PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
