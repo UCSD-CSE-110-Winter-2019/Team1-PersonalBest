@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.team1_personalbest.Firebase;
 
 import android.app.Activity;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,18 +64,20 @@ public class UserSession {
     }
 
     public static void addFriend(String email) {
+        Log.d("test", users.toString());
         User newFriend = users.get(email);
+        if (newFriend == null) return;
         if (newFriend.getPendingRequests().contains(user.getEmail())) {
             user.addFriend(newFriend);
             newFriend.addFriend(user);
             newFriend.removeRequest(user);
             writeUserToDB(newFriend);
-            FirestoreMessagingAdapter.subscribe(activity,
-                    MessagingServiceFactory.getConversationKey(user.getEmail(),
-                            newFriend.getEmail()));
         } else {
             user.sendRequest(users.get(email));
         }
+        FirestoreMessagingAdapter.subscribe(activity,
+                MessagingServiceFactory.getConversationKey(user.getEmail(),
+                        newFriend.getEmail()));
         writeUserToDB(user);
     }
 

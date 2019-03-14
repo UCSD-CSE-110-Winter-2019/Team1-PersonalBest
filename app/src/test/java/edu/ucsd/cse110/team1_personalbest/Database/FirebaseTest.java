@@ -21,6 +21,7 @@ import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.TestIDatabaseObserver;
 import edu.ucsd.cse110.team1_personalbest.Firebase.User;
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 
 import static org.mockito.ArgumentMatchers.any;
 
@@ -117,5 +118,4 @@ public class FirebaseTest {
         user.put(test.getEmail(), test);
         db.setUser(user);
     }
-
 }
