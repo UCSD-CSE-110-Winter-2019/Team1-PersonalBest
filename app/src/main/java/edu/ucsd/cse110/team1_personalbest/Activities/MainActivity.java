@@ -287,8 +287,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         result = db.readDataObject(today);
-        stepGoal.setText(Integer.toString(result.getDailyStepGoal()));
-
+        if(TESTMODE == false)
+            stepGoal.setText(Integer.toString(result.getDailyStepGoal()));
+        else
+            stepGoal.setText("5");
     }
 
     public void setCurrSteps(long currSteps) {
