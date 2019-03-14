@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     public static boolean enable_firestore = true;
 
     private Database db;
+    private User currUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,15 +202,11 @@ public class MainActivity extends AppCompatActivity {
         IDataObject result = db.readDataObject(preDate);
 
         //db = new Database(getApplicationContext());
-        User currUser;
 
         if(enable_firestore) {
             UserSession.setup(this);
             currUser = UserSession.getCurrentUser();
         }
-        else
-            currUser = new User();
-
 //        if (currUser.hasFriends())
 //            Toast.makeText(this, "No Friends", Toast.LENGTH_LONG).show();
 //        else
@@ -316,6 +313,14 @@ public class MainActivity extends AppCompatActivity {
     public void setDataBase(StepDataObject day1, StepDataObject day2) {
         db.putDataObject(day1);
         db.putDataObject(day2);
+    }
+
+    public void setCurrUser() {
+        currUser = new User();
+    }
+
+    public void addFriends() {
+        currUser.addFriend(currUser);
     }
 
     public void metGoalNotification(int step, int goal){
