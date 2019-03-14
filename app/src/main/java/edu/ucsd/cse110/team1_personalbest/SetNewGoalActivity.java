@@ -2,6 +2,7 @@ package edu.ucsd.cse110.team1_personalbest;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -91,6 +92,10 @@ public class SetNewGoalActivity extends AppCompatActivity {
         IDataObject result = db.readDataObject(today);
         result.setDailyStepGoal(suggestedGoal);
         db.putDataObject(result);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("notify", true).apply();
     }
 
     public void setKeys(String login_key, String fitness_key) {
