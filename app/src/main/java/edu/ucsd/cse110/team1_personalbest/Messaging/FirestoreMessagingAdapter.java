@@ -21,8 +21,8 @@ import java.util.Map;
 public class FirestoreMessagingAdapter implements IMessagingService {
     private final String COLLECTION_KEY = "chats";
     private final String MESSAGES_KEY = "messages";
-    private final String FROM_KEY = "from";
-    private final String TEXT_KEY = "text";
+    public static final String FROM_KEY = "from";
+    public static final String TEXT_KEY = "text";
     private final String TIMESTAMP_KEY = "timestamp";
     private CollectionReference chat;
     private static final String TAG = "[FSMessaging]";
