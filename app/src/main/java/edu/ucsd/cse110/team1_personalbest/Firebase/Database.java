@@ -86,8 +86,13 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
     @Override
     public void notifyObservers() {
         for( IDatabaseObserver obs : IDatabaseObservers) {
-            obs.update(user);
-            obs.update(allUsers);
+            if ( user != null ) {
+                obs.update(user);
+            }
+            if ( allUsers != null ) {
+                obs.update(allUsers);
+            }
+
         }
     }
 
