@@ -109,7 +109,7 @@ public class MainActivityTest {
         currSteps = 1100;
         activity.setCurrSteps(currSteps);
         this.setupDB();
-        this.setupCurrUser();
+
         activity.onResume();
         assertNull(ShadowToast.getTextOfLatestToast());
     }
@@ -120,7 +120,7 @@ public class MainActivityTest {
         currSteps = 1500;
         activity.setCurrSteps(currSteps);
         this.setupDB();
-        this.setupCurrUser();
+
         activity.onResume();
         System.out.println(ShadowToast.getTextOfLatestToast().toString());
         assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo( "Good job! You've made great prgroess!"));
@@ -132,7 +132,7 @@ public class MainActivityTest {
         currSteps = 1900;
         activity.setCurrSteps(currSteps);
         this.setupDB();
-        this.setupCurrUser();
+
         activity.onResume();
         System.out.println(ShadowToast.getTextOfLatestToast().toString());
         assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("You've nearly doubled your steps. Keep up the good work!"));
@@ -144,7 +144,7 @@ public class MainActivityTest {
         currSteps = 2100;
         activity.setCurrSteps(currSteps);
         this.setupDB();
-        this.setupCurrUser();
+
         activity.onResume();
         System.out.println(ShadowToast.getTextOfLatestToast().toString());
         assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("Excellent! You've doubled your steps!"));
@@ -156,7 +156,7 @@ public class MainActivityTest {
         currSteps = 2100;
         activity.setCurrSteps(currSteps);
         this.setupDB();
-        this.setupCurrUser();
+
         this.addFriends();
         activity.onResume();
         assertNull(ShadowToast.getTextOfLatestToast());
@@ -177,9 +177,6 @@ public class MainActivityTest {
         activity.setDataBase(day1, day2);
     }
 
-    public void setupCurrUser() {
-        activity.setCurrUser();
-    }
 
     public void addFriends() {
         activity.addFriends();
@@ -204,7 +201,7 @@ public class MainActivityTest {
         stepGoalView.setText("5500");
         currSteps = 6000;
         activity.setCurrSteps(currSteps);
-        this.setupCurrUser();
+
         activity.onResume();
 
         assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("show goal notification"));

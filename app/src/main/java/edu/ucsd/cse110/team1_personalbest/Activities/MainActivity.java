@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     public static boolean enable_firestore = true;
 
     private Database db;
-    private User currUser;
+    private User currUser = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -313,10 +313,6 @@ public class MainActivity extends AppCompatActivity {
     public void setDataBase(StepDataObject day1, StepDataObject day2) {
         db.putDataObject(day1);
         db.putDataObject(day2);
-    }
-
-    public void setCurrUser() {
-        currUser = new User();
     }
 
     public void addFriends() {
