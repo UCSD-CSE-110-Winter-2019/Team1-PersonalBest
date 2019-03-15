@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import junit.framework.Assert;
 
+import org.apache.tools.ant.Main;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +28,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import edu.ucsd.cse110.team1_personalbest.Firebase.IUserSession;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.User;
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
@@ -53,10 +57,12 @@ public class MainActivityTest {
     private long currSteps;
     private StepDataObject day1;
     private StepDataObject day2;
+    private IUserSession userSession = Mockito.mock(IUserSession.class);
 
     @Before
     public void setUp() throws Exception {
         MainActivity.enable_firestore = false;
+        UserSession.testmode = true;
         service = Mockito.mock(FitnessService.class);
         loginService = Mockito.mock(LoginService.class);
         LocalPermissionGranter granter = new LocalPermissionGranter();
@@ -151,23 +157,31 @@ public class MainActivityTest {
     }
 
     public void setupDB() {
+        UserSession.testSession = userSession;
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar cal1 = Calendar.getInstance();
         Date date1 = cal1.getTime();
         String currDate = format.format(date1);
+        User u1 = new User();
+        Mockito.when(userSession.getCurrentUser()).thenReturn(u1);
+        u1.setStepGoal(currDate,5100);
+        u1.setIntentionalSteps(currDate, 0);
+        u1.setDailySteps(currDate, 1000);
         day1 = new StepDataObject(1000, 0, 5100, currDate);
         Calendar cal2 = Calendar.getInstance();
         cal2.add(Calendar.DATE, -1);
         Date date2 = cal2.getTime();
         String preDate = format.format(date2);
+        u1.setStepGoal(preDate,5000);
+        u1.setIntentionalSteps(preDate, 0);
+        u1.setDailySteps(preDate, 1000);
         day2 = new StepDataObject(1000, 0, 5000, preDate);
-        activity.setDataBase(day1, day2);
     }
 
     @Test
     public void testSetGoal(){
-        cont.create();
         this.setupDB();
+        cont.create();
         TextView stepGoalView = activity.findViewById(R.id.step_goal_view);
         stepGoalView.setText("5500");
         activity.setGoal();
@@ -177,6 +191,7 @@ public class MainActivityTest {
 
     @Test
     public void testMetGoalNotification(){
+        this.setupDB();
         cont.create();
         TextView stepGoalView = activity.findViewById(R.id.step_goal_view);
         stepGoalView.setText("5500");
@@ -192,8 +207,6 @@ public class MainActivityTest {
         activity.onResume();
 
         assertTrue(!ShadowToast.getTextOfLatestToast().toString().equals("show goal notification"));
-        assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("goal notify off"));
-
     }
 
 }

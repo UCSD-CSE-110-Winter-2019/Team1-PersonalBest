@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,36 +18,37 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.User;
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 
 public class CustomGoalActivity extends AppCompatActivity {
 
-    public static final String GOOGLE_LOGIN = "GLOGIN";
-    public static final String GOOGLE_FITNESS = "GFIT";
-    public static final String STEP_KEY = "INITIAL_STEPS";
-    public static final String STEP_GOAL_KEY = "STEP_GOAL";
-    private FitnessService fitnessService;
-    private TextView current_step_view;
 
     private static final String TAG = "[CustomGoalActivity]";
+    private User user;
 
-    private String login_key;
-    private String fitness_key;
-
-    private Database db;
-    private String FILENAME = "steps.json";
-    IDataObject result;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_goal);
 
-        db = new Database(getApplicationContext());
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        String today = format.format(date);
+        this.user = UserSession.getCurrentUser();
+        if (user == null) {
+            Log.e(TAG, "Null User");
+            user = new User();
+        }
+
 
         Button btnCancelCustomGoal = (Button) findViewById(R.id.buttonCancelCustomGoal);
         btnCancelCustomGoal.setOnClickListener(new View.OnClickListener() {
@@ -61,11 +63,6 @@ public class CustomGoalActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Calendar cal = Calendar.getInstance();
-                Date date = cal.getTime();
-                DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-                String today = format.format(date);
-                result = db.readDataObject(today);
 
                 int customGoal = getCustomGoal();
                 saveCustomGoal(customGoal);
@@ -85,25 +82,13 @@ public class CustomGoalActivity extends AppCompatActivity {
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String today = format.format(date);
-        IDataObject result = db.readDataObject(today);
-        result.setDailyStepGoal(cusGoal);
-        db.putDataObject(result);
+
+        user.setStepGoal(today, cusGoal);
+        UserSession.writeUserToDB(user);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("notify", true).apply();
     }
 
-    public void setKeys(String login_key, String fitness_key) {
-        this.login_key = login_key;
-        this.fitness_key = fitness_key;
-    }
-
-    public void setDataBase(StepDataObject day1) {
-        db.putDataObject(day1);
-    }
-
-    public Database getDataBase() {
-        return this.db;
-    }
 }

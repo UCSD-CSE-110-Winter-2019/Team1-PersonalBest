@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.team1_personalbest.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -18,16 +19,16 @@ public class AddFriendActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friend);
-        if (MainActivity.enable_firestore) UserSession.setup(this);
         Button btnSendFriends = (Button) findViewById(R.id.buttonSendFriends);
         EditText email = findViewById(R.id.enterEmail);
+        final Activity a = this;
         btnSendFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Context context = getApplicationContext();
                 CharSequence text = "Send a friend request";
                 int duration = Toast.LENGTH_SHORT;
-                UserSession.addFriend(email.getText().toString());
+                UserSession.addFriend(email.getText().toString(), a);
                 email.setText("");
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();

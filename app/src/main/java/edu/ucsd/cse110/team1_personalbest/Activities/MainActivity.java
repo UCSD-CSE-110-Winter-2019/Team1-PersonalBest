@@ -18,15 +18,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.common.api.ApiException;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.ucsd.cse110.team1_personalbest.Encouragement;
-import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
-import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
-import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.User;
 import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
@@ -60,13 +62,12 @@ public class MainActivity extends AppCompatActivity {
     public static boolean TESTMODE = false;
     public static boolean enable_firestore = true;
 
-    private Database db;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (TESTMODE) {
+            UserSession.testmode = true;
             Toast.makeText(this, "testmode", Toast.LENGTH_LONG).show();
             setKeys("TEST", "TEST");
             LoginServiceFactory.put("TEST", new LoginServiceFactory.BluePrint() {
@@ -83,10 +84,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-        if (enable_firestore)
-            UserSession.setup(this);
-
-        db = new Database(getApplicationContext());
 
         if (login_key == null) login_key = GOOGLE_LOGIN;
         if (fitness_key == null) fitness_key = GOOGLE_FITNESS;
@@ -116,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
         if (loginService.login()) {
             Log.i(TAG, "Login Successful \n Attempting fitness service setup...");
             setUpFitnessService();
+            if (enable_firestore)
+                UserSession.setup(this);
         }
 
         Button btnStartWalk = findViewById(R.id.buttonStartWalk);
@@ -132,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         btnViewHist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getBaseContext(),MainActivityGraph.class);
+                Intent intent = new Intent(getBaseContext(), MainActivityGraph.class);
                 startActivity(intent);
 
             }
@@ -165,9 +164,9 @@ public class MainActivity extends AppCompatActivity {
     public void launchStepCountActivity() {
         Log.i(TAG, "Launching Step Count Activity...");
         Intent intent = new Intent(this, CountStepActivity.class);
-        intent.putExtra(STEP_KEY, Integer.parseInt(((TextView)findViewById(R.id.current_step_view)).getText().toString()));
+        intent.putExtra(STEP_KEY, Integer.parseInt(((TextView) findViewById(R.id.current_step_view)).getText().toString()));
         GoogleFitAdapter.putSessionStartTime(this);
-        if ( this.fitnessService != null ) {
+        if (this.fitnessService != null) {
             this.fitnessService.stopListening();
             this.fitnessService.removeObservers();
         }
@@ -183,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-
         setGoal();
 
         String steps = current_step_view.getText().toString();
@@ -192,24 +190,20 @@ public class MainActivity extends AppCompatActivity {
         TextView stepGoal = findViewById(R.id.step_goal_view);
         int currentGoal = Integer.parseInt(stepGoal.getText().toString());
 
-        metGoalNotification(currSteps,currentGoal);
+        boolean goalMet = metGoalNotification(currSteps, currentGoal);
 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String preDate = format.format(date);
-        IDataObject result = db.readDataObject(preDate);
+        int dailyStepCount = UserSession.getCurrentUser().getDailySteps(preDate);
+        if (!goalMet && dailyStepCount != 0)
+            if (currSteps >= 1.4 * dailyStepCount) {
+                Encouragement enc = new Encouragement(this);
+                enc.showEncouragement(dailyStepCount, currSteps);
+            }
 
-        if (result != null) {
-            int previousSteps = result.getDailyStepCount();
-
-            if(previousSteps != 0)
-                if( currSteps >= 1.4 * previousSteps ) {
-                    Encouragement enc = new Encouragement(this);
-                    enc.showEncouragement(previousSteps, currSteps);
-                }
-        }
 
     }
 
@@ -235,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        if( this.fitnessService != null) {
+        if (this.fitnessService != null) {
             this.fitnessService.stopListening();
             this.fitnessService.removeObservers();
         }
@@ -245,19 +239,26 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             Log.i(TAG, "Login Successfull");
             setUpFitnessService();
         } else {
             Log.e(TAG, "Login failed!! Status code: " + resultCode);
+            GoogleSignIn.getSignedInAccountFromIntent(data).addOnCompleteListener(task -> {
+                try {
+                    task.getResult(ApiException.class);
+                } catch (ApiException e) {
+                    Log.e(TAG, "Login failed!! Status code: " + e.getStatusCode());
+                }
+            });
         }
     }
 
     public void setUpFitnessService() {
         FitnessObserver observer = new GoogleFitnessObserver(goal_view, current_step_view, null, null, null, null, this);
         this.fitnessService = FitnessServiceFactory.create(fitness_key, this);
-        if (this.fitnessService !=  null) {
+        if (this.fitnessService != null) {
             fitnessService.registerObserver(observer);
             fitnessService.setup();
             fitnessService.startListening();
@@ -269,56 +270,50 @@ public class MainActivity extends AppCompatActivity {
         this.fitness_key = fitness_key;
     }
 
-    public void setGoal(){
+    public void setGoal() {
 
         Calendar cal = Calendar.getInstance();
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String today = format.format(date);
-        IDataObject result = db.readDataObject(today);
-
+        User user = UserSession.getCurrentUser();
+        int goal = user.getStepGoal(today);
         TextView stepGoal = findViewById(R.id.step_goal_view);
 
-        if(result.getDailyStepGoal() == 0){
-            //store initial goal
-            stepGoal.setText("5");
-            result.setDailyStepGoal(5);
-            db.putDataObject(result);
-        }
+        if (TESTMODE == false)
+            stepGoal.setText(Integer.toString(goal));
 
-        result = db.readDataObject(today);
-        if(TESTMODE == false)
-            stepGoal.setText(Integer.toString(result.getDailyStepGoal()));
         else
             stepGoal.setText("5");
     }
 
     public void setCurrSteps(long currSteps) {
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        String today = format.format(date);
         current_step_view.setText(String.valueOf(currSteps));
+        UserSession.getCurrentUser().setStepGoal(today, ((Long)currSteps).intValue());
     }
 
-    public void setDataBase(StepDataObject day1, StepDataObject day2) {
-        db.putDataObject(day1);
-        db.putDataObject(day2);
-    }
-
-    public void metGoalNotification(int step, int goal){
-        if(step >= goal) {
+    public boolean metGoalNotification(int step, int goal) {
+        if (step >= goal) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            if(!sharedPreferences.contains("notify") || sharedPreferences.getBoolean("notify", false) == true) {
+            if (!sharedPreferences.contains("notify") || sharedPreferences.getBoolean("notify", false) == true) {
                 editor.putBoolean("notify", false).apply();
                 editor.putBoolean("showGoalNotifyOffToast", true).apply();
                 setMetGoalNotification();
-            }
-            else if(!sharedPreferences.contains("showGoalNotifyOffToast") || sharedPreferences.getBoolean("showGoalNotifyOffToast",false) == true){
-                editor.putBoolean("showGoalNotifyOffToast",false).apply();
+                return true;
+            } else if (!sharedPreferences.contains("showGoalNotifyOffToast") || sharedPreferences.getBoolean("showGoalNotifyOffToast", false) == true) {
+                editor.putBoolean("showGoalNotifyOffToast", false).apply();
                 Toast.makeText(MainActivity.this, "goal notify off", Toast.LENGTH_SHORT).show();
             }
         }
+        return false;
     }
 
-    public void setMetGoalNotification(){
+    public void setMetGoalNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "notification";
             String description = "goal notification";
@@ -341,6 +336,6 @@ public class MainActivity extends AppCompatActivity {
         builder.setContentIntent(contentIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, builder.build());
-        Toast.makeText(getBaseContext(), "show goal notification", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "show goal notification", Toast.LENGTH_LONG).show();
     }
 }

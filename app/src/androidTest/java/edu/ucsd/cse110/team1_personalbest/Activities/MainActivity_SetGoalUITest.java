@@ -19,6 +19,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.R;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -47,6 +48,7 @@ public class MainActivity_SetGoalUITest {
 
     @BeforeClass
     public static void setup() {
+        UserSession.testmode = true;
         MainActivity.TESTMODE = true;
         MainActivity.enable_firestore = false;
     }

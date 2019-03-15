@@ -19,6 +19,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
@@ -49,6 +50,7 @@ public class MainActivity_MainUITest {
 
     @BeforeClass
     public static void setup() {
+        UserSession.testmode = true;
         MainActivity.TESTMODE = true;
         MainActivity.enable_firestore = false;
     }

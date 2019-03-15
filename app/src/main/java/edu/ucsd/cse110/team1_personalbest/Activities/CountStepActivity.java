@@ -22,12 +22,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import edu.ucsd.cse110.team1_personalbest.CustomGoalActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDatabase;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.User;
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Adapters.GoogleFitAdapter;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
@@ -52,8 +55,6 @@ public class CountStepActivity extends AppCompatActivity {
     private TextView distance;
     private TextView time;
 
-
-    private Database db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,30 +99,21 @@ public class CountStepActivity extends AppCompatActivity {
         btnEndWalk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IDatabase db = new Database(getApplicationContext());
                 DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
                 Calendar calendar = Calendar.getInstance();
-                IDataObject object = db.readDataObject(format.format(calendar.getTime()));
-                if (object == null) {
-                    object = new StepDataObject(0,0,0, format.format(Calendar.DATE));
-                }
-
-                object.setDailyIntentionalStepCount(object.getDailyStepCount() +
-                        Integer.parseInt(delta_steps.getText().toString()));
-                db.putDataObject(object);
+                String today = format.format(calendar.getTime());
+                User user = UserSession.getCurrentUser();
+                int curStepCount = user.getIntentionalSteps(today);
+                int newStepCount = Integer.parseInt(delta_steps.getText().toString()) + curStepCount;
+                user.setIntentionalSteps(today, newStepCount);
+                UserSession.setCurrentUser(user);
                 Log.i(TAG, "Completing intentional walk/run");
                 if (service != null) {
                     service.stopListening();
                     service.removeObservers();
                 }
 
-                db = new Database(getApplication());
-                Calendar cal = Calendar.getInstance();
-                Date date = cal.getTime();
-                DateFormat format1 = new SimpleDateFormat("MM/dd/yyyy");
-                String today = format1.format(date);
-                IDataObject result = db.readDataObject(today);
-                int stepGoal = result.getDailyStepGoal();
+                int stepGoal = user.getStepGoal(today);
 
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                 boolean messageShown = pref.getBoolean(format.format(calendar.getTime()), false);
@@ -134,9 +126,7 @@ public class CountStepActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Goal met! Great Job!", Toast.LENGTH_LONG).show();
                     startActivity(intent);
                 }
-
                 finish();
-
             }
         });
 

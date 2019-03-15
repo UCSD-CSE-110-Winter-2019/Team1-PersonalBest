@@ -40,6 +40,7 @@ public class FirebaseTest {
 
     @Before
     public void setup() {
+        UserSession.testmode = true;
         activity = Robolectric.setupActivity(MainActivity.class);
         mockFirestore = Mockito.mock(FirebaseFirestore.class);
         db = new Database(mockFirestore);
@@ -97,9 +98,8 @@ public class FirebaseTest {
         evan.setName("Evan");
         evan.setEmail("test2@gmail.com");
         Map<String, Integer> steps = new HashMap<>();
-        steps.put("daily_steps", 1);
-        steps.put("intentional_steps", 2);
-        evan.setGraphData("03-01-2019", steps);
+        evan.setDailySteps("03-01-2019", 1);
+        evan.setIntentionalSteps("03-01-2019", 2);
 
         evan.addFriend(bob);
         bob.addFriend(evan);

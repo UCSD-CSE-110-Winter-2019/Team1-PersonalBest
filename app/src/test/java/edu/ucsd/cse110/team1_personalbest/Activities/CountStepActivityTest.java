@@ -22,6 +22,7 @@ import org.robolectric.android.internal.LocalPermissionGranter;
 import org.robolectric.shadows.ShadowToast;
 
 
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
@@ -39,6 +40,7 @@ public class CountStepActivityTest {
 
     @Before
     public void setUp() throws Exception {
+        UserSession.testmode = true;
         MainActivity.enable_firestore = false;
         service = Mockito.mock(FitnessService.class);
         loginService = Mockito.mock(LoginService.class);
