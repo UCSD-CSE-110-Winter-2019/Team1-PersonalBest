@@ -135,6 +135,7 @@ public class CountStepActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),MainActivityGraph.class);
+                intent.putExtra("name", UserSession.getCurrentUser().getEmail());
                 startActivity(intent);
 
             }

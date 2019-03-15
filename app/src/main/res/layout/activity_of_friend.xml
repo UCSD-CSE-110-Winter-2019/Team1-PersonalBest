@@ -28,14 +28,21 @@
         />
 
     <Button
+        android:id="@+id/friendHistoryButton"
+        android:layout_width="118dp"
+        android:layout_height="35dp"
+        android:background="@color/colorPrimary"
+        android:text="History"
+        android:textColor="@color/common_google_signin_btn_text_dark_default" />
+
+    <Button
         android:id="@+id/buttonBackFriendList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/back"
         android:backgroundTint="#00BCD4"
-        android:textColor="#ffffff"
-        />
+        android:text="@string/back"
+        android:textColor="#ffffff" />
 
 
 </LinearLayout>
