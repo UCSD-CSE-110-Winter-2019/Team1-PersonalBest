@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         if (TESTMODE) {
             UserSession.testmode = true;
             Toast.makeText(this, "testmode", Toast.LENGTH_LONG).show();
@@ -198,32 +197,6 @@ public class MainActivity extends AppCompatActivity {
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String preDate = format.format(date);
-<<<<<<< HEAD
-        IDataObject result = db.readDataObject(preDate);
-
-        //db = new Database(getApplicationContext());
-
-        if(enable_firestore) {
-            UserSession.setup(this);
-        }
-        User currUser = UserSession.getCurrentUser();
-//        if (currUser.hasFriends())
-//            Toast.makeText(this, "No Friends", Toast.LENGTH_LONG).show();
-//        else
-//            Toast.makeText(this, "Has Friends", Toast.LENGTH_LONG).show();
-
-        if (result != null) {
-            int previousSteps = result.getDailyStepCount();
-
-            if (currUser == null) {
-                if (previousSteps != 0) {
-                    if (currSteps >= 1.4 * previousSteps) {
-                      Encouragement enc = new Encouragement(this);
-                      enc.showEncouragement(previousSteps, currSteps);
-                    }
-                }
-            }
-=======
         int dailyStepCount = UserSession.getCurrentUser().getDailySteps(preDate);
         if (!goalMet && dailyStepCount != 0)
             if (currSteps >= 1.4 * dailyStepCount) {
@@ -231,17 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 enc.showEncouragement(dailyStepCount, currSteps);
             }
 
->>>>>>> a60999dea2c57dde4c8e0353d53b54bff7857b49
 
-            else if ( currUser.hasFriends()) {
-                if (previousSteps != 0) {
-                    if (currSteps >= 1.4 * previousSteps) {
-                        Encouragement enc = new Encouragement(this);
-                        enc.showEncouragement(previousSteps, currSteps);
-                    }
-                }
-            }
-        }
     }
 
     @Override
@@ -333,19 +296,8 @@ public class MainActivity extends AppCompatActivity {
         UserSession.getCurrentUser().setStepGoal(today, ((Long)currSteps).intValue());
     }
 
-<<<<<<< HEAD
-    public void setDataBase(StepDataObject day1, StepDataObject day2) {
-        db.putDataObject(day1);
-        db.putDataObject(day2);
-    }
-
-
-    public void metGoalNotification(int step, int goal){
-        if(step >= goal) {
-=======
     public boolean metGoalNotification(int step, int goal) {
         if (step >= goal) {
->>>>>>> a60999dea2c57dde4c8e0353d53b54bff7857b49
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             SharedPreferences.Editor editor = sharedPreferences.edit();
             if (!sharedPreferences.contains("notify") || sharedPreferences.getBoolean("notify", false) == true) {
