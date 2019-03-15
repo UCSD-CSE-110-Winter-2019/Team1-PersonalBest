@@ -44,7 +44,7 @@ import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class MainActivity_AddFriendUIest {
+public class MainActivity_AddFriendUITest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -58,6 +58,7 @@ public class MainActivity_AddFriendUIest {
     @BeforeClass
     public static void setup() {
         UserSession.testmode = true;
+        UserSession.uitestmode = true;
         MainActivity.TESTMODE = true;
         MainActivity.enable_firestore = false;
 

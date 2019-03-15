@@ -63,6 +63,7 @@ public class MainActivity_FriendMessagingUITest {
     @BeforeClass
     public static void setup() {
         UserSession.testmode = true;
+        UserSession.uitestmode = true;
         MainActivity.TESTMODE = true;
         MainActivity.enable_firestore = false;
 

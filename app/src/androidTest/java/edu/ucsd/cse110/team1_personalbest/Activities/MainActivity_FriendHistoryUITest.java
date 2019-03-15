@@ -62,6 +62,7 @@ public class MainActivity_FriendHistoryUITest {
     @BeforeClass
     public static void setup() {
         UserSession.testmode = true;
+        UserSession.uitestmode = true;
         MainActivity.TESTMODE = true;
         MainActivity.enable_firestore = false;
 
