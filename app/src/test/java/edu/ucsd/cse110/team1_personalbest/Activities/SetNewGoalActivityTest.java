@@ -94,7 +94,6 @@ public class SetNewGoalActivityTest {
     public void TestGetSuggestedGoal(){
         int cusGoal = activity.getSuggestedGoal();
         assertThat(cusGoal, equalTo(1000));
-
     }
 
 
