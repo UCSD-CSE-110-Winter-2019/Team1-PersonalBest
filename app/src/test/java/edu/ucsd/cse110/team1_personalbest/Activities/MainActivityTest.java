@@ -156,6 +156,40 @@ public class MainActivityTest {
         assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("Excellent! You've doubled your steps!"));
     }
 
+    @Test
+    public void TestEncouragementForHasFriendPerson() {
+        cont.create();
+        currSteps = 2100;
+        activity.setCurrSteps(currSteps);
+        this.setupDBForHasFriendPerson();
+
+        activity.onResume();
+        assertNull(ShadowToast.getTextOfLatestToast());
+    }
+
+
+    public void setupDBForHasFriendPerson() {
+        UserSession.testSession = userSession;
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar cal1 = Calendar.getInstance();
+        Date date1 = cal1.getTime();
+        String currDate = format.format(date1);
+        User u1 = new User();
+        Mockito.when(userSession.getCurrentUser()).thenReturn(u1);
+        u1.setStepGoal(currDate,5100);
+        u1.setIntentionalSteps(currDate, 0);
+        u1.setDailySteps(currDate, 1000);
+        day1 = new StepDataObject(1000, 0, 5100, currDate);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.add(Calendar.DATE, -1);
+        Date date2 = cal2.getTime();
+        String preDate = format.format(date2);
+        u1.setStepGoal(preDate,5000);
+        u1.setIntentionalSteps(preDate, 0);
+        u1.setDailySteps(preDate, 1000);
+        day2 = new StepDataObject(1000, 0, 5000, preDate);
+        u1.addFriend(u1);
+    }
 
     public void setupDB() {
         UserSession.testSession = userSession;

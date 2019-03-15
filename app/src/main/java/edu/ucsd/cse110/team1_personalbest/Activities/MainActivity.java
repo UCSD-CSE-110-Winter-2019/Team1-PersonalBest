@@ -198,8 +198,10 @@ public class MainActivity extends AppCompatActivity {
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String preDate = format.format(date);
         int dailyStepCount = UserSession.getCurrentUser().getDailySteps(preDate);
+        User user = UserSession.getCurrentUser();
+
         if (!goalMet && dailyStepCount != 0)
-            if (currSteps >= 1.4 * dailyStepCount) {
+            if (currSteps >= 1.4 * dailyStepCount && user.hasFriends()) {
                 Encouragement enc = new Encouragement(this);
                 enc.showEncouragement(dailyStepCount, currSteps);
             }
