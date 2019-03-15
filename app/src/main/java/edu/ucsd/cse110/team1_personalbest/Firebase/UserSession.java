@@ -67,7 +67,8 @@ public class UserSession {
 
     public static User getCurrentUser() {
         if(testmode) {
-            return testSession.getCurrentUser();
+            //return testSession.getCurrentUser();
+            return user;
         }
         if (user == null) return new User();
         return user;
@@ -84,6 +85,8 @@ public class UserSession {
 
     public static void setCurrentUser(final User newUser) {
         if(testmode) {
+            if (newUser != null)
+                user = newUser;
             testSession.setCurrentUser(newUser);
             return;
         }

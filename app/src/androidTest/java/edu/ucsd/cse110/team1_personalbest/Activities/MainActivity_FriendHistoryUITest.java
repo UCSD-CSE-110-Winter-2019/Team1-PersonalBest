@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.team1_personalbest.Activities;
 
 
+import android.support.test.espresso.DataInteraction;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.filters.LargeTest;
 import android.support.test.rule.ActivityTestRule;
@@ -10,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import com.google.firebase.firestore.Query;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -19,41 +23,41 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-import edu.ucsd.cse110.team1_personalbest.Firebase.IUserSession;
-import edu.ucsd.cse110.team1_personalbest.Firebase.TestUserSession;
 import edu.ucsd.cse110.team1_personalbest.Firebase.User;
 import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
+import edu.ucsd.cse110.team1_personalbest.Messaging.IMessagingService;
 import edu.ucsd.cse110.team1_personalbest.Messaging.MessagingServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.R;
 
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class MainActivity_AddFriendUIest {
+public class MainActivity_FriendHistoryUITest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+
     @Rule
     public GrantPermissionRule mGrantPermissionRule =
             GrantPermissionRule.grant(
                     "android.permission.ACCESS_FINE_LOCATION",
                     "android.permission.ACCESS_COARSE_LOCATION",
                     "android.permission.INTERNET");
+
 
     @BeforeClass
     public static void setup() {
@@ -68,11 +72,11 @@ public class MainActivity_AddFriendUIest {
         UserSession.getCurrentUser().addFriend(allen);
 
         MessagingServiceFactory.toggleTestMode();
-        MessagingServiceFactory.setTestService(new MainActivity_FriendMessagingUITest.TestMessage());
+        MessagingServiceFactory.setTestService(new TestMessage());
     }
 
     @Test
-    public void mainActivityT_AddFriendUIest() {
+    public void mainActivity_FriendHistoryTest() {
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
@@ -81,16 +85,6 @@ public class MainActivity_AddFriendUIest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        ViewInteraction button = onView(
-                allOf(withId(R.id.buttonFriends),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                7),
-                        isDisplayed()));
-        button.check(matches(isDisplayed()));
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.buttonFriends), withText("Friends List"),
@@ -111,15 +105,24 @@ public class MainActivity_AddFriendUIest {
             e.printStackTrace();
         }
 
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.buttonAddFriend), withText("Add Friend"),
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.label), withText("Allen@gmail.com"),
                         childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
+                                allOf(withId(R.id.friends_list),
+                                        childAtPosition(
+                                                withId(R.id.scroll_view),
+                                                0)),
+                                0),
                         isDisplayed()));
-        appCompatButton2.perform(click());
+        textView.check(matches(withText("Allen@gmail.com")));
+
+        DataInteraction appCompatTextView = onData(anything())
+                .inAdapterView(allOf(withId(R.id.friends_list),
+                        childAtPosition(
+                                withId(R.id.scroll_view),
+                                0)))
+                .atPosition(0);
+        appCompatTextView.perform(scrollTo(), click());
 
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
@@ -130,30 +133,18 @@ public class MainActivity_AddFriendUIest {
             e.printStackTrace();
         }
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.friendEmail), withText("Friend's Email"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        textView.check(matches(withText("Friend's Email")));
-
-        ViewInteraction enterEmail = onView(
-                allOf(withId(R.id.enterEmail),
+        ViewInteraction button = onView(
+                allOf(withId(R.id.buttonToMessage),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 1),
                         isDisplayed()));
-        enterEmail.check(matches(isDisplayed()));
-
-        enterEmail.perform(typeText("team1@ucsd.edu"));
+        button.check(matches(isDisplayed()));
 
         ViewInteraction button2 = onView(
-                allOf(withId(R.id.buttonSendFriends),
+                allOf(withId(R.id.friendHistoryButton),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -163,7 +154,7 @@ public class MainActivity_AddFriendUIest {
         button2.check(matches(isDisplayed()));
 
         ViewInteraction button3 = onView(
-                allOf(withId(R.id.buttonCancelAddFriend),
+                allOf(withId(R.id.buttonBackFriendList),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -172,7 +163,25 @@ public class MainActivity_AddFriendUIest {
                         isDisplayed()));
         button3.check(matches(isDisplayed()));
 
-        button2.perform(click());
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.friendHistoryButton), withText("History"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        appCompatButton2.perform(click());
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private static Matcher<View> childAtPosition(
@@ -192,5 +201,25 @@ public class MainActivity_AddFriendUIest {
                         && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
+    }
+
+    public static class TestMessage implements IMessagingService{
+
+        public TestMessage(){}
+
+        @Override
+        public void sendMessage(Map<String, String> newMessage, EditText messageView, String DOCUMENT_KEY) {
+
+        }
+
+        @Override
+        public void init(TextView textView, Query.Direction messageOrder, String DOCUMENT_KEY) {
+
+        }
+
+        @Override
+        public void removeListener() {
+
+        }
     }
 }

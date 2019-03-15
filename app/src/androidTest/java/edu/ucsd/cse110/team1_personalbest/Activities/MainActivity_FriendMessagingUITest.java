@@ -10,6 +10,10 @@ import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.google.firebase.firestore.Query;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -21,14 +25,19 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import edu.ucsd.cse110.team1_personalbest.Firebase.User;
 import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
+import edu.ucsd.cse110.team1_personalbest.Messaging.IMessagingService;
+import edu.ucsd.cse110.team1_personalbest.Messaging.MessagingServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.R;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -38,7 +47,7 @@ import static org.hamcrest.Matchers.anything;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class MainActivity_FriendHistoryTest {
+public class MainActivity_FriendMessagingUITest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -57,11 +66,14 @@ public class MainActivity_FriendHistoryTest {
         MainActivity.TESTMODE = true;
         MainActivity.enable_firestore = false;
 
-        List<String> friends = new ArrayList<>();
-        friends.add("Allen@gmail.com");
-        friends.add("Bill@gmail.com");
-        friends.add("Cat@gmail.com");
-        UserSession.getCurrentUser().setFriends(friends);
+        User bill = new User("Bill@gmail.com","Bill@gmail.com");
+        User allen = new User("Allen@gmail.com","Allen@gmail.com");
+
+        UserSession.setCurrentUser(bill);
+        UserSession.getCurrentUser().addFriend(allen);
+
+        MessagingServiceFactory.toggleTestMode();
+        MessagingServiceFactory.setTestService(new TestMessage());
     }
 
     @Test
@@ -131,45 +143,47 @@ public class MainActivity_FriendHistoryTest {
                                 1),
                         isDisplayed()));
         button.check(matches(isDisplayed()));
+        button.perform(click());
 
-        ViewInteraction button2 = onView(
-                allOf(withId(R.id.friendHistoryButton),
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ViewInteraction enterMessage = onView(
+                allOf(withId(R.id.text_message),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 2),
                         isDisplayed()));
-        button2.check(matches(isDisplayed()));
+        enterMessage.check(matches(isDisplayed()));
 
-        ViewInteraction button3 = onView(
-                allOf(withId(R.id.buttonBackFriendList),
+        enterMessage.perform(typeText("Hi"));
+
+        ViewInteraction button2 = onView(
+                allOf(withId(R.id.buttonCancelMessage),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 3),
                         isDisplayed()));
-        button3.check(matches(isDisplayed()));
+        button2.check(matches(isDisplayed()));
 
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.friendHistoryButton), withText("History"),
+        ViewInteraction button3 = onView(
+                allOf(withId(R.id.buttonSendMessage),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
-        appCompatButton2.perform(click());
+        button3.check(matches(isDisplayed()));
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        button3.perform(click());
 
     }
 
@@ -190,5 +204,25 @@ public class MainActivity_FriendHistoryTest {
                         && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
+    }
+
+    public static class TestMessage implements IMessagingService{
+
+        public TestMessage(){}
+
+        @Override
+        public void sendMessage(Map<String, String> newMessage, EditText messageView, String DOCUMENT_KEY) {
+
+        }
+
+        @Override
+        public void init(TextView textView, Query.Direction messageOrder, String DOCUMENT_KEY) {
+
+        }
+
+        @Override
+        public void removeListener() {
+
+        }
     }
 }
