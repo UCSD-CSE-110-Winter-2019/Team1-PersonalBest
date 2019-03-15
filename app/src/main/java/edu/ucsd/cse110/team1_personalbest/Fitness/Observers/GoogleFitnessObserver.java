@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import edu.ucsd.cse110.team1_personalbest.CustomGoalActivity;
@@ -23,6 +24,8 @@ import edu.ucsd.cse110.team1_personalbest.Encouragement;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.User;
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 
 public class GoogleFitnessObserver implements FitnessObserver {
@@ -34,7 +37,6 @@ public class GoogleFitnessObserver implements FitnessObserver {
     private TextView timeElapsed;
     private TextView goal;
     private Context context;
-    private Database db;
     private String FILENAME = "steps.json";
 
     public GoogleFitnessObserver(TextView goal, TextView steps, TextView deltaSteps, TextView speed, TextView distance, TextView timeElapsed, Context c) {
@@ -45,7 +47,6 @@ public class GoogleFitnessObserver implements FitnessObserver {
         this.distance = distance;
         this.timeElapsed = timeElapsed;
         this.context = c;
-        db = new Database(c);
     }
 
     public void update(Integer numSteps, Integer numStepsDelta, Long timeElapsed, Float deltaDistance) {
@@ -53,19 +54,29 @@ public class GoogleFitnessObserver implements FitnessObserver {
                 timeElapsed + ", " + deltaDistance);
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar calendar = Calendar.getInstance();
-        IDataObject object = db.readDataObject(format.format(calendar.getTime()));
-        if (object == null) {
-            object = new StepDataObject(0,0,0, format.format(Calendar.DATE));
+        User user = UserSession.getCurrentUser();
+        if (user == null) user = new User();
+        Map<String,Integer> steps = user.getGraphData(format.format(calendar.getTime()));
+        if (steps == null) {
+            steps = new HashMap<>();
         }
+        if (steps.get(User.stepGoalKey) == null)
+            steps.put(User.stepGoalKey, 0);
+        if (steps.get(User.dailyStepKey) == null)
+            steps.put(User.dailyStepKey, 0);
+        if (steps.get(User.intentionalKey) == null)
+            steps.put(User.intentionalKey, 0);
         if (this.goal != null) {
-            this.goal.setText(Integer.toString(object.getDailyStepGoal()));
+            this.goal.setText(Integer.toString(steps.get(User.stepGoalKey)));
         }
         if(numSteps != null && this.steps != null) {
             this.steps.setText(Integer.toString(numSteps));
-            object.setDailyStepCount(numSteps);
+            steps.put(User.dailyStepKey, numSteps);
         }
-        if(numStepsDelta != null && this.deltaSteps != null)
+        if(numStepsDelta != null && this.deltaSteps != null) {
             this.deltaSteps.setText(Integer.toString(numStepsDelta));
+        }
+
         if(timeElapsed != null && this.speed != null && deltaDistance !=null && this.distance != null) {
             float curDistance = Float.parseFloat(this.distance.getText().toString());
             deltaDistance *= 0.000621371F; // convert to miles
@@ -89,10 +100,13 @@ public class GoogleFitnessObserver implements FitnessObserver {
         }
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        if (pref != null) {
+        if (pref != null && numSteps != null) {
+            Integer stepGoal = steps.get(User.stepGoalKey);
+            int stepGoalSanitized = 0;
+            if (stepGoal != null) stepGoalSanitized = stepGoal;
             boolean messageShown = pref.getBoolean(format.format(calendar.getTime()), false);
-            if (object.getDailyStepGoal() != 0 && object.getDailyStepCount() != 0 && !messageShown) {
-                if (object.getDailyStepCount() >= object.getDailyStepGoal()) {
+            if (stepGoalSanitized != 0 && numSteps != 0 && !messageShown) {
+                if (numSteps >= stepGoalSanitized) {
                     SharedPreferences.Editor editor = pref.edit();
                     editor.putBoolean(format.format(calendar.getTime()), true);
                     editor.apply();
@@ -109,11 +123,11 @@ public class GoogleFitnessObserver implements FitnessObserver {
             cal.add(Calendar.DATE, -1);
             Date date = cal.getTime();
             String preDate = format.format(date);
-            IDataObject result = db.readDataObject(preDate);
-
-            encouragement.showEncouragement(result.getDailyStepCount(), numSteps);
+            Map<String,Integer> yesterday = user.getGraphData(preDate);
+            if (yesterday != null && yesterday.get(User.dailyStepKey) != null)
+                encouragement.showEncouragement(yesterday.get(User.dailyStepKey), numSteps);
         }
-
-        db.putDataObject(object);
+        user.setGraphData(format.format(calendar.getTime()), steps);
+        UserSession.writeUserToDB(user);
     }
 }

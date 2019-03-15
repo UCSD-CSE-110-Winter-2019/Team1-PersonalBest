@@ -28,6 +28,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.ucsd.cse110.team1_personalbest.Encouragement;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
@@ -66,8 +68,6 @@ public class MainActivity extends AppCompatActivity {
     public static boolean TESTMODE = false;
     public static boolean enable_firestore = true;
 
-    private Database db;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,8 +89,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-
-        db = new Database(getApplicationContext());
 
         if (login_key == null) login_key = GOOGLE_LOGIN;
         if (fitness_key == null) fitness_key = GOOGLE_FITNESS;
@@ -189,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-
         setGoal();
 
         String steps = current_step_view.getText().toString();
@@ -205,11 +202,9 @@ public class MainActivity extends AppCompatActivity {
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String preDate = format.format(date);
-        IDataObject result = db.readDataObject(preDate);
-
-        if (result != null) {
-            int previousSteps = result.getDailyStepCount();
-
+        Integer dailyStepCount = UserSession.getCurrentUser().getGraphData(preDate).get(User.dailyStepKey);
+        if (dailyStepCount != null) {
+            int previousSteps = dailyStepCount;
             if(previousSteps != 0)
                 if( currSteps >= 1.4 * previousSteps ) {
                     Encouragement enc = new Encouragement(this);
@@ -288,31 +283,33 @@ public class MainActivity extends AppCompatActivity {
         Date date = cal.getTime();
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String today = format.format(date);
-        IDataObject result = db.readDataObject(today);
-
+        User user = UserSession.getCurrentUser();
+        Map<String,Integer> stepMap = user.getGraphData(today);
+        Integer goal = 0;
+        if (stepMap != null) goal = stepMap.get(User.stepGoalKey);
+        else {
+            stepMap = new HashMap<>();
+            user.setGraphData(today, stepMap);
+        }
+        goal = goal == null ? 0 :  goal;
         TextView stepGoal = findViewById(R.id.step_goal_view);
 
-        if(result.getDailyStepGoal() == 0){
+        if(goal == 0){
             //store initial goal
-            stepGoal.setText("5");
-            result.setDailyStepGoal(5);
-            db.putDataObject(result);
+            stepGoal.setText("500");
+            goal = 500;
+            stepMap.put(User.stepGoalKey, goal);
+            user.setGraphData(today, stepMap);
         }
 
-        result = db.readDataObject(today);
         if(TESTMODE == false)
-            stepGoal.setText(Integer.toString(result.getDailyStepGoal()));
+            stepGoal.setText(Integer.toString(goal));
         else
             stepGoal.setText("5");
     }
 
     public void setCurrSteps(long currSteps) {
         current_step_view.setText(String.valueOf(currSteps));
-    }
-
-    public void setDataBase(StepDataObject day1, StepDataObject day2) {
-        db.putDataObject(day1);
-        db.putDataObject(day2);
     }
 
     public void metGoalNotification(int step, int goal){

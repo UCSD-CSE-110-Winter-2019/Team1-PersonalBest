@@ -73,14 +73,12 @@ public class CustomGoalActivityTest {
         Intent intent = new Intent(RuntimeEnvironment.application, CustomGoalActivity.class);
         cont = Robolectric.buildActivity(CustomGoalActivity.class, intent);
         activity = cont.create().get();
-        activity.setKeys(TEST_SERVICE, TEST_SERVICE);
 
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar cal1 = Calendar.getInstance();
         Date date1 = cal1.getTime();
         currDate = format.format(date1);
         today = new StepDataObject(1000, 0, 5000, currDate);
-        activity.setDataBase(today);
     }
 
     @Test
@@ -90,17 +88,6 @@ public class CustomGoalActivityTest {
 
         int cusGoal = activity.getCustomGoal();
         assertThat(cusGoal, equalTo(6010));
-    }
-
-
-    @Test
-    public void TestSaveSuggestedGoal(){
-        Database db = activity.getDataBase();
-        assertThat(db.readDataObject(currDate).getDailyStepGoal(), equalTo(5000));
-
-        activity.saveCustomGoal(6010);
-        assertThat(db.readDataObject(currDate).getDailyStepGoal(), equalTo(6010));
-
     }
 
     @After

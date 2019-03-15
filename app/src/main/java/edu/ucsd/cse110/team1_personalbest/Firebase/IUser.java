@@ -21,15 +21,16 @@ public interface IUser {
 
     void removeRequest(User user);
 
-    void setRequests(List<String> requests);
-
     void sendRequest(User user);
 
     void addFriend(User user);
 
-    void setFriends(List<String> friends);
-
-    void setGraphData(String date, Map<String, Integer> steps);
+    void setIntentionalSteps(String date, Integer steps);
+    void setStepGoal(String date, Integer steps);
+    void setDailySteps(String date, Integer steps);
+    int getStepGoal(String date);
+    int getIntentionalSteps(String date);
+    int getDailySteps(String date);
 
     Map<String, Integer> getGraphData(String date);
 

@@ -86,27 +86,16 @@ public class SetNewGoalActivityTest {
         Calendar cal1 = Calendar.getInstance();
         Date date1 = cal1.getTime();
         currDate = format.format(date1);
-        today = new StepDataObject(1000, 0, 5, currDate);
-        activity.setDataBase(today);
-
     }
 
     @Test
     public void TestGetSuggestedGoal(){
 
         int cusGoal = activity.getSuggestedGoal();
-        assertThat(cusGoal, equalTo(10));
+        assertThat(cusGoal, equalTo(500));
 
     }
 
-    @Test
-    public void TestSaveSuggestedGoal(){
-        Database db = activity.getDataBase();
-        assertThat(db.readDataObject(currDate).getDailyStepGoal(), equalTo(5));
-
-        activity.saveSuggestedGoal(6010);
-        assertThat(db.readDataObject(currDate).getDailyStepGoal(), equalTo(6010));
-    }
 
     @After
     public void cleanup() {
