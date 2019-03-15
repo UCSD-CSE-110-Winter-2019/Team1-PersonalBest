@@ -16,6 +16,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.Locale;
 
 import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessObserver;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Observers.GoogleFitnessObserver;
 
@@ -62,6 +63,7 @@ public class GoogleFitnessIDatabaseObserverTest {
 
     @Before
     public void setup() {
+        UserSession.testmode = true;
         MainActivity.enable_firestore = false;
         st = 1;
         dst = 0;

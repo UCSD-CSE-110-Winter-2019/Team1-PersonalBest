@@ -27,6 +27,7 @@ import edu.ucsd.cse110.team1_personalbest.CustomGoalActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
@@ -55,6 +56,7 @@ public class SetNewGoalActivityTest {
 
     @Before
     public void setUp() throws Exception {
+        UserSession.testmode = true;
         MainActivity.enable_firestore = false;
         service = Mockito.mock(FitnessService.class);
         loginService = Mockito.mock(LoginService.class);
@@ -86,27 +88,16 @@ public class SetNewGoalActivityTest {
         Calendar cal1 = Calendar.getInstance();
         Date date1 = cal1.getTime();
         currDate = format.format(date1);
-        today = new StepDataObject(1000, 0, 5, currDate);
-        activity.setDataBase(today);
-
     }
 
     @Test
     public void TestGetSuggestedGoal(){
 
         int cusGoal = activity.getSuggestedGoal();
-        assertThat(cusGoal, equalTo(10));
+        assertThat(cusGoal, equalTo(1000));
 
     }
 
-    @Test
-    public void TestSaveSuggestedGoal(){
-        Database db = activity.getDataBase();
-        assertThat(db.readDataObject(currDate).getDailyStepGoal(), equalTo(5));
-
-        activity.saveSuggestedGoal(6010);
-        assertThat(db.readDataObject(currDate).getDailyStepGoal(), equalTo(6010));
-    }
 
     @After
     public void cleanup() {
