@@ -3,6 +3,7 @@ package edu.ucsd.cse110.team1_personalbest.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,16 +23,21 @@ import edu.ucsd.cse110.team1_personalbest.Graph.Factories.BarGraphFactory;
 import edu.ucsd.cse110.team1_personalbest.R;
 
 public class MainActivityGraph extends AppCompatActivity {
-    private Database db;
     private int totalSteps;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
         Intent i = getIntent();
         String userName = i.getStringExtra("name" );
-        int offset = 0;
+        int offset = i.getIntExtra("offset",0);
+        Log.d("offset: ",Integer.toString(offset));
+
+        Log.d("username: ",userName);
+
+
+
         //db = new Database(getApplicationContext());
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar calendar = Calendar.getInstance();
@@ -95,9 +101,45 @@ public class MainActivityGraph extends AppCompatActivity {
                 finish();
             }
         });
+        Button prevWeek = findViewById(R.id.previousWeekButton);
+        Button nextWeek = findViewById(R.id.nextWeekButton);
+        if(offset == 0){
+            nextWeek.setVisibility(View.INVISIBLE);
+        }
+        else if(offset == 3){
+            prevWeek.setVisibility(View.INVISIBLE);
+        }
+        else{
+            nextWeek.setVisibility(View.VISIBLE);
+            prevWeek.setVisibility(View.VISIBLE);
+        }
+        prevWeek.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                int newOffset = offset;
+                finish();
+                Intent intent = getIntent();
+                intent.putExtra("name", userName);
+                intent.putExtra("offset", newOffset++);
+                startActivity(intent);
+            }
+        });
+        nextWeek.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                int newOffset = offset;
+                finish();
+                Intent intent = getIntent();
+                intent.putExtra("name", userName);
+                intent.putExtra("offset", newOffset--);
+                startActivity(intent);
+                startActivity(getIntent());
+            }
+        });
 
 
     }
+
 }
 
 
