@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), MainActivityGraph.class);
                 intent.putExtra("name", UserSession.getCurrentUser().getName());
+                Log.d("MainActivity UserName:",UserSession.getCurrentUser().getName());
                 startActivity(intent);
 
             }

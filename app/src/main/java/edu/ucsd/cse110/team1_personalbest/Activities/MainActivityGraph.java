@@ -34,7 +34,7 @@ public class MainActivityGraph extends AppCompatActivity {
         int offset = i.getIntExtra("offset",0);
         Log.d("offset: ",Integer.toString(offset));
 
-        Log.d("username: ",userName);
+        Log.d("username: ", userName);
 
 
 
@@ -117,23 +117,27 @@ public class MainActivityGraph extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 int newOffset = offset;
-                finish();
+                newOffset++;
                 Intent intent = getIntent();
                 intent.putExtra("name", userName);
-                intent.putExtra("offset", newOffset++);
+                intent.putExtra("offset", newOffset);
                 startActivity(intent);
+                finish();
+
             }
         });
         nextWeek.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 int newOffset = offset;
-                finish();
+                newOffset--;
+
                 Intent intent = getIntent();
                 intent.putExtra("name", userName);
-                intent.putExtra("offset", newOffset--);
+                intent.putExtra("offset", newOffset);
                 startActivity(intent);
-                startActivity(getIntent());
+                finish();
+
             }
         });
 
