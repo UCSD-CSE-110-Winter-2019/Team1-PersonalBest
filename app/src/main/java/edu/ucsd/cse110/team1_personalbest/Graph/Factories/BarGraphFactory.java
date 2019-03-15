@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.team1_personalbest.Graph.Factories;
 
 import android.graphics.Color;
+import android.util.Log;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
@@ -29,7 +30,7 @@ public class BarGraphFactory implements GraphFactory {
 
 
         Calendar calendar = Calendar.getInstance();
-        int dayOfWeek = calendar.DAY_OF_WEEK;
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         dayOfWeek++;
         for(int i = 0;i<7;i++){
             labels[i] = days[dayOfWeek%7];

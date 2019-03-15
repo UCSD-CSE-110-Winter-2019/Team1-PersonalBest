@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), MainActivityGraph.class);
+                intent.putExtra("name", UserSession.getCurrentUser().getName());
                 startActivity(intent);
 
             }
