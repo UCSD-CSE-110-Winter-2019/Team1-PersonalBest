@@ -26,7 +26,9 @@ import java.util.Date;
 import edu.ucsd.cse110.team1_personalbest.CustomGoalActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.IUserSession;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.User;
 import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
@@ -53,10 +55,12 @@ public class SetNewGoalActivityTest {
     private String currDate;
     private StepDataObject today;
     private Context appContext = Robolectric.setupActivity(MainActivity.class).getApplicationContext();
-
+    private IUserSession sess = Mockito.mock(IUserSession.class);
     @Before
     public void setUp() throws Exception {
         UserSession.testmode = true;
+        UserSession.testSession = sess;
+        User u = new User();
         MainActivity.enable_firestore = false;
         service = Mockito.mock(FitnessService.class);
         loginService = Mockito.mock(LoginService.class);
@@ -81,17 +85,22 @@ public class SetNewGoalActivityTest {
 
         Intent intent = new Intent(RuntimeEnvironment.application, SetNewGoalActivity.class);
         cont = Robolectric.buildActivity(SetNewGoalActivity.class, intent);
-        activity = cont.create().get();
+        activity = cont.get();
         activity.setKeys(TEST_SERVICE, TEST_SERVICE);
+
 
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar cal1 = Calendar.getInstance();
         Date date1 = cal1.getTime();
         currDate = format.format(date1);
+        u.setStepGoal(currDate, 500);
+        Mockito.when(sess.getCurrentUser()).thenReturn(u);
     }
 
     @Test
     public void TestGetSuggestedGoal(){
+        cont.create();
+        Mockito.verify(sess).getCurrentUser();
         int cusGoal = activity.getSuggestedGoal();
         assertThat(cusGoal, equalTo(1000));
     }
