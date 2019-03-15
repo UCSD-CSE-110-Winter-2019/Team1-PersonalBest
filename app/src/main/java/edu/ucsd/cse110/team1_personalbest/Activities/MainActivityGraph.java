@@ -60,28 +60,29 @@ public class MainActivityGraph extends AppCompatActivity {
         setContentView(R.layout.activity_main_graph);
 
         BarGraphFactory factory = new BarGraphFactory();
-        int d7Steps = UserSession.getUser(userName).getDailySteps(format.format(d7));
-        int d7IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d7));
-        int goal = UserSession.getUser(userName).getStepGoal(format.format(d1));
-        int d6Steps = UserSession.getUser(userName).getDailySteps(format.format(d6));
-        int d6IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d6));
-        int d5Steps = UserSession.getUser(userName).getDailySteps(format.format(d5));
-        int d5IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d5));
-        int d4Steps = UserSession.getUser(userName).getDailySteps(format.format(d4));
-        int d4IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d4));
-        int d3Steps = UserSession.getUser(userName).getDailySteps(format.format(d3));
-        int d3IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d3));
-        int d2Steps = UserSession.getUser(userName).getDailySteps(format.format(d2));
-        int d2IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d2));
-        int d1Steps = UserSession.getUser(userName).getDailySteps(format.format(d1));
-        int d1IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d1));
-        //int[] dailySteps = {d1Steps,d2Steps,d3Steps,d4Steps,d5Steps,d6Steps,d7Steps};
-        //int[] intentionalSteps = {d1IntentionalSteps,d2IntentionalSteps,d3IntentionalSteps,
-        //        d4IntentionalSteps,d5IntentionalSteps,d6IntentionalSteps,d7IntentionalSteps};
+//        int d7Steps = UserSession.getUser(userName).getDailySteps(format.format(d7));
+//        int d7IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d7));
+//        int goal = UserSession.getUser(userName).getStepGoal(format.format(d1));
+//        int d6Steps = UserSession.getUser(userName).getDailySteps(format.format(d6));
+//        int d6IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d6));
+//        int d5Steps = UserSession.getUser(userName).getDailySteps(format.format(d5));
+//        int d5IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d5));
+//        int d4Steps = UserSession.getUser(userName).getDailySteps(format.format(d4));
+//        int d4IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d4));
+//        int d3Steps = UserSession.getUser(userName).getDailySteps(format.format(d3));
+//        int d3IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d3));
+//        int d2Steps = UserSession.getUser(userName).getDailySteps(format.format(d2));
+//        int d2IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d2));
+//        int d1Steps = UserSession.getUser(userName).getDailySteps(format.format(d1));
+//        int d1IntentionalSteps = UserSession.getUser(userName).getIntentionalSteps(format.format(d1));
+//        int[] dailySteps = {d1Steps,d2Steps,d3Steps,d4Steps,d5Steps,d6Steps,d7Steps};
+//        int[] intentionalSteps = {d1IntentionalSteps,d2IntentionalSteps,d3IntentionalSteps,
+//                d4IntentionalSteps,d5IntentionalSteps,d6IntentionalSteps,d7IntentionalSteps};
 
         //For Testing only
-        int[] dailySteps = {2000,3000,4000,3000,1500,1000,1500};
-        int[] intentionalSteps = {1000,1400,3000,2700,1400,0,700};
+        int[] dailySteps = {200*offset,3000,4000,3000,1500,1000,1500};
+        int[] intentionalSteps = {200*offset,1400,3000,2700,1400,0,700};
+        int goal = 500;
         DateFormat forTextView = new SimpleDateFormat("MM/dd");
 
         String endDate = forTextView.format(d7);
@@ -106,7 +107,7 @@ public class MainActivityGraph extends AppCompatActivity {
         if(offset == 0){
             nextWeek.setVisibility(View.INVISIBLE);
         }
-        else if(offset == 3){
+        else if(offset == 4){
             prevWeek.setVisibility(View.INVISIBLE);
         }
         else{
