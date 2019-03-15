@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
         User user = UserSession.getCurrentUser();
 
         if (!goalMet && dailyStepCount != 0)
-            if (currSteps >= 1.4 * dailyStepCount && user.hasFriends()) {
+            if (currSteps >= 1.4 * dailyStepCount && user.hasNoFriends()) {
                 Encouragement enc = new Encouragement(this);
                 enc.showEncouragement(dailyStepCount, currSteps);
             }

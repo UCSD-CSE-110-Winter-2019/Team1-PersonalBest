@@ -61,7 +61,7 @@ public class User implements IUser {
     }
 
     @Override
-    public boolean hasFriends() {
+    public boolean hasNoFriends() {
         return friends.isEmpty();
     }
 

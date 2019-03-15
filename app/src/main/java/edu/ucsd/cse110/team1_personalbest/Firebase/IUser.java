@@ -17,7 +17,7 @@ public interface IUser {
 
     List<String> getPendingRequests();
 
-    boolean hasFriends();
+    boolean hasNoFriends();
 
     void removeRequest(User user);
 
