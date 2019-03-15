@@ -110,7 +110,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void TestNoEncouragement() {
+    public void TestNoEncouragementForNoFriendPerson() {
         cont.create();
         currSteps = 1100;
         activity.setCurrSteps(currSteps);
@@ -121,7 +121,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void TestEncouragementNotDouble() {
+    public void TestEncouragementNotDoubleForNoFriendPerson() {
         cont.create();
         currSteps = 1500;
         activity.setCurrSteps(currSteps);
@@ -133,7 +133,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void TestEncouragementNearlyDouble() {
+    public void TestEncouragementNearlyDoubleForNoFriendPerson() {
         cont.create();
         currSteps = 1900;
         activity.setCurrSteps(currSteps);
@@ -145,7 +145,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void TestEncouragementDouble() {
+    public void TestEncouragementDoubleForNoFriendPerson() {
         cont.create();
         currSteps = 2100;
         activity.setCurrSteps(currSteps);
@@ -154,6 +154,41 @@ public class MainActivityTest {
         activity.onResume();
         System.out.println(ShadowToast.getTextOfLatestToast().toString());
         assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("Excellent! You've doubled your steps!"));
+    }
+
+    @Test
+    public void TestEncouragementForHasFriendPerson() {
+        cont.create();
+        currSteps = 2100;
+        activity.setCurrSteps(currSteps);
+        this.setupDBForHasFriendPerson();
+
+        activity.onResume();
+        assertNull(ShadowToast.getTextOfLatestToast());
+    }
+
+
+    public void setupDBForHasFriendPerson() {
+        UserSession.testSession = userSession;
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar cal1 = Calendar.getInstance();
+        Date date1 = cal1.getTime();
+        String currDate = format.format(date1);
+        User u1 = new User();
+        Mockito.when(userSession.getCurrentUser()).thenReturn(u1);
+        u1.setStepGoal(currDate,5100);
+        u1.setIntentionalSteps(currDate, 0);
+        u1.setDailySteps(currDate, 1000);
+        day1 = new StepDataObject(1000, 0, 5100, currDate);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.add(Calendar.DATE, -1);
+        Date date2 = cal2.getTime();
+        String preDate = format.format(date2);
+        u1.setStepGoal(preDate,5000);
+        u1.setIntentionalSteps(preDate, 0);
+        u1.setDailySteps(preDate, 1000);
+        day2 = new StepDataObject(1000, 0, 5000, preDate);
+        u1.addFriend(u1);
     }
 
     public void setupDB() {
@@ -197,6 +232,7 @@ public class MainActivityTest {
         stepGoalView.setText("5500");
         currSteps = 6000;
         activity.setCurrSteps(currSteps);
+
         activity.onResume();
 
         assertThat(ShadowToast.getTextOfLatestToast().toString(), equalTo("show goal notification"));
