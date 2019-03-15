@@ -128,18 +128,24 @@ public class User implements IUser {
 
     @Override
     public int getIntentionalSteps(String date) {
-        Map<String,Integer> today = graphData.get(date);
+        Map today = graphData.get(date);
         if (today == null) today = new HashMap<>();
         if (today.get(intentionalKey) == null) return 0;
-        return today.get(intentionalKey);
+        if (today.get(intentionalKey) instanceof Long) {
+            return ((Long) today.get(intentionalKey)).intValue();
+        }
+        else return (int)today.get(intentionalKey);
     }
 
     @Override
     public int getDailySteps(String date) {
-        Map<String,Integer> today = graphData.get(date);
+        Map today = graphData.get(date);
         if (today == null) today = new HashMap<>();
         if (today.get(dailyStepKey) == null) return 0;
-        return today.get(dailyStepKey);
+        if (today.get(dailyStepKey) instanceof Long) {
+            return ((Long) today.get(dailyStepKey)).intValue();
+        }
+        else return (int)today.get(dailyStepKey);
     }
 
     @Override
