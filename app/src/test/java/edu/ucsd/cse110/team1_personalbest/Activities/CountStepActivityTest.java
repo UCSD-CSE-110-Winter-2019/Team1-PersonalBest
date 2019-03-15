@@ -37,7 +37,6 @@ public class CountStepActivityTest {
     private LoginService loginService;
     private ActivityController<CountStepActivity> cont;
 
-
     @Before
     public void setUp() throws Exception {
         UserSession.testmode = true;

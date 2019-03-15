@@ -26,6 +26,7 @@ public class UserSession {
     protected static boolean safeToWrite2 = false;
     private static boolean issetup = false;
     public static boolean testmode = false;
+    public static boolean uitestmode = false;
     public static IUserSession testSession = new TestUserSession();
 
     public static boolean isSetup() {
@@ -67,6 +68,7 @@ public class UserSession {
 
     public static User getCurrentUser() {
         if(testmode) {
+            if(uitestmode) return user;
             return testSession.getCurrentUser();
         }
         if (user == null) return new User();
@@ -84,6 +86,7 @@ public class UserSession {
 
     public static void setCurrentUser(final User newUser) {
         if(testmode) {
+            if(uitestmode && newUser != null) user = newUser;
             testSession.setCurrentUser(newUser);
             return;
         }
