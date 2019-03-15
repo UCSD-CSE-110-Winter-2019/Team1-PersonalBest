@@ -27,6 +27,7 @@ import edu.ucsd.cse110.team1_personalbest.CustomGoalActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
@@ -55,6 +56,7 @@ public class SetNewGoalActivityTest {
 
     @Before
     public void setUp() throws Exception {
+        UserSession.testmode = true;
         MainActivity.enable_firestore = false;
         service = Mockito.mock(FitnessService.class);
         loginService = Mockito.mock(LoginService.class);
@@ -92,7 +94,7 @@ public class SetNewGoalActivityTest {
     public void TestGetSuggestedGoal(){
 
         int cusGoal = activity.getSuggestedGoal();
-        assertThat(cusGoal, equalTo(500));
+        assertThat(cusGoal, equalTo(1000));
 
     }
 

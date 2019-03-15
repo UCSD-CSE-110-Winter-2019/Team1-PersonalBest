@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.team1_personalbest.Firebase;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +13,7 @@ public class User implements IUser {
     private String email;
     private List<String> friends;
     private List<String> friendRequests;
-    Map<String, Map<String, Integer>> graphData;
+    private Map<String, Map<String, Integer>> graphData;
     public static final String dailyStepKey = "daily_steps";
     public static final String intentionalKey = "intentional_steps";
     public static final String stepGoalKey = "step_goal";
@@ -89,6 +91,7 @@ public class User implements IUser {
         Map<String,Integer> today = graphData.get(date);
         if (today == null) today = new HashMap<>();
         today.put(intentionalKey, steps);
+        graphData.put(date, today);
     }
 
     @Override
@@ -98,6 +101,7 @@ public class User implements IUser {
         Map<String,Integer> today = graphData.get(date);
         if (today == null) today = new HashMap<>();
         today.put(stepGoalKey, steps);
+        graphData.put(date, today);
     }
 
     @Override
@@ -107,37 +111,53 @@ public class User implements IUser {
         Map<String,Integer> today = graphData.get(date);
         if (today == null) today = new HashMap<>();
         today.put(dailyStepKey, steps);
+        graphData.put(date, today);
     }
 
     @Override
     public int getStepGoal(String date) {
-        Map<String,Integer> today = graphData.get(date);
+        Map today = graphData.get(date);
         if (today == null) today = new HashMap<>();
-        Integer steps = today.get(stepGoalKey);
-        return steps == null ? 0 : steps;
+        if (today.get(stepGoalKey) == null) return 500;
+        Log.d("test", today.get(stepGoalKey).toString());
+        if (today.get(stepGoalKey) instanceof Long) {
+            return ((Long) today.get(stepGoalKey)).intValue();
+        }
+        else return (int)today.get(stepGoalKey);
     }
 
     @Override
     public int getIntentionalSteps(String date) {
         Map<String,Integer> today = graphData.get(date);
         if (today == null) today = new HashMap<>();
-        Integer steps = today.get(intentionalKey);
-        return steps == null ? 0 : steps;
+        if (today.get(intentionalKey) == null) return 0;
+        return today.get(intentionalKey);
     }
 
     @Override
     public int getDailySteps(String date) {
         Map<String,Integer> today = graphData.get(date);
         if (today == null) today = new HashMap<>();
-        Integer steps = today.get(dailyStepKey);
-        return steps == null ? 0 : steps;
+        if (today.get(dailyStepKey) == null) return 0;
+        return today.get(dailyStepKey);
     }
 
+    @Override
+    public void setFriends(List<String> list) {
+        this.friends = list;
+    }
 
     @Override
-    public Map<String, Integer> getGraphData(String date) {
-        if (graphData.get(date) == null) return new HashMap<>();
-        return graphData.get(date);
+    public void setRequests(List<String> list) {
+        this.friendRequests = list;
+    }
+
+    public Map getGraphData() {
+        return graphData;
+    }
+
+    public void setGraphData(Map<String,Map<String,Integer>> map) {
+        graphData = map;
     }
 
 }

@@ -33,7 +33,6 @@ public class CustomGoalActivity extends AppCompatActivity {
 
     private static final String TAG = "[CustomGoalActivity]";
     private User user;
-    private Map<String,Integer> stepMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +48,6 @@ public class CustomGoalActivity extends AppCompatActivity {
             Log.e(TAG, "Null User");
             user = new User();
         }
-        this.stepMap = user.getGraphData(today);
-        if (stepMap == null) stepMap = new HashMap<>();
 
 
         Button btnCancelCustomGoal = (Button) findViewById(R.id.buttonCancelCustomGoal);
@@ -86,8 +83,7 @@ public class CustomGoalActivity extends AppCompatActivity {
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String today = format.format(date);
 
-        stepMap.put(User.stepGoalKey, cusGoal);
-        user.setGraphData(today, stepMap);
+        user.setStepGoal(today, cusGoal);
         UserSession.writeUserToDB(user);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

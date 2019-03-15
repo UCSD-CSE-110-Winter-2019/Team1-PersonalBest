@@ -101,24 +101,19 @@ public class CountStepActivity extends AppCompatActivity {
             public void onClick(View v) {
                 DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
                 Calendar calendar = Calendar.getInstance();
-
+                String today = format.format(calendar.getTime());
                 User user = UserSession.getCurrentUser();
-                Map<String,Integer> stepMap = user.getGraphData(format.format(calendar.getTime()));
-                Integer curStepCount = stepMap.get(User.intentionalKey);
-                int sanitizedCurCount = Integer.parseInt(delta_steps.getText().toString());
-                if (curStepCount != null) sanitizedCurCount += curStepCount;
-                stepMap.put(User.intentionalKey, sanitizedCurCount);
+                int curStepCount = user.getIntentionalSteps(today);
+                int newStepCount = Integer.parseInt(delta_steps.getText().toString()) + curStepCount;
+                user.setIntentionalSteps(today, newStepCount);
+                UserSession.setCurrentUser(user);
                 Log.i(TAG, "Completing intentional walk/run");
                 if (service != null) {
                     service.stopListening();
                     service.removeObservers();
                 }
 
-                Calendar cal = Calendar.getInstance();
-                Date date = cal.getTime();
-                DateFormat format1 = new SimpleDateFormat("MM/dd/yyyy");
-                String today = format1.format(date);
-                int stepGoal = stepMap.get(User.dailyStepKey);
+                int stepGoal = user.getStepGoal(today);
 
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                 boolean messageShown = pref.getBoolean(format.format(calendar.getTime()), false);

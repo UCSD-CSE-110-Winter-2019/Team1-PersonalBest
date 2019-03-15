@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.util.Log;
 
 import java.net.ContentHandler;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +26,7 @@ public class UserSession {
     protected static boolean safeToWrite2 = false;
     private static boolean issetup = false;
     public static boolean testmode = false;
-    public static IUserSession testSession;
+    public static IUserSession testSession = new TestUserSession();
 
     public static boolean isSetup() {
         return user != null;
@@ -103,7 +106,11 @@ public class UserSession {
             testSession.writeUserToDB(user);
             return;
         }
-        Log.d("UserSession", user.getPendingRequests().toString());
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar calendar = Calendar.getInstance();
+        String today = format.format(calendar.getTime());
+
+        Log.d("UserSession", ""+user.getGraphData().toString());
         if (user.getEmail() != null && safeToWrite1 && safeToWrite2 && issetup) {
             HashMap<String, Object> map = new HashMap<>();
             map.put(user.getEmail(), user);

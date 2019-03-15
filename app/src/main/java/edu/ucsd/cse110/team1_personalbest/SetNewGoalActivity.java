@@ -30,7 +30,6 @@ public class SetNewGoalActivity extends AppCompatActivity {
 
     public static final String TAG = "[SetNewGoalActivity]";
     private int newGoal;
-    private Map<String,Integer> stepMap;
     private User user;
     private String login_key = GOOGLE_LOGIN;
     private String fitness_key = TAG;
@@ -52,8 +51,6 @@ public class SetNewGoalActivity extends AppCompatActivity {
             Log.e("SetNewGoal", "Null User");
             user = new User();
         }
-
-        this.stepMap = user.getGraphData(today);
 
         newGoal = getSuggestedGoal();
         Button btnAcceptSuggestedGoal = (Button) findViewById(R.id.buttonAcceptSuggestedGoal);
@@ -87,9 +84,11 @@ public class SetNewGoalActivity extends AppCompatActivity {
     }
 
     public int getSuggestedGoal(){
-
-        int suggestedGoal = 0;
-        if (stepMap != null && stepMap.get(User.stepGoalKey) != null) suggestedGoal = stepMap.get(User.stepGoalKey);
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        String today = format.format(date);
+        int suggestedGoal = user.getStepGoal(today);
         suggestedGoal = suggestedGoal + 500;
         TextView newSuggestedGoal = findViewById(R.id.newSuggestedGoal);
         newSuggestedGoal.setText(String.valueOf(suggestedGoal));
@@ -102,8 +101,7 @@ public class SetNewGoalActivity extends AppCompatActivity {
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         String today = format.format(date);
 
-        stepMap.put(User.stepGoalKey, suggestedGoal);
-        user.setGraphData(today, stepMap);
+        user.setStepGoal(today, suggestedGoal);
         UserSession.writeUserToDB(user);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

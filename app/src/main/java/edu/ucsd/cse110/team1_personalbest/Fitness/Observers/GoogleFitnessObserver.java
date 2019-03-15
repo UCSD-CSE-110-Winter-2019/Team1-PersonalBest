@@ -54,24 +54,16 @@ public class GoogleFitnessObserver implements FitnessObserver {
                 timeElapsed + ", " + deltaDistance);
         DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar calendar = Calendar.getInstance();
+        String today = format.format(calendar.getTime());
         User user = UserSession.getCurrentUser();
         if (user == null) user = new User();
-        Map<String,Integer> steps = user.getGraphData(format.format(calendar.getTime()));
-        if (steps == null) {
-            steps = new HashMap<>();
-        }
-        if (steps.get(User.stepGoalKey) == null)
-            steps.put(User.stepGoalKey, 0);
-        if (steps.get(User.dailyStepKey) == null)
-            steps.put(User.dailyStepKey, 0);
-        if (steps.get(User.intentionalKey) == null)
-            steps.put(User.intentionalKey, 0);
+
         if (this.goal != null) {
-            this.goal.setText(Integer.toString(steps.get(User.stepGoalKey)));
+            this.goal.setText(Integer.toString(user.getStepGoal(today)));
         }
         if(numSteps != null && this.steps != null) {
             this.steps.setText(Integer.toString(numSteps));
-            steps.put(User.dailyStepKey, numSteps);
+            user.setDailySteps(today,numSteps);
         }
         if(numStepsDelta != null && this.deltaSteps != null) {
             this.deltaSteps.setText(Integer.toString(numStepsDelta));
@@ -101,7 +93,7 @@ public class GoogleFitnessObserver implements FitnessObserver {
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         if (pref != null && numSteps != null) {
-            Integer stepGoal = steps.get(User.stepGoalKey);
+            Integer stepGoal = user.getStepGoal(today);
             int stepGoalSanitized = 0;
             if (stepGoal != null) stepGoalSanitized = stepGoal;
             boolean messageShown = pref.getBoolean(format.format(calendar.getTime()), false);
@@ -123,11 +115,8 @@ public class GoogleFitnessObserver implements FitnessObserver {
             cal.add(Calendar.DATE, -1);
             Date date = cal.getTime();
             String preDate = format.format(date);
-            Map<String,Integer> yesterday = user.getGraphData(preDate);
-            if (yesterday != null && yesterday.get(User.dailyStepKey) != null)
-                encouragement.showEncouragement(yesterday.get(User.dailyStepKey), numSteps);
+            encouragement.showEncouragement(user.getDailySteps(preDate), numSteps);
         }
-        user.setGraphData(format.format(calendar.getTime()), steps);
-        UserSession.writeUserToDB(user);
+        UserSession.setCurrentUser(user);
     }
 }

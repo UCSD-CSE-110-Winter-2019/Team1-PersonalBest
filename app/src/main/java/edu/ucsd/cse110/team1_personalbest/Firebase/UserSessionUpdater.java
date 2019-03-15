@@ -7,7 +7,7 @@ import java.util.Map;
 public class UserSessionUpdater implements IDatabaseObserver {
     @Override
     public void update(User user) {
-        Log.d("Updater", "got user " + user.getEmail() + user.getPendingRequests());
+        Log.d("Updater", "got user " + user.getEmail() + user.getGraphData());
         UserSession.setCurrentUserWithoutWrite(user);
         UserSession.safeToWrite1 = true;
     }

@@ -231,6 +231,11 @@ public class Database extends AppCompatActivity implements IDatabaseSubject, IDa
         } else {
             temp.setRequests(new ArrayList<>());
         }
+        if (userInfo.containsKey("graphData") && userInfo.get("graphData") != null) {
+            temp.setGraphData((Map)userInfo.get("graphData"));
+        } else {
+            temp.setGraphData(new HashMap<>());
+        }
         return temp;
     }
 

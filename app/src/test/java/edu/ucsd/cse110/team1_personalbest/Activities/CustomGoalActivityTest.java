@@ -27,6 +27,7 @@ import java.util.Date;
 import edu.ucsd.cse110.team1_personalbest.CustomGoalActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Factories.FitnessServiceFactory;
 import edu.ucsd.cse110.team1_personalbest.Fitness.Interfaces.FitnessService;
 import edu.ucsd.cse110.team1_personalbest.Login.Factories.LoginServiceFactory;
@@ -49,6 +50,7 @@ public class CustomGoalActivityTest {
 
     @Before
     public void setUp() throws Exception {
+        UserSession.testmode = true;
         service = Mockito.mock(FitnessService.class);
         MainActivity.enable_firestore = false;
         loginService = Mockito.mock(LoginService.class);

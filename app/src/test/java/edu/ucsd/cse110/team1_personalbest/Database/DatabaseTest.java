@@ -16,6 +16,7 @@ import edu.ucsd.cse110.team1_personalbest.Activities.MainActivity;
 import edu.ucsd.cse110.team1_personalbest.Firebase.Database;
 import edu.ucsd.cse110.team1_personalbest.Firebase.IDataObject;
 import edu.ucsd.cse110.team1_personalbest.Firebase.StepDataObject;
+import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,6 +29,7 @@ public class DatabaseTest {
 
     @Before
     public void setup() {
+        UserSession.testmode = true;
         db = new Database(appContext, true);
         MainActivity.enable_firestore = false;
     }

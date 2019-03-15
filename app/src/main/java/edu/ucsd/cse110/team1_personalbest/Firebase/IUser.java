@@ -32,6 +32,7 @@ public interface IUser {
     int getIntentionalSteps(String date);
     int getDailySteps(String date);
 
-    Map<String, Integer> getGraphData(String date);
+    void setFriends(List<String> list);
+    void setRequests(List<String> list);
 
 }
