@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.ucsd.cse110.team1_personalbest.Firebase.IUserSession;
+import edu.ucsd.cse110.team1_personalbest.Firebase.TestUserSession;
 import edu.ucsd.cse110.team1_personalbest.Firebase.User;
 import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Messaging.IMessagingService;
@@ -70,44 +71,13 @@ public class MainActivity_FriendHistoryUITest {
         UserSession.uitestmode = true;
         MainActivity.TESTMODE = true;
         MainActivity.enable_firestore = false;
-        UserSession.testSession = Mockito.mock(IUserSession.class);
+
 
 
         User bill = new User("Bill@gmail.com","Bill@gmail.com");
-        User allen = new User("Allen@gmail.com","Allen@gmail.com");
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/14/2019",1000);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/15/2019",2000);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/16/2019",1500);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/17/2019",790);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/13/2019",1100);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/12/2019",1000);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/11/2019",2500);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/10/2019",3100);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/9/2019",2700);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/8/2019",2200);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/7/2019",1900);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/6/2019",5000);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/5/2019",2300);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/4/2019",600);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/3/2019",1100);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/2/2019",2800);
-        UserSession.getUser("Allen@gmail.com").setDailySteps("3/1/2019",4100);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/14/2019",900);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/15/2019",1900);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/16/2019",1300);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/17/2019",700);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/13/2019",1000);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/12/2019",800);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/11/2019",1400);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/10/2019",3000);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/9/2019",2400);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/8/2019",1500);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/7/2019",1200);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/6/2019",3000);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/5/2019",100);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/3/2019",650);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/2/2019",2200);
-        UserSession.getUser("Allen@gmail.com").setIntentionalSteps("3/1/2019",3100);
+        User allen = UserSession.testSession.getUser("allen@gmail.com");
+
+
 
 
         UserSession.setCurrentUser(bill);
