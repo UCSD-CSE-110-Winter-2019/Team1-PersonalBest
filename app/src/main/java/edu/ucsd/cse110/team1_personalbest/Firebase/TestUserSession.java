@@ -39,7 +39,7 @@ public class TestUserSession implements IUserSession {
     public User getUser(String email) {
 
         User user = new User();
-        user.setEmail("allen@gmail.com");
+        user.setEmail("Allen@gmail.com");
         user.setDailySteps("03/14/2019",1000);
         user.setDailySteps("03/15/2019",2000);
         user.setDailySteps("03/16/2019",1500);
