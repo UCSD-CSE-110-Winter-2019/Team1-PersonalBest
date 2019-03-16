@@ -23,8 +23,11 @@ import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.Shadows;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.android.internal.LocalPermissionGranter;
+import org.robolectric.internal.bytecode.ShadowMap;
+import org.robolectric.shadows.ShadowMessenger;
 import org.robolectric.shadows.ShadowToast;
 
 
@@ -47,10 +50,13 @@ import edu.ucsd.cse110.team1_personalbest.Login.Interfaces.LoginService;
 import edu.ucsd.cse110.team1_personalbest.R;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.robolectric.Shadows.*;
 
 @RunWith(RobolectricTestRunner.class)
+
 public class MainActivityGraphTest {
     private MainActivity activity;
     private MainActivityGraph activityGraph;
@@ -63,6 +69,8 @@ public class MainActivityGraphTest {
 
 
     private Context appContext = Robolectric.setupActivity(MainActivity.class).getApplicationContext();
+
+
     @Before
     public void setUp() throws Exception {
         UserSession.testmode = true;
@@ -114,5 +122,18 @@ public class MainActivityGraphTest {
 
 
     }
+    @Test
+    public void FriendHistoryTest(){
+
+        ActivityOfFriendActivity activity = Robolectric.setupActivity(ActivityOfFriendActivity.class);
+        activity.findViewById(R.id.friendHistoryButton).performClick();
+        Intent expectedIntent = new Intent(activity, MainActivityGraph.class);
+        expectedIntent.putExtra("name",UserSession.getCurrentUser().getEmail());
+        //ActivityOfFriendActivity activity2 = Mockito.mock(ActivityOfFriendActivity.class);
+        //activity2.findViewById(R.id.friendHistoryButton).performClick();
+        assertEquals(expectedIntent.getStringExtra("name"),UserSession.getCurrentUser().getEmail());
+
+    }
+
 
 }
