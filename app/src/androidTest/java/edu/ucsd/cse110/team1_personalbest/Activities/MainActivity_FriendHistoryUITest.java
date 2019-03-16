@@ -13,6 +13,8 @@ import android.view.ViewParent;
 import android.widget.EditText;
 import android.widget.TextView;
 
+
+
 import com.google.firebase.firestore.Query;
 
 import org.hamcrest.Description;
@@ -22,11 +24,14 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import edu.ucsd.cse110.team1_personalbest.Firebase.IUserSession;
+import edu.ucsd.cse110.team1_personalbest.Firebase.TestUserSession;
 import edu.ucsd.cse110.team1_personalbest.Firebase.User;
 import edu.ucsd.cse110.team1_personalbest.Firebase.UserSession;
 import edu.ucsd.cse110.team1_personalbest.Messaging.IMessagingService;
@@ -48,6 +53,7 @@ import static org.hamcrest.Matchers.anything;
 @RunWith(AndroidJUnit4.class)
 public class MainActivity_FriendHistoryUITest {
 
+
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
@@ -66,8 +72,13 @@ public class MainActivity_FriendHistoryUITest {
         MainActivity.TESTMODE = true;
         MainActivity.enable_firestore = false;
 
+
+
         User bill = new User("Bill@gmail.com","Bill@gmail.com");
-        User allen = new User("Allen@gmail.com","Allen@gmail.com");
+        User allen = UserSession.testSession.getUser("allen@gmail.com");
+
+
+
 
         UserSession.setCurrentUser(bill);
         UserSession.getCurrentUser().addFriend(allen);

@@ -37,7 +37,26 @@ public class TestUserSession implements IUserSession {
 
     @Override
     public User getUser(String email) {
-        return new User();
+
+        User user = new User();
+        user.setEmail("Allen@gmail.com");
+        user.setDailySteps("03/14/2019",1000);
+        user.setDailySteps("03/15/2019",2000);
+        user.setDailySteps("03/16/2019",1500);
+        user.setDailySteps("03/17/2019",790);
+        user.setDailySteps("03/13/2019",1100);
+        user.setDailySteps("03/12/2019",1000);
+        user.setDailySteps("03/11/2019",2500);
+
+        user.setIntentionalSteps("03/14/2019",900);
+        user.setIntentionalSteps("03/15/2019",1900);
+        user.setIntentionalSteps("03/16/2019",1300);
+        user.setIntentionalSteps("03/17/2019",700);
+        user.setIntentionalSteps("03/13/2019",1000);
+        user.setIntentionalSteps("03/12/2019",800);
+        user.setIntentionalSteps("03/11/2019",1400);
+
+        return user;
     }
 
     @Override
